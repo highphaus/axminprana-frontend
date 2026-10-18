@@ -133,7 +133,7 @@ export default function ContactPage() {
                     required
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white"
+                    className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
                   />
                 </div>
                 <div>
@@ -143,7 +143,7 @@ export default function ContactPage() {
                     required
                     value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white"
+                    className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
                   />
                 </div>
               </div>
@@ -155,7 +155,7 @@ export default function ContactPage() {
                   value={formData.phone}
                   onChange={e => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="10-digit number"
-                  className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white"
+                  className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
                 />
               </div>
 
@@ -167,7 +167,7 @@ export default function ContactPage() {
                   value={formData.message}
                   onChange={e => setFormData({ ...formData, message: e.target.value })}
                   placeholder="Detail your question regarding products, batch info, or orders..."
-                  className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white"
+                  className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
                 />
               </div>
 

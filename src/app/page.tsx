@@ -110,18 +110,18 @@ export default async function HomePage() {
             </div>
 
             {/* Trust Highlights */}
-            <div className="pt-6 border-t border-white/10 grid grid-cols-3 gap-4 text-xs text-[#DDE7D9] text-left">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#B86F4B] shrink-0" />
-                <span className="text-[11px] font-medium">AYUSH Certified</span>
+            <div className="pt-6 border-t border-white/10 grid grid-cols-3 gap-1.5 sm:gap-4 text-[#DDE7D9] text-left">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#B86F4B] shrink-0" />
+                <span className="text-[10px] sm:text-xs font-medium leading-tight">AYUSH Certified</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#B86F4B] shrink-0" />
-                <span className="text-[11px] font-medium">100% Plant Active</span>
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#B86F4B] shrink-0" />
+                <span className="text-[10px] sm:text-xs font-medium leading-tight">100% Plant Active</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#B86F4B] shrink-0" />
-                <span className="text-[11px] font-medium">NABL Lab Tested</span>
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#B86F4B] shrink-0" />
+                <span className="text-[10px] sm:text-xs font-medium leading-tight">NABL Tested</span>
               </div>
             </div>
           </div>
@@ -213,9 +213,9 @@ export default async function HomePage() {
         </div>
 
         {/* Mobile Horizontal Scroller + Desktop Grid */}
-        <div className="flex sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto sm:overflow-visible pb-4 sm:pb-0 no-scrollbar snap-x">
+        <div className="flex sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6 overflow-x-auto sm:overflow-visible pb-4 sm:pb-0 no-scrollbar snap-x">
           {bestsellers.map(product => (
-            <div key={product._id} className="min-w-[260px] sm:min-w-0 snap-start">
+            <div key={product._id} className="min-w-[220px] xs:min-w-[260px] sm:min-w-0 snap-start">
               <ProductCard product={product} />
             </div>
           ))}
@@ -512,7 +512,7 @@ export default async function HomePage() {
 
       {/* 9. Newsletter & Promotional Coupon Banner */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#214E34] text-white rounded-2xl p-8 sm:p-12 text-center relative overflow-hidden shadow-xl">
+        <div className="bg-[#214E34] text-white rounded-2xl p-6 sm:p-10 lg:p-12 text-center relative overflow-hidden shadow-xl">
           <div className="relative z-10 max-w-2xl mx-auto space-y-4">
             <span className="inline-block bg-[#B86F4B] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
               Exclusive Vedic Welcome
@@ -528,7 +528,7 @@ export default async function HomePage() {
                 type="email"
                 placeholder="Enter your email address"
                 required
-                className="flex-1 px-4 py-3 text-xs rounded-md bg-white text-[#202820] focus:outline-none"
+                className="flex-1 px-4 py-3 text-base sm:text-xs rounded-md bg-white text-[#202820] focus:outline-none"
               />
               <button
                 type="submit"

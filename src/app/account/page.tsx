@@ -285,7 +285,7 @@ export default function AccountDashboardPage() {
                           required
                           value={newFullName}
                           onChange={e => setNewFullName(e.target.value)}
-                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-white"
+                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-white text-base sm:text-xs"
                         />
                       </div>
                       <div>
@@ -297,7 +297,7 @@ export default function AccountDashboardPage() {
                           value={newPhone}
                           onChange={e => setNewPhone(e.target.value.replace(/\D/g, ''))}
                           placeholder="10-digit number"
-                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-white"
+                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-white text-base sm:text-xs"
                         />
                       </div>
                     </div>
@@ -320,7 +320,7 @@ export default function AccountDashboardPage() {
                           required
                           value={newCity}
                           onChange={e => setNewCity(e.target.value)}
-                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-white"
+                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-white text-base sm:text-xs"
                         />
                       </div>
                       <div>
@@ -330,7 +330,7 @@ export default function AccountDashboardPage() {
                           required
                           value={newState}
                           onChange={e => setNewState(e.target.value)}
-                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-white"
+                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-white text-base sm:text-xs"
                         />
                       </div>
                       <div>
@@ -341,7 +341,7 @@ export default function AccountDashboardPage() {
                           maxLength={6}
                           value={newPincode}
                           onChange={e => setNewPincode(e.target.value.replace(/\D/g, ''))}
-                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-white"
+                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-white text-base sm:text-xs"
                         />
                       </div>
                     </div>

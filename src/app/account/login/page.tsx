@@ -104,7 +104,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@domain.com"
-                className="w-full pl-9 pr-3 py-2.5 border border-[#E5E8E0] rounded-lg bg-[#FAF8F1] focus:bg-white text-xs"
+                className="w-full pl-9 pr-3 py-2.5 border border-[#E5E8E0] rounded-lg bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
               />
               <Mail className="absolute left-3 top-3 w-4 h-4 text-[#687168]" />
             </div>
@@ -119,7 +119,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-9 pr-3 py-2.5 border border-[#E5E8E0] rounded-lg bg-[#FAF8F1] focus:bg-white text-xs"
+                className="w-full pl-9 pr-3 py-2.5 border border-[#E5E8E0] rounded-lg bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
               />
               <Lock className="absolute left-3 top-3 w-4 h-4 text-[#687168]" />
             </div>

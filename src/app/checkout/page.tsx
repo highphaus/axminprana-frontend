@@ -156,7 +156,7 @@ export default function CheckoutPage() {
                     value={fullName}
                     onChange={e => setFullName(e.target.value)}
                     placeholder="e.g. Aditi Sharma"
-                    className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white"
+                    className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
                   />
                 </div>
                 <div>
@@ -167,7 +167,7 @@ export default function CheckoutPage() {
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     placeholder="aditi@example.com (for order tracking & GST invoice)"
-                    className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white"
+                    className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
                   />
                 </div>
                 <div className="sm:col-span-2">
@@ -206,7 +206,7 @@ export default function CheckoutPage() {
                     value={addressLine1}
                     onChange={e => setAddressLine1(e.target.value)}
                     placeholder="e.g. Flat 302, Gokul Heritage, MG Road"
-                    className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white"
+                    className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
                   />
                 </div>
 
@@ -217,7 +217,7 @@ export default function CheckoutPage() {
                     value={addressLine2}
                     onChange={e => setAddressLine2(e.target.value)}
                     placeholder="Near BAPS Temple / Opposite Metro Station"
-                    className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white"
+                    className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
                   />
                 </div>
 
@@ -230,7 +230,7 @@ export default function CheckoutPage() {
                       value={city}
                       onChange={e => setCity(e.target.value)}
                       placeholder="e.g. Dehradun"
-                      className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white"
+                      className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
                     />
                   </div>
 
@@ -239,7 +239,7 @@ export default function CheckoutPage() {
                     <select
                       value={state}
                       onChange={e => setState(e.target.value)}
-                      className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white"
+                      className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
                     >
                       {INDIAN_STATES.map(s => (
                         <option key={s} value={s}>{s}</option>
@@ -256,7 +256,7 @@ export default function CheckoutPage() {
                       value={pincode}
                       onChange={e => setPincode(e.target.value.replace(/\D/g, ''))}
                       placeholder="6 digits (e.g. 248001)"
-                      className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white"
+                      className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
                     />
                   </div>
                 </div>

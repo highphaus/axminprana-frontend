@@ -112,16 +112,16 @@ export const ShopClient: React.FC<Props> = ({
       </div>
 
       {/* Mobile Filter Button & Sort Bar */}
-      <div className="bg-white p-3.5 rounded-xl border border-[#E5E8E0] flex items-center justify-between gap-4 mb-8 shadow-2xs">
+      <div className="bg-white p-3 sm:p-4 rounded-xl border border-[#E5E8E0] flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 mb-6 sm:mb-8 shadow-2xs">
         <button
           onClick={() => setMobileFilterOpen(true)}
-          className="lg:hidden flex items-center gap-2 px-3 py-1.5 bg-[#FAF8F1] border border-[#E5E8E0] rounded-lg text-xs font-bold text-[#214E34]"
+          className="lg:hidden flex items-center gap-2 px-3 py-2 bg-[#FAF8F1] border border-[#E5E8E0] rounded-lg text-xs font-bold text-[#214E34] hover:bg-[#DDE7D9]/40 transition-colors"
         >
           <SlidersHorizontal className="w-4 h-4" /> Filters {hasActiveFilters && '(Active)'}
         </button>
 
         {/* Active Filters Display */}
-        <div className="hidden sm:flex flex-wrap items-center gap-2 text-xs">
+        <div className="hidden sm:flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs">
           {hasActiveFilters && (
             <span className="text-[11px] text-[#687168] font-bold uppercase tracking-wider">
               Active:
@@ -164,12 +164,12 @@ export const ShopClient: React.FC<Props> = ({
         {/* Sort Controls */}
         <div className="flex items-center gap-2 text-xs ml-auto">
           <span className="text-[#687168] flex items-center gap-1 font-semibold whitespace-nowrap">
-            <ArrowUpDown className="w-3.5 h-3.5 text-[#214E34]" /> Sort By:
+            <ArrowUpDown className="w-3.5 h-3.5 text-[#214E34]" /> <span className="hidden xs:inline">Sort By:</span>
           </span>
           <select
             value={selectedSort}
             onChange={e => router.push(buildUrl({ sort: e.target.value, page: '1' }))}
-            className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#E5E8E0] bg-[#FAF8F1] focus:bg-white text-[#202820]"
+            className="text-xs font-semibold px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-[#E5E8E0] bg-[#FAF8F1] focus:bg-white text-[#202820] max-w-[170px] sm:max-w-none"
           >
             <option value="popularity">Bestsellers & Relevance</option>
             <option value="price_asc">Price: Low to High</option>
@@ -287,7 +287,7 @@ export const ShopClient: React.FC<Props> = ({
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-6">
               {products.map(product => (
                 <ProductCard key={product._id} product={product} />
               ))}
@@ -296,12 +296,12 @@ export const ShopClient: React.FC<Props> = ({
 
           {/* Server-Side Pagination */}
           {pagination.totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2 pt-8 border-t border-[#E5E8E0]">
+            <div className="flex justify-center items-center gap-1.5 sm:gap-2 pt-8 border-t border-[#E5E8E0]">
               {[...Array(pagination.totalPages)].map((_, i) => (
                 <Link
                   key={i + 1}
                   href={buildUrl({ page: String(i + 1) })}
-                  className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold transition-colors ${
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center text-xs font-bold transition-colors ${
                     pagination.page === i + 1
                       ? 'bg-[#214E34] text-white shadow-xs'
                       : 'bg-white border border-[#E5E8E0] text-[#202820] hover:bg-[#FAF8F1]'
@@ -317,9 +317,9 @@ export const ShopClient: React.FC<Props> = ({
 
       {/* Mobile Filter Drawer Modal */}
       {mobileFilterOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/50" onClick={() => setMobileFilterOpen(false)}>
+        <div className="lg:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-2xs" onClick={() => setMobileFilterOpen(false)}>
           <div
-            className="w-4/5 max-w-xs h-full bg-[#FAF8F1] p-5 shadow-2xl overflow-y-auto flex flex-col justify-between"
+            className="w-[85vw] max-w-xs h-full bg-[#FAF8F1] p-5 shadow-2xl overflow-y-auto flex flex-col justify-between border-r border-[#E5E8E0]"
             onClick={e => e.stopPropagation()}
           >
             <div className="space-y-6">

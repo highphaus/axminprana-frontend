@@ -100,22 +100,23 @@ export const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 bg-[#FAF8F1] border-b border-[#E5E8E0]">
       {/* 1. Announcement Bar */}
-      <div className="bg-[#163A28] text-white text-[11px] sm:text-xs py-2 px-4 font-medium tracking-wide">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 mx-auto sm:mx-0 text-center">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#B86F4B] animate-pulse"></span>
-            <span>Complimentary Pan-India Express Delivery on Orders Above ₹999</span>
+      <div className="bg-[#163A28] text-white text-[10px] sm:text-xs py-1.5 sm:py-2 px-3 sm:px-4 font-medium tracking-wide">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 mx-auto sm:mx-0 text-center sm:text-left truncate">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#B86F4B] shrink-0 animate-pulse"></span>
+            <span className="truncate">Pan-India Express Delivery on Orders Above ₹999</span>
             <span className="hidden md:inline text-white/40">|</span>
-            <span className="hidden md:inline text-[#DDE7D9]">100% Certified Classical Ayurvedic Formulations</span>
+            <span className="hidden md:inline text-[#DDE7D9]">100% Certified Classical Formulations</span>
           </div>
-          <div className="hidden sm:flex items-center gap-4 text-[11px] text-[#DDE7D9]">
+          <div className="hidden sm:flex items-center gap-3 md:gap-4 text-[11px] text-[#DDE7D9] shrink-0">
             <a
               href="tel:+917561836584"
-              className="flex items-center gap-1.5 hover:text-white transition-colors"
+              className="flex items-center gap-1 hover:text-white transition-colors"
               title="Customer Care Helpline"
             >
               <Phone className="w-3 h-3 text-[#B86F4B]" />
-              <span>+91 75618 36584</span>
+              <span className="hidden md:inline">+91 75618 36584</span>
+              <span className="md:hidden">Call</span>
             </a>
             <span className="text-white/30">|</span>
             <a
@@ -148,19 +149,19 @@ export const Header: React.FC = () => {
       </div>
 
       {/* 2. Main Header Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-3 flex items-center justify-between gap-2 sm:gap-4">
         {/* Mobile Hamburger Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="lg:hidden p-1.5 text-[#214E34] hover:bg-[#DDE7D9]/50 rounded-md transition-colors"
+          className="lg:hidden p-2 -ml-1 text-[#214E34] hover:bg-[#DDE7D9]/50 rounded-md transition-colors shrink-0"
           aria-label="Toggle mobile menu"
         >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isMobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
         </button>
 
         {/* Brand Logo - Authentic Emblem & Vedic Typography */}
-        <Link href="/" className="flex items-center gap-3 select-none group">
-          <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden shadow-sm border border-[#214E34]/20 bg-[#FAF8F1] shrink-0 group-hover:scale-105 transition-transform duration-300">
+        <Link href="/" className="flex items-center gap-2 sm:gap-3 select-none group min-w-0">
+          <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full overflow-hidden shadow-xs border border-[#214E34]/20 bg-[#FAF8F1] shrink-0 group-hover:scale-105 transition-transform duration-300">
             <Image
               src="/images/logo.png"
               alt="Axmin Prana Ayurvedic Products Logo"
@@ -170,11 +171,11 @@ export const Header: React.FC = () => {
               priority
             />
           </div>
-          <div className="flex flex-col">
-            <span className="text-xl sm:text-2xl font-serif-brand font-bold tracking-[0.08em] text-[#214E34] leading-tight">
+          <div className="flex flex-col min-w-0">
+            <span className="text-base sm:text-xl md:text-2xl font-serif-brand font-bold tracking-[0.06em] sm:tracking-[0.08em] text-[#214E34] leading-tight truncate">
               AXMIN PRANA
             </span>
-            <span className="text-[8px] sm:text-[9px] tracking-[0.24em] uppercase text-[#B86F4B] font-bold">
+            <span className="text-[7px] sm:text-[8px] md:text-[9px] tracking-[0.16em] sm:tracking-[0.24em] uppercase text-[#B86F4B] font-bold truncate">
               Ayurvedic Products • Pure • Holistic
             </span>
           </div>
@@ -249,7 +250,7 @@ export const Header: React.FC = () => {
         </div>
 
         {/* Right Action Icons */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-1 sm:gap-3 md:gap-4 shrink-0">
           {/* Wishlist */}
           <Link
             href="/account"
@@ -468,16 +469,31 @@ export const Header: React.FC = () => {
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/50" onClick={() => setIsMobileMenuOpen(false)}>
           <div
-            className="w-4/5 max-w-sm h-full bg-[#FAF8F1] p-5 shadow-2xl flex flex-col justify-between overflow-y-auto"
+            className="w-[85vw] max-w-xs sm:max-w-sm h-full bg-[#FAF8F1] p-4 sm:p-5 shadow-2xl flex flex-col justify-between overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             <div>
               <div className="flex items-center justify-between pb-4 border-b border-[#E5E8E0]">
-                <span className="font-serif-brand font-bold text-lg text-[#214E34]">
-                  AXMIN PRANA
-                </span>
-                <button onClick={() => setIsMobileMenuOpen(false)} aria-label="Close menu">
-                  <X className="w-6 h-6 text-[#202820]" />
+                <div className="flex items-center gap-2.5">
+                  <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[#214E34]/20 bg-[#FAF8F1] shrink-0">
+                    <Image
+                      src="/images/logo.png"
+                      alt="Axmin Prana Logo"
+                      width={32}
+                      height={32}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <span className="font-serif-brand font-bold text-base text-[#214E34]">
+                    AXMIN PRANA
+                  </span>
+                </div>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  aria-label="Close menu"
+                  className="p-1.5 -mr-1 text-[#202820] hover:text-[#214E34]"
+                >
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 

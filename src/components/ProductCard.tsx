@@ -44,56 +44,56 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       : 0;
 
   return (
-    <div className="group bg-white rounded-lg border border-[#E5E8E0] hover:border-[#214E34]/40 hover:shadow-md transition-all flex flex-col justify-between overflow-hidden relative">
-      <Link href={`/product/${product.slug}`} className="block">
-        {/* Image Container */}
-        <div className="relative aspect-square w-full bg-[#FAF8F1] overflow-hidden">
-          <Image
-            src={product.thumbnail || product.images[0]}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-          />
+    <div className="group bg-white rounded-lg border border-[#E5E8E0] hover:border-[#214E34]/40 hover:shadow-md transition-all flex flex-col h-full overflow-hidden relative">
+      <Link href={`/product/${product.slug}`} className="flex flex-col flex-1 justify-between h-full">
+        <div>
+          {/* Image Container */}
+          <div className="relative aspect-square w-full bg-[#FAF8F1] overflow-hidden">
+            <Image
+              src={product.thumbnail || product.images[0]}
+              alt={product.name}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+            />
 
-          {/* Badges */}
-          <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
-            {discountPercent > 0 && (
-              <span className="bg-[#B86F4B] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
-                {discountPercent}% OFF
-              </span>
-            )}
-            {product.isBestseller && (
-              <span className="bg-[#214E34] text-white text-[10px] font-semibold px-2 py-0.5 rounded shadow-xs">
-                Bestseller
-              </span>
+            {/* Badges */}
+            <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
+              {discountPercent > 0 && (
+                <span className="bg-[#B86F4B] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
+                  {discountPercent}% OFF
+                </span>
+              )}
+              {product.isBestseller && (
+                <span className="bg-[#214E34] text-white text-[10px] font-semibold px-2 py-0.5 rounded shadow-xs">
+                  Bestseller
+                </span>
+              )}
+            </div>
+
+            {/* Wishlist Button */}
+            <button
+              onClick={handleWishlistClick}
+              className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/95 hover:bg-white text-[#214E34] flex items-center justify-center shadow-xs transition-colors z-10"
+              aria-label="Save to wishlist"
+            >
+              <Heart
+                className={`w-4 h-4 transition-colors ${
+                  isWishlisted ? 'fill-[#B86F4B] text-[#B86F4B]' : 'text-[#687168]'
+                }`}
+              />
+            </button>
+
+            {/* Dosha Tag */}
+            {product.doshaBalancing?.primaryDosha && (
+              <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-xs text-[10px] font-semibold text-[#214E34] px-2 py-0.5 rounded border border-[#E5E8E0]">
+                {product.doshaBalancing.primaryDosha}
+              </div>
             )}
           </div>
 
-          {/* Wishlist Button */}
-          <button
-            onClick={handleWishlistClick}
-            className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 hover:bg-white text-[#214E34] flex items-center justify-center shadow-xs transition-colors z-10"
-            aria-label="Save to wishlist"
-          >
-            <Heart
-              className={`w-4 h-4 transition-colors ${
-                isWishlisted ? 'fill-[#B86F4B] text-[#B86F4B]' : 'text-[#687168]'
-              }`}
-            />
-          </button>
-
-          {/* Dosha Tag */}
-          {product.doshaBalancing?.primaryDosha && (
-            <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-xs text-[10px] font-semibold text-[#214E34] px-2 py-0.5 rounded border border-[#E5E8E0]">
-              {product.doshaBalancing.primaryDosha}
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between">
-          <div>
+          {/* Content */}
+          <div className="p-3 sm:p-4">
             <div className="flex items-center gap-1 text-[#B86F4B] text-[11px] mb-1">
               <Star className="w-3.5 h-3.5 fill-[#B86F4B]" />
               <span className="font-bold text-[#202820]">{product.rating}</span>
@@ -106,8 +106,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
             <p className="text-[11px] text-[#687168] mt-1 font-medium">{product.packSize}</p>
           </div>
+        </div>
 
-          <div className="mt-3 pt-2 border-t border-[#E5E8E0]/70 flex items-center justify-between">
+        <div className="p-3 sm:p-4 pt-0">
+          <div className="pt-2 border-t border-[#E5E8E0]/70 flex items-center justify-between">
             <div>
               <div className="flex items-baseline gap-1.5">
                 <span className="text-sm sm:text-base font-bold text-[#214E34]">
@@ -125,7 +127,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <button
               onClick={handleAddToCart}
               disabled={isAdding || product.stock <= 0}
-              className={`p-2 rounded-md transition-all flex items-center justify-center ${
+              className={`min-w-[36px] min-h-[36px] p-2 rounded-md transition-all flex items-center justify-center ${
                 justAdded
                   ? 'bg-green-700 text-white'
                   : 'bg-[#214E34] text-white hover:bg-[#163A28]'

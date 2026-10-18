@@ -80,7 +80,7 @@ export default function RegisterPage() {
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder="e.g. Priya Sharma"
-                className="w-full pl-9 pr-3 py-2.5 border border-[#E5E8E0] rounded-lg bg-[#FAF8F1] focus:bg-white text-xs"
+                className="w-full pl-9 pr-3 py-2.5 border border-[#E5E8E0] rounded-lg bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
               />
               <User className="absolute left-3 top-3 w-4 h-4 text-[#687168]" />
             </div>
@@ -95,7 +95,7 @@ export default function RegisterPage() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="priya@example.com"
-                className="w-full pl-9 pr-3 py-2.5 border border-[#E5E8E0] rounded-lg bg-[#FAF8F1] focus:bg-white text-xs"
+                className="w-full pl-9 pr-3 py-2.5 border border-[#E5E8E0] rounded-lg bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
               />
               <Mail className="absolute left-3 top-3 w-4 h-4 text-[#687168]" />
             </div>
@@ -110,7 +110,7 @@ export default function RegisterPage() {
                 value={phone}
                 onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
                 placeholder="10-digit number (e.g. 9811223344)"
-                className="w-full pl-9 pr-3 py-2.5 border border-[#E5E8E0] rounded-lg bg-[#FAF8F1] focus:bg-white text-xs"
+                className="w-full pl-9 pr-3 py-2.5 border border-[#E5E8E0] rounded-lg bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
               />
               <Phone className="absolute left-3 top-3 w-4 h-4 text-[#687168]" />
             </div>
@@ -126,7 +126,7 @@ export default function RegisterPage() {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="Minimum 6 characters"
-                className="w-full pl-9 pr-3 py-2.5 border border-[#E5E8E0] rounded-lg bg-[#FAF8F1] focus:bg-white text-xs"
+                className="w-full pl-9 pr-3 py-2.5 border border-[#E5E8E0] rounded-lg bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
               />
               <Lock className="absolute left-3 top-3 w-4 h-4 text-[#687168]" />
             </div>

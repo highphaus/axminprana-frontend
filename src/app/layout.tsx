@@ -51,14 +51,21 @@ export const metadata: Metadata = {
   }
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#163A28',
+};
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${manrope.variable} ${inter.variable}`}>
-      <body className="min-h-screen flex flex-col bg-[#FAF8F1] text-[#202820] font-sans antialiased">
+    <html lang="en" className={`${manrope.variable} ${inter.variable} scroll-smooth`}>
+      <body className="min-h-screen flex flex-col bg-[#FAF8F1] text-[#202820] font-sans antialiased overflow-x-hidden w-full max-w-full selection:bg-[#214E34] selection:text-white">
         <AuthProvider>
           <CartProvider>
             <Header />

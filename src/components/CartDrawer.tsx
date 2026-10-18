@@ -56,10 +56,10 @@ export const CartDrawer: React.FC = () => {
         onClick={closeDrawer}
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-[#FAF8F1] shadow-2xl flex flex-col border-l border-[#E5E8E0]">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10 w-full sm:w-auto">
+        <div className="w-full sm:w-[420px] max-w-full bg-[#FAF8F1] shadow-2xl flex flex-col border-l border-[#E5E8E0] h-full">
           {/* Header */}
-          <div className="p-4 bg-[#214E34] text-white flex items-center justify-between">
+          <div className="p-3.5 sm:p-4 bg-[#214E34] text-white flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-medium tracking-wide">Your Ayurvedic Basket</h2>
               <span className="bg-[#B86F4B] text-white text-xs px-2 py-0.5 rounded-full font-semibold">

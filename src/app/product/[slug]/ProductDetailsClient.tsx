@@ -229,20 +229,20 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
 
           {/* Quantity & CTA Buttons */}
           <div className="space-y-3 pt-2">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* Quantity */}
-              <div className="flex items-center border border-[#E5E8E0] rounded-lg bg-white overflow-hidden">
+              <div className="flex items-center border border-[#E5E8E0] rounded-lg bg-white overflow-hidden shrink-0">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-3 py-2.5 hover:bg-[#FAF8F1] transition-colors text-[#202820]"
+                  className="px-2.5 sm:px-3 py-2.5 hover:bg-[#FAF8F1] transition-colors text-[#202820]"
                   aria-label="Decrease quantity"
                 >
                   <Minus className="w-3.5 h-3.5" />
                 </button>
-                <span className="px-4 text-xs font-bold text-[#202820]">{quantity}</span>
+                <span className="px-2.5 sm:px-4 text-xs font-bold text-[#202820]">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="px-3 py-2.5 hover:bg-[#FAF8F1] transition-colors text-[#202820]"
+                  className="px-2.5 sm:px-3 py-2.5 hover:bg-[#FAF8F1] transition-colors text-[#202820]"
                   aria-label="Increase quantity"
                 >
                   <Plus className="w-3.5 h-3.5" />
@@ -252,15 +252,15 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
               {/* Add to Basket */}
               <button
                 onClick={handleAddToCart}
-                className="flex-1 py-3 px-6 bg-[#214E34] hover:bg-[#163A28] text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
+                className="flex-1 min-w-0 py-3 px-3 sm:px-6 bg-[#214E34] hover:bg-[#163A28] text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-1.5 sm:gap-2 truncate"
               >
-                Add to Ayurvedic Basket
+                <span>Add to<span className="hidden sm:inline"> Ayurvedic</span> Basket</span>
               </button>
 
               {/* Wishlist */}
               <button
                 onClick={() => toggleWishlist(product._id)}
-                className="p-3 border border-[#E5E8E0] bg-white rounded-lg hover:border-[#214E34] transition-colors"
+                className="p-3 border border-[#E5E8E0] bg-white rounded-lg hover:border-[#214E34] transition-colors shrink-0"
                 aria-label="Save to Wishlist"
               >
                 <Heart
@@ -274,7 +274,7 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
             {/* Buy Now */}
             <button
               onClick={handleBuyNow}
-              className="w-full py-3 px-6 bg-[#B86F4B] hover:bg-[#a05e3d] text-white text-xs sm:text-sm font-bold rounded-lg shadow-sm transition-colors"
+              className="w-full py-3 px-4 sm:px-6 bg-[#B86F4B] hover:bg-[#a05e3d] text-white text-xs sm:text-sm font-bold rounded-lg shadow-sm transition-colors text-center"
             >
               Buy Now with 1-Click Checkout
             </button>
@@ -551,13 +551,40 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
               Pairs Harmoniously With
             </h3>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6">
             {product.related.map(rel => (
               <ProductCard key={rel._id} product={rel} />
             ))}
           </div>
         </div>
       )}
+
+      {/* Mobile Sticky Bottom Action Bar (Kama Ayurveda & Forest Essentials Pattern) */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#E5E8E0] px-4 py-2.5 shadow-lg flex items-center justify-between gap-3 safe-area-inset-bottom">
+        <div className="min-w-0">
+          <p className="text-[11px] text-[#687168] truncate font-medium">{product.name}</p>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-base font-bold text-[#214E34]">₹{activePrice}</span>
+            {originalPrice > activePrice && (
+              <span className="text-[11px] text-[#687168] line-through">₹{originalPrice}</span>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            onClick={handleAddToCart}
+            className="px-4 py-2 bg-[#214E34] text-white text-xs font-bold rounded-lg shadow-xs hover:bg-[#163A28] transition-colors"
+          >
+            Add to Basket
+          </button>
+          <button
+            onClick={handleBuyNow}
+            className="px-4 py-2 bg-[#B86F4B] text-white text-xs font-bold rounded-lg shadow-xs hover:bg-[#a05e3d] transition-colors"
+          >
+            Buy Now
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

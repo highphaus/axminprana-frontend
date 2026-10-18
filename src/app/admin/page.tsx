@@ -514,7 +514,8 @@ export default function AdminPage() {
 
               {/* Products Table */}
               <div className="bg-white rounded-xl border border-[#E5E8E0] overflow-hidden shadow-2xs">
-                <table className="w-full text-left text-xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs min-w-[640px]">
                   <thead className="bg-[#FAF8F1] border-b border-[#E5E8E0] text-[#687168] uppercase text-[10px] font-bold">
                     <tr>
                       <th className="p-3">Formulation</th>
@@ -566,6 +567,7 @@ export default function AdminPage() {
                     ))}
                   </tbody>
                 </table>
+                </div>
               </div>
             </div>
           )}
@@ -630,7 +632,8 @@ export default function AdminPage() {
 
               {/* Orders Table */}
               <div className="bg-white rounded-xl border border-[#E5E8E0] overflow-hidden shadow-2xs">
-                <table className="w-full text-left text-xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs min-w-[640px]">
                   <thead className="bg-[#FAF8F1] border-b border-[#E5E8E0] text-[#687168] uppercase text-[10px] font-bold">
                     <tr>
                       <th className="p-3">Order #</th>
@@ -689,6 +692,7 @@ export default function AdminPage() {
                     ))}
                   </tbody>
                 </table>
+                </div>
               </div>
             </div>
           )}

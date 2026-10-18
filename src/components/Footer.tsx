@@ -9,37 +9,37 @@ export const Footer: React.FC = () => {
     <footer className="bg-[#163A28] text-[#FAF8F1] pt-12 pb-8 border-t border-[#214E34]">
       {/* 1. Trust & Quality Banner */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 border-b border-white/10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full bg-[#214E34] flex items-center justify-center text-[#DDE7D9] mb-2">
-              <Award className="w-5 h-5 text-[#B86F4B]" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
+          <div className="flex flex-col items-center p-2">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#214E34] flex items-center justify-center text-[#DDE7D9] mb-2 shrink-0">
+              <Award className="w-4 h-4 sm:w-5 sm:h-5 text-[#B86F4B]" />
             </div>
-            <h4 className="text-xs font-bold tracking-wide">AYUSH Certified</h4>
-            <p className="text-[11px] text-[#DDE7D9]/80 mt-0.5">Licensed classical Vedic formulations</p>
+            <h4 className="text-[11px] sm:text-xs font-bold tracking-wide">AYUSH Certified</h4>
+            <p className="text-[10px] sm:text-[11px] text-[#DDE7D9]/80 mt-0.5">Licensed classical Vedic formulations</p>
           </div>
 
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full bg-[#214E34] flex items-center justify-center text-[#DDE7D9] mb-2">
-              <Leaf className="w-5 h-5 text-[#B86F4B]" />
+          <div className="flex flex-col items-center p-2">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#214E34] flex items-center justify-center text-[#DDE7D9] mb-2 shrink-0">
+              <Leaf className="w-4 h-4 sm:w-5 sm:h-5 text-[#B86F4B]" />
             </div>
-            <h4 className="text-xs font-bold tracking-wide">100% Plant & Herb Based</h4>
-            <p className="text-[11px] text-[#DDE7D9]/80 mt-0.5">Zero synthetic binders or chemicals</p>
+            <h4 className="text-[11px] sm:text-xs font-bold tracking-wide">100% Plant & Herb Based</h4>
+            <p className="text-[10px] sm:text-[11px] text-[#DDE7D9]/80 mt-0.5">Zero synthetic binders or chemicals</p>
           </div>
 
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full bg-[#214E34] flex items-center justify-center text-[#DDE7D9] mb-2">
-              <ShieldCheck className="w-5 h-5 text-[#B86F4B]" />
+          <div className="flex flex-col items-center p-2">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#214E34] flex items-center justify-center text-[#DDE7D9] mb-2 shrink-0">
+              <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-[#B86F4B]" />
             </div>
-            <h4 className="text-xs font-bold tracking-wide">Heavy Metal Tested</h4>
-            <p className="text-[11px] text-[#DDE7D9]/80 mt-0.5">Verified clean by NABL accredited labs</p>
+            <h4 className="text-[11px] sm:text-xs font-bold tracking-wide">Heavy Metal Tested</h4>
+            <p className="text-[10px] sm:text-[11px] text-[#DDE7D9]/80 mt-0.5">Verified clean by NABL accredited labs</p>
           </div>
 
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full bg-[#214E34] flex items-center justify-center text-[#DDE7D9] mb-2">
-              <Sparkles className="w-5 h-5 text-[#B86F4B]" />
+          <div className="flex flex-col items-center p-2">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#214E34] flex items-center justify-center text-[#DDE7D9] mb-2 shrink-0">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#B86F4B]" />
             </div>
-            <h4 className="text-xs font-bold tracking-wide">Authentic Sourcing</h4>
-            <p className="text-[11px] text-[#DDE7D9]/80 mt-0.5">Harvested from Himalayan & Western Ghats</p>
+            <h4 className="text-[11px] sm:text-xs font-bold tracking-wide">Authentic Sourcing</h4>
+            <p className="text-[10px] sm:text-[11px] text-[#DDE7D9]/80 mt-0.5">Harvested from Himalayan & Western Ghats</p>
           </div>
         </div>
       </div>

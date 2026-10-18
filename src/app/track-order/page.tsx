@@ -69,7 +69,7 @@ function TrackOrderContent() {
             placeholder="Enter Order Number (e.g. AP-2026-981245)"
             value={orderNumber}
             onChange={e => setOrderNumber(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 text-xs sm:text-sm uppercase font-mono bg-transparent focus:outline-none text-[#202820]"
+            className="w-full pl-10 pr-4 py-3 text-base sm:text-sm uppercase font-mono bg-transparent focus:outline-none text-[#202820]"
           />
           <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-[#687168]" />
         </div>
