@@ -2,9 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { ProductDetailsClient } from './ProductDetailsClient';
-import { IProduct } from '../../../lib/api';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+import { IProduct, API_BASE } from '../../../lib/api';
 
 interface PageProps {
   params: Promise<{ slug: string }>;

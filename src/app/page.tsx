@@ -15,10 +15,8 @@ import {
   ChevronRight,
   Heart
 } from 'lucide-react';
-import { IProduct, ICategory, IArticle } from '../lib/api';
+import { IProduct, ICategory, IArticle, API_BASE } from '../lib/api';
 import { ProductCard } from '../components/ProductCard';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 async function getHomeData() {
   try {

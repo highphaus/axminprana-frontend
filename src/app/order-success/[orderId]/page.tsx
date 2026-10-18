@@ -3,8 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { CheckCircle2, Package, Truck, ArrowRight, ShieldCheck, MapPin, Printer } from 'lucide-react';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+import { API_BASE } from '../../../lib/api';
 
 interface PageProps {
   params: Promise<{ orderId: string }>;

@@ -1,9 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { ShopClient } from './ShopClient';
-import { IProduct, ICategory } from '../../lib/api';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+import { IProduct, ICategory, API_BASE } from '../../lib/api';
 
 interface SearchParams {
   category?: string;

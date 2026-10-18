@@ -3,9 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Clock, User, ArrowLeft, Calendar, Tag, ShieldCheck } from 'lucide-react';
-import { IArticle } from '../../../lib/api';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+import { IArticle, API_BASE } from '../../../lib/api';
 
 interface PageProps {
   params: Promise<{ slug: string }>;

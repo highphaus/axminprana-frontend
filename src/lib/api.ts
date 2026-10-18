@@ -1,4 +1,5 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const rawBase = process.env.NEXT_PUBLIC_API_URL || 'https://axminprana.onrender.com/api';
+export const API_BASE = rawBase.endsWith('/api') ? rawBase : `${rawBase.replace(/\/+$/, '')}/api`;
 
 export interface IIngredient {
   name: string;

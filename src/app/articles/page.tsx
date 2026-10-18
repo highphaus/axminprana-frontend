@@ -2,9 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, BookOpen, Clock, User } from 'lucide-react';
-import { IArticle } from '../../lib/api';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+import { IArticle, API_BASE } from '../../lib/api';
 
 async function getArticles(): Promise<IArticle[]> {
   try {
