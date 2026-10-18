@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  --forest-green: #214E34;
+  --deep-green: #163A28;
+  --warm-ivory: #FAF8F1;
+  --white: #FFFFFF;
+  --sage-green: #DDE7D9;
+  --terracotta: #B86F4B;
+  --text-primary: #202820;
+  --text-secondary: #687168;
+  --border-color: #E5E8E0;
+}
+
+body {
+  background-color: var(--warm-ivory);
+  color: var(--text-primary);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--font-manrope), var(--font-inter), sans-serif;
+  letter-spacing: -0.015em;
+}
+
+/* Editorial Serif Accent Class for luxury brand headings */
+.font-serif-brand {
+  font-family: var(--font-manrope), Georgia, serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF8F1;
+}
+::-webkit-scrollbar-thumb {
+  background: #DDE7D9;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B86F4B;
+}
+
+/* Focus Rings */
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--forest-green);
+  outline-offset: 2px;
+}
+
+/* Hide scrollbar for clean horizontal product scrollers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
