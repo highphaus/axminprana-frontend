@@ -34,7 +34,7 @@ export default function ReturnsPolicyPage() {
         <section className="space-y-2">
           <h2 className="text-base font-bold text-[#214E34]">3. How to Initiate a Claim</h2>
           <p>
-            Email clear photos of the outer box and shipping label along with your Order ID to <strong>care@axminprana.com</strong> or call our toll-free line at <strong>1800-209-VEDA</strong>.
+            Email clear photos of the outer box and shipping label along with your Order ID to <strong>axminprana@gmail.com</strong> or call our customer care helpline at <strong>+91 75618 36584</strong>.
           </p>
         </section>
       </div>

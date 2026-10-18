@@ -27,7 +27,7 @@ export default function CancellationPolicyPage() {
         <section className="space-y-2">
           <h2 className="text-base font-bold text-[#214E34]">2. Instant Cancellation via Support</h2>
           <p>
-            To cancel, call 1800-209-VEDA or email care@axminprana.com with your Order Number immediately.
+            To cancel, call <strong>+91 75618 36584</strong> or email <strong>axminprana@gmail.com</strong> with your Order Number immediately.
           </p>
         </section>
       </div>

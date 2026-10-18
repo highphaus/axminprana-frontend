@@ -43,6 +43,11 @@ export const metadata: Metadata = {
     siteName: 'Axmin Prana',
     locale: 'en_IN',
     type: 'website'
+  },
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png'
   }
 };
 

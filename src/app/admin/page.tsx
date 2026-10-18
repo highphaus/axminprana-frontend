@@ -192,14 +192,25 @@ export default function AdminPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       {/* Top Banner */}
       <div className="bg-[#163A28] text-white p-6 rounded-2xl mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg">
-        <div>
-          <span className="text-[10px] uppercase font-bold tracking-widest text-[#B86F4B]">
-            Enterprise Ayurveda Administration
-          </span>
-          <h1 className="text-2xl font-serif-brand font-bold">Axmin Prana Control Console</h1>
-          <p className="text-xs text-[#DDE7D9]/80 mt-1">
-            Supervise catalogue formulations, fulfill consignments, and inspect revenue statistics.
-          </p>
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-full overflow-hidden bg-[#FAF8F1] border border-white/20 shrink-0 shadow-sm">
+            <Image
+              src="/images/logo.png"
+              alt="Axmin Prana Logo"
+              width={56}
+              height={56}
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <div>
+            <span className="text-[10px] uppercase font-bold tracking-widest text-[#B86F4B]">
+              Enterprise Ayurveda Administration
+            </span>
+            <h1 className="text-2xl font-serif-brand font-bold">Axmin Prana Control Console</h1>
+            <p className="text-xs text-[#DDE7D9]/80 mt-1">
+              Supervise catalogue formulations, fulfill consignments, and inspect revenue statistics.
+            </p>
+          </div>
         </div>
         <div className="flex gap-2">
           <Link

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Lock, Mail, ArrowRight, ShieldCheck, UserCheck } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
@@ -47,8 +48,17 @@ export default function LoginPage() {
   return (
     <div className="max-w-md mx-auto px-4 py-12 sm:py-20">
       <div className="bg-white p-6 sm:p-8 rounded-2xl border border-[#E5E8E0] shadow-sm space-y-6">
-        <div className="text-center space-y-1">
-          <span className="text-[10px] font-bold tracking-widest uppercase text-[#B86F4B]">
+        <div className="text-center space-y-2">
+          <div className="w-16 h-16 rounded-full overflow-hidden mx-auto border border-[#214E34]/20 shadow-sm bg-[#FAF8F1]">
+            <Image
+              src="/images/logo.png"
+              alt="Axmin Prana"
+              width={64}
+              height={64}
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <span className="text-[10px] font-bold tracking-widest uppercase text-[#B86F4B] block">
             Vedic Wellness Portal
           </span>
           <h1 className="text-2xl font-serif-brand font-bold text-[#214E34]">Sign In to Your Account</h1>

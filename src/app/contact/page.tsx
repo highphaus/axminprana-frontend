@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle2, Clock } from 'lucide-react';
+import { InstagramIcon, FacebookIcon } from '../../components/SocialIcons';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -48,16 +49,20 @@ export default function ContactPage() {
             <div className="flex items-start gap-3">
               <Phone className="w-4 h-4 text-[#B86F4B] shrink-0 mt-0.5" />
               <div>
-                <strong className="block text-white">Toll-Free Ayurvedic Helpline:</strong>
-                <span className="text-[#DDE7D9]/80">+91 1800-209-VEDA (Mon - Sat, 9 AM - 6 PM IST)</span>
+                <strong className="block text-white">Direct Helpline & Support:</strong>
+                <a href="tel:+917561836584" className="text-[#DDE7D9] hover:text-white transition-colors font-medium">
+                  +91 75618 36584 (Mon - Sat, 9 AM - 6 PM IST)
+                </a>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <Mail className="w-4 h-4 text-[#B86F4B] shrink-0 mt-0.5" />
               <div>
-                <strong className="block text-white">Direct Correspondence:</strong>
-                <span className="text-[#DDE7D9]/80">care@axminprana.com</span>
+                <strong className="block text-white">Direct Email Correspondence:</strong>
+                <a href="mailto:axminprana@gmail.com" className="text-[#DDE7D9] hover:text-white transition-colors font-medium">
+                  axminprana@gmail.com
+                </a>
               </div>
             </div>
 
@@ -70,7 +75,34 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-white/10 text-[11px] text-[#DDE7D9]/60">
+          {/* Social Channels */}
+          <div className="pt-4 border-t border-white/10 space-y-2">
+            <span className="block text-[11px] font-bold uppercase tracking-wider text-[#DDE7D9]/70">
+              Official Social Channels:
+            </span>
+            <div className="flex items-center gap-3">
+              <a
+                href="https://www.instagram.com/axmin_prana_?utm_source=ig_web_button_share_sheet&xtok=ZDNlZDc0MzIxNw=="
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 bg-[#214E34] hover:bg-[#E1306C] text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-all shadow-xs"
+              >
+                <InstagramIcon className="w-3.5 h-3.5" />
+                <span>Instagram</span>
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=61594779705906"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 bg-[#214E34] hover:bg-[#1877F2] text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-all shadow-xs"
+              >
+                <FacebookIcon className="w-3.5 h-3.5" />
+                <span>Facebook</span>
+              </a>
+            </div>
+          </div>
+
+          <div className="pt-2 text-[11px] text-[#DDE7D9]/60">
             Govt. of India AYUSH License: AYU/DL/IND-2024-8841 | GSTIN: 07AAACA1234F1Z8
           </div>
         </div>

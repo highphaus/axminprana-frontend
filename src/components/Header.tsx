@@ -19,8 +19,10 @@ import {
   Flame,
   Wind,
   Mountain,
-  ChevronRight
+  ChevronRight,
+  Phone
 } from 'lucide-react';
+import { InstagramIcon, FacebookIcon } from './SocialIcons';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { fetchFromAPI, IProduct } from '../lib/api';
@@ -106,19 +108,47 @@ export const Header: React.FC = () => {
             <span className="hidden md:inline text-white/40">|</span>
             <span className="hidden md:inline text-[#DDE7D9]">100% Certified Classical Ayurvedic Formulations</span>
           </div>
-          <div className="hidden sm:flex items-center gap-5 text-[11px] text-[#DDE7D9]">
+          <div className="hidden sm:flex items-center gap-4 text-[11px] text-[#DDE7D9]">
+            <a
+              href="tel:+917561836584"
+              className="flex items-center gap-1.5 hover:text-white transition-colors"
+              title="Customer Care Helpline"
+            >
+              <Phone className="w-3 h-3 text-[#B86F4B]" />
+              <span>+91 75618 36584</span>
+            </a>
+            <span className="text-white/30">|</span>
+            <a
+              href="https://www.instagram.com/axmin_prana_?utm_source=ig_web_button_share_sheet&xtok=ZDNlZDc0MzIxNw=="
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors flex items-center gap-1"
+              title="Follow us on Instagram"
+              aria-label="Instagram"
+            >
+              <InstagramIcon className="w-3.5 h-3.5 text-[#E1306C]" />
+              <span className="hidden lg:inline">@axmin_prana_</span>
+            </a>
+            <a
+              href="https://www.facebook.com/profile.php?id=61594779705906"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors"
+              title="Follow us on Facebook"
+              aria-label="Facebook"
+            >
+              <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
+            </a>
+            <span className="text-white/30">|</span>
             <Link href="/track-order" className="hover:text-white transition-colors">
               Track Order
-            </Link>
-            <Link href="/education" className="hover:text-white transition-colors">
-              Prakriti & Dosha Science
             </Link>
           </div>
         </div>
       </div>
 
       {/* 2. Main Header Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-4">
         {/* Mobile Hamburger Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -128,14 +158,26 @@ export const Header: React.FC = () => {
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
 
-        {/* Brand Logo - Inspired by Luxury Heritage Brands */}
-        <Link href="/" className="flex flex-col items-start select-none">
-          <span className="text-xl sm:text-2xl font-serif-brand font-bold tracking-[0.08em] text-[#214E34]">
-            AXMIN PRANA
-          </span>
-          <span className="text-[9px] tracking-[0.28em] uppercase text-[#B86F4B] font-semibold -mt-1">
-            Vedic Heritage & Wellness
-          </span>
+        {/* Brand Logo - Authentic Emblem & Vedic Typography */}
+        <Link href="/" className="flex items-center gap-3 select-none group">
+          <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden shadow-sm border border-[#214E34]/20 bg-[#FAF8F1] shrink-0 group-hover:scale-105 transition-transform duration-300">
+            <Image
+              src="/images/logo.png"
+              alt="Axmin Prana Ayurvedic Products Logo"
+              width={56}
+              height={56}
+              className="w-full h-full object-contain"
+              priority
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xl sm:text-2xl font-serif-brand font-bold tracking-[0.08em] text-[#214E34] leading-tight">
+              AXMIN PRANA
+            </span>
+            <span className="text-[8px] sm:text-[9px] tracking-[0.24em] uppercase text-[#B86F4B] font-bold">
+              Ayurvedic Products • Pure • Holistic
+            </span>
+          </div>
         </Link>
 
         {/* Live Search Bar - Desktop */}
@@ -566,6 +608,39 @@ export const Header: React.FC = () => {
                   Sign In / Create Account
                 </Link>
               )}
+            </div>
+
+            {/* Mobile Contact & Social Details */}
+            <div className="pt-6 mt-6 border-t border-[#E5E8E0] space-y-3">
+              <div className="text-[11px] text-[#687168] space-y-1.5">
+                <a href="tel:+917561836584" className="flex items-center gap-2 text-[#214E34] font-semibold">
+                  <Phone className="w-3.5 h-3.5 text-[#B86F4B]" />
+                  <span>+91 75618 36584</span>
+                </a>
+                <a href="mailto:axminprana@gmail.com" className="block text-[#687168] hover:text-[#214E34]">
+                  axminprana@gmail.com
+                </a>
+              </div>
+              <div className="flex items-center gap-3 pt-2">
+                <a
+                  href="https://www.instagram.com/axmin_prana_?utm_source=ig_web_button_share_sheet&xtok=ZDNlZDc0MzIxNw=="
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-xs font-medium text-[#E1306C] bg-[#FAF8F1] px-3 py-1.5 rounded-md border border-[#E5E8E0]"
+                >
+                  <InstagramIcon className="w-4 h-4" />
+                  <span>Instagram</span>
+                </a>
+                <a
+                  href="https://www.facebook.com/profile.php?id=61594779705906"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-xs font-medium text-[#1877F2] bg-[#FAF8F1] px-3 py-1.5 rounded-md border border-[#E5E8E0]"
+                >
+                  <FacebookIcon className="w-4 h-4" />
+                  <span>Facebook</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>

@@ -1,6 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShieldCheck, Award, Leaf, Sparkles, Phone, Mail, MapPin } from 'lucide-react';
+import { InstagramIcon, FacebookIcon } from './SocialIcons';
 
 export const Footer: React.FC = () => {
   return (
@@ -46,31 +48,72 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
         {/* Brand Column */}
         <div className="lg:col-span-2 space-y-4">
-          <Link href="/" className="inline-block">
-            <span className="text-2xl font-serif-brand font-bold tracking-wider text-white">
-              AXMIN PRANA
-            </span>
-            <span className="block text-[10px] tracking-[0.25em] uppercase text-[#B86F4B] font-semibold">
-              Vedic Heritage & Wellness
-            </span>
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="relative w-14 h-14 rounded-full overflow-hidden border border-white/20 bg-[#FAF8F1] shrink-0 group-hover:scale-105 transition-transform">
+              <Image
+                src="/images/logo.png"
+                alt="Axmin Prana Logo"
+                width={56}
+                height={56}
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div>
+              <span className="text-2xl font-serif-brand font-bold tracking-wider text-white">
+                AXMIN PRANA
+              </span>
+              <span className="block text-[9px] tracking-[0.25em] uppercase text-[#B86F4B] font-semibold">
+                Pure • Natural • Holistic
+              </span>
+            </div>
           </Link>
           <p className="text-xs text-[#DDE7D9]/80 leading-relaxed max-w-sm">
             Rooted in the Charaka Samhita and Sushruta traditions. We harmonize millennia of Ayurvedic botanical wisdom with modern pharmaceutical precision and rigorous NABL-certified testing.
           </p>
-          <div className="pt-2 space-y-1.5 text-xs text-[#DDE7D9]/70">
+          <div className="pt-2 space-y-2 text-xs text-[#DDE7D9]/80">
             <div className="flex items-center gap-2">
-              <MapPin className="w-3.5 h-3.5 text-[#B86F4B]" />
+              <MapPin className="w-3.5 h-3.5 text-[#B86F4B] shrink-0" />
               <span>Haridwar Herbal Hub, Uttarakhand 249401, India</span>
             </div>
             <div className="flex items-center gap-2">
-              <Phone className="w-3.5 h-3.5 text-[#B86F4B]" />
-              <span>+91 1800-209-VEDA (Toll Free, 9 AM - 6 PM IST)</span>
+              <Phone className="w-3.5 h-3.5 text-[#B86F4B] shrink-0" />
+              <a href="tel:+917561836584" className="hover:text-white transition-colors font-medium">
+                +91 75618 36584 (Direct Care Helpline)
+              </a>
             </div>
             <div className="flex items-center gap-2">
-              <Mail className="w-3.5 h-3.5 text-[#B86F4B]" />
-              <span>care@axminprana.com</span>
+              <Mail className="w-3.5 h-3.5 text-[#B86F4B] shrink-0" />
+              <a href="mailto:axminprana@gmail.com" className="hover:text-white transition-colors">
+                axminprana@gmail.com
+              </a>
             </div>
           </div>
+
+          {/* Social Presence */}
+          <div className="pt-3 flex items-center gap-3">
+            <span className="text-[11px] text-[#DDE7D9]/60 uppercase tracking-wider font-semibold">Connect:</span>
+            <a
+              href="https://www.instagram.com/axmin_prana_?utm_source=ig_web_button_share_sheet&xtok=ZDNlZDc0MzIxNw=="
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-8 h-8 rounded-full bg-[#214E34] hover:bg-[#E1306C] flex items-center justify-center text-white transition-all transform hover:scale-110 shadow-xs"
+              title="Axmin Prana on Instagram"
+              aria-label="Instagram"
+            >
+              <InstagramIcon className="w-4 h-4" />
+            </a>
+            <a
+              href="https://www.facebook.com/profile.php?id=61594779705906"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-8 h-8 rounded-full bg-[#214E34] hover:bg-[#1877F2] flex items-center justify-center text-white transition-all transform hover:scale-110 shadow-xs"
+              title="Axmin Prana on Facebook"
+              aria-label="Facebook"
+            >
+              <FacebookIcon className="w-4 h-4" />
+            </a>
+          </div>
+
           <p className="text-[10px] text-[#DDE7D9]/50">
             Govt. of India AYUSH License: AYU/DL/IND-2024-8841 | GSTIN: 07AAACA1234F1Z8
           </p>
