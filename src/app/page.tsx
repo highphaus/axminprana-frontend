@@ -18,6 +18,7 @@ import {
 import { IProduct, ICategory, IArticle, API_BASE } from '../lib/api';
 import { ProductCard } from '../components/ProductCard';
 import { HomeQuizBanner } from '../components/HomeQuizBanner';
+import { HeroSection } from '../components/HeroSection';
 
 async function getHomeData() {
   try {
@@ -74,86 +75,8 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-12">
-      {/* 1. Hero Section - Inspired by Forest Essentials & Kama Ayurveda */}
-      <section className="relative bg-[#163A28] text-white overflow-hidden py-14 sm:py-20 lg:py-24">
-        {/* Subtle Luxury Gradient Overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#214E34]/80 via-[#163A28] to-[#0f281b]" />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#214E34] border border-[#DDE7D9]/20 text-[#DDE7D9] text-[11px] font-semibold tracking-wider uppercase">
-              <Sparkles className="w-3.5 h-3.5 text-[#B86F4B]" />
-              <span>Classical Ayurvedic Treatise Formulations</span>
-            </div>
-
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif-brand font-bold tracking-tight leading-[1.12]">
-              Ancient Ayurvedic Wisdom. <br />
-              <span className="text-[#DDE7D9] font-normal italic">Thoughtfully Made for Today.</span>
-            </h1>
-
-            <p className="text-sm sm:text-base text-[#DDE7D9]/85 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-              Discover Ayurvedic products inspired by traditional wellness practices and crafted for your everyday rituals. Standardized full-spectrum botanicals formulated without synthetic fillers.
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
-              <Link
-                href="/shop"
-                className="px-7 py-3.5 bg-[#B86F4B] hover:bg-[#a05e3d] text-white text-xs sm:text-sm font-bold rounded-md shadow-md transition-all flex items-center gap-2"
-              >
-                Shop All Products <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/about"
-                className="px-7 py-3.5 bg-transparent border border-[#DDE7D9]/40 hover:bg-white/10 text-[#FAF8F1] text-xs sm:text-sm font-semibold rounded-md transition-colors"
-              >
-                Explore Our Story
-              </Link>
-            </div>
-
-            {/* Trust Highlights */}
-            <div className="pt-6 border-t border-white/10 grid grid-cols-3 gap-1.5 sm:gap-4 text-[#DDE7D9] text-left">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#B86F4B] shrink-0" />
-                <span className="text-[10px] sm:text-xs font-medium leading-tight">AYUSH Certified</span>
-              </div>
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#B86F4B] shrink-0" />
-                <span className="text-[10px] sm:text-xs font-medium leading-tight">100% Plant Active</span>
-              </div>
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#B86F4B] shrink-0" />
-                <span className="text-[10px] sm:text-xs font-medium leading-tight">NABL Tested</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-5 relative">
-            <div className="relative aspect-4/5 w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-              <Image
-                src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=1000&q=80"
-                alt="Ayurvedic herbs and formulations"
-                fill
-                priority
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-4 rounded-xl text-[#202820] shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-bold tracking-wider text-[#B86F4B] uppercase">Premier Formulation</span>
-                    <h4 className="text-xs sm:text-sm font-bold text-[#214E34]">Ashwagandha Supreme KSM-66®</h4>
-                    <span className="text-[11px] text-[#687168]">Charaka Samhita Rasayana</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-sm font-bold text-[#214E34] block">₹849</span>
-                    <span className="text-[10px] text-[#687168] line-through">₹999</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* 1. Royal Vedic Interactive Formulation Hero Section */}
+      <HeroSection initialProducts={bestsellers} />
 
       {/* 1.5. Interactive Dosha & Prakriti Assessment Banner */}
       <HomeQuizBanner />
