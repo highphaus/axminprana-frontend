@@ -25,12 +25,14 @@ import {
 import { InstagramIcon, FacebookIcon } from './SocialIcons';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useQuiz } from '../context/QuizContext';
 import { fetchFromAPI, IProduct } from '../lib/api';
 
 export const Header: React.FC = () => {
   const router = useRouter();
   const { itemCount, openDrawer } = useCart();
   const { user, isAuthenticated, isAdmin, wishlist, logout } = useAuth();
+  const { openQuiz } = useQuiz();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
@@ -458,6 +460,15 @@ export const Header: React.FC = () => {
             )}
           </div>
 
+          {/* Prakriti Quiz Trigger */}
+          <button
+            onClick={openQuiz}
+            className="flex items-center gap-1.5 px-3 py-1 bg-[#DDE7D9] text-[#214E34] hover:bg-[#214E34] hover:text-white rounded-full font-bold transition-all normal-case text-xs shadow-2xs border border-[#214E34]/20"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#B86F4B]" />
+            <span>Prakriti Quiz</span>
+          </button>
+
           {/* Prakriti & Dosha Science */}
           <Link href="/education" className="flex items-center gap-1 text-[#B86F4B] font-bold hover:underline transition-colors normal-case">
             <Compass className="w-3.5 h-3.5" /> Dosha Guide
@@ -508,6 +519,24 @@ export const Header: React.FC = () => {
                 />
                 <Search className="absolute left-3 top-2.5 w-4 h-4 text-[#687168]" />
               </form>
+
+              {/* Mobile Prakriti Quiz Callout */}
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  openQuiz();
+                }}
+                className="mt-3 w-full p-2.5 bg-[#DDE7D9] hover:bg-[#c8d9c2] border border-[#214E34]/20 rounded-xl flex items-center justify-between text-left transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-[#B86F4B]" />
+                  <div>
+                    <span className="text-xs font-bold text-[#214E34] block">Take Prakriti Quiz</span>
+                    <span className="text-[10px] text-[#687168]">Find your Ayurvedic body constitution</span>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-[#214E34]" />
+              </button>
 
               {/* Mobile Links */}
               <div className="mt-6 space-y-3 text-sm font-medium text-[#202820]">

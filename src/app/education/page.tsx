@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Compass, Sparkles, Wind, Flame, Mountain, ArrowRight } from 'lucide-react';
+import { HomeQuizBanner } from '../../components/HomeQuizBanner';
 
 export const metadata = {
   title: 'Prakriti & Dosha Science | Axmin Prana Ayurveda',
@@ -96,6 +97,9 @@ export default function EducationPage() {
           </Link>
         </div>
       </div>
+
+      {/* Interactive Prakriti Assessment Banner */}
+      <HomeQuizBanner />
 
       {/* Dinacharya Daily Rhythm Guide */}
       <div className="bg-[#FAF8F1] border border-[#E5E8E0] rounded-2xl p-6 sm:p-10 space-y-6">

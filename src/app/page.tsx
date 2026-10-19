@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { IProduct, ICategory, IArticle, API_BASE } from '../lib/api';
 import { ProductCard } from '../components/ProductCard';
+import { HomeQuizBanner } from '../components/HomeQuizBanner';
 
 async function getHomeData() {
   try {
@@ -153,6 +154,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* 1.5. Interactive Dosha & Prakriti Assessment Banner */}
+      <HomeQuizBanner />
 
       {/* 2. Shop by Category - Curated Ayurveda Catalog Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

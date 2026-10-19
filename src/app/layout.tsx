@@ -6,6 +6,8 @@ import { AuthProvider } from '../context/AuthContext';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { CartDrawer } from '../components/CartDrawer';
+import { QuizProvider } from '../context/QuizContext';
+import { FloatingVaidyaButton } from '../components/FloatingVaidyaButton';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -68,10 +70,13 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col bg-[#FAF8F1] text-[#202820] font-sans antialiased overflow-x-hidden w-full max-w-full selection:bg-[#214E34] selection:text-white">
         <AuthProvider>
           <CartProvider>
-            <Header />
-            <CartDrawer />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            <QuizProvider>
+              <Header />
+              <CartDrawer />
+              <main className="flex-1">{children}</main>
+              <FloatingVaidyaButton />
+              <Footer />
+            </QuizProvider>
           </CartProvider>
         </AuthProvider>
       </body>
