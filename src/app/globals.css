@@ -50,6 +50,18 @@ button, a, input, select, textarea {
   font-family: var(--font-manrope), Georgia, serif;
 }
 
+/* Exact font style from Wishlist page heading (My Saved Formulations) */
+.font-wishlist-heading {
+  font-family: var(--font-manrope), var(--font-inter), sans-serif !important;
+  letter-spacing: -0.025em;
+}
+
+/* Classical Ayurvedic Luxury Brand Logo Typography */
+.font-brand-logo {
+  font-family: var(--font-manrope), var(--font-inter), sans-serif;
+  letter-spacing: -0.02em;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

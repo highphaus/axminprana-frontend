@@ -29,6 +29,11 @@ async function getCatalog(searchParams: SearchParams) {
     if (searchParams.sort) query.set('sort', searchParams.sort);
     if (searchParams.search) query.set('search', searchParams.search);
     if (searchParams.page) query.set('page', searchParams.page);
+    if (searchParams.priceRange) {
+      const [min, max] = searchParams.priceRange.split('-');
+      if (min) query.set('minPrice', min);
+      if (max) query.set('maxPrice', max);
+    }
     query.set('limit', '16');
 
     const [productsRes, categoriesRes] = await Promise.all([

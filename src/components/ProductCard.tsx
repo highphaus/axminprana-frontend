@@ -52,9 +52,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <div className="group bg-white rounded-2xl border border-[#EAE5DC] hover:border-[#214E34]/40 hover:shadow-md transition-all flex flex-col h-full overflow-hidden relative">
       <Link href={`/product/${product.slug}`} className="flex flex-col flex-1 justify-between h-full p-3 sm:p-4">
         <div>
-          {/* Top Row: Save ₹ Badge & Wishlist Heart */}
+          {/* Top Row: Save ₹ Badge / Out of Stock & Wishlist Heart */}
           <div className="flex items-center justify-between mb-1 min-h-[24px]">
-            {savings > 0 ? (
+            {product.stock <= 0 ? (
+              <span className="text-[10px] uppercase font-bold text-red-700 bg-red-100 px-2 py-0.5 rounded tracking-wide">
+                Out of Stock
+              </span>
+            ) : savings > 0 ? (
               <span className="text-[11px] sm:text-xs font-semibold text-[#3A3A3A] tracking-tight">
                 Save ₹{savings}
               </span>
@@ -84,8 +88,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               alt={product.name}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              className={`object-cover transition-transform duration-500 ${
+                product.stock <= 0 ? 'opacity-60' : 'group-hover:scale-105'
+              }`}
             />
+            {product.stock <= 0 && (
+              <div className="absolute inset-0 bg-white/40 flex items-center justify-center z-10">
+                <span className="bg-red-700 text-white text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                  Out of Stock
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Title */}
@@ -115,7 +128,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <p className="text-[11px] text-[#777] mt-0.5">{product.packSize}</p>
         </div>
 
-        {/* Bottom Price & VedaOils Signature Circular (+) Button */}
+        {/* Bottom Price & Add to Cart / Out of Stock Button */}
         <div className="pt-3 mt-2 border-t border-[#F0ECE4] flex items-center justify-between">
           <div className="flex items-baseline gap-2">
             <span className="text-base sm:text-lg font-extrabold text-[#111]">
@@ -128,26 +141,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             )}
           </div>
 
-          {/* Signature VedaOils Circular Green Outline Add Button with (+) */}
-          <button
-            onClick={handleAddToCart}
-            disabled={isAdding || product.stock <= 0}
-            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#1F4E34] flex items-center justify-center transition-all ${
-              justAdded
-                ? 'bg-[#1F4E34] text-white scale-95'
-                : 'text-[#1F4E34] hover:bg-[#1F4E34] hover:text-white bg-transparent'
-            } disabled:opacity-50 shrink-0 shadow-2xs`}
-            aria-label="Add to cart"
-            title="Add to Cart"
-          >
-            {justAdded ? (
-              <Check className="w-5 h-5 stroke-[2.5]" />
-            ) : (
-              <Plus className="w-5 h-5 stroke-[2.5]" />
-            )}
-          </button>
+          {product.stock <= 0 ? (
+            <span className="text-[11px] font-bold text-red-700 bg-red-50 border border-red-200 px-2.5 py-1.5 rounded-lg">
+              Sold Out
+            </span>
+          ) : (
+            <button
+              onClick={handleAddToCart}
+              disabled={isAdding}
+              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#1F4E34] flex items-center justify-center transition-all ${
+                justAdded
+                  ? 'bg-[#1F4E34] text-white scale-95'
+                  : 'text-[#1F4E34] hover:bg-[#1F4E34] hover:text-white bg-transparent'
+              } disabled:opacity-50 shrink-0 shadow-2xs`}
+              aria-label="Add to cart"
+              title="Add to Cart"
+            >
+              {justAdded ? (
+                <Check className="w-5 h-5 stroke-[2.5]" />
+              ) : (
+                <Plus className="w-5 h-5 stroke-[2.5]" />
+              )}
+            </button>
+          )}
         </div>
       </Link>
+
     </div>
   );
 };

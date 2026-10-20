@@ -114,24 +114,21 @@ export const Header: React.FC = () => {
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
 
-              {/* Clean MNC Logo Lockup (NO decorative || lines) */}
+              {/* Luxury Royal Ayurvedic Logo Lockup */}
               <Link href="/" className="flex items-center gap-3 group select-none">
-                <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-white border border-[#E6E0D4] shrink-0 flex items-center justify-center">
+                <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden bg-white border border-[#E6E0D4] shadow-2xs shrink-0 flex items-center justify-center group-hover:border-[#C59B27] transition-all transform group-hover:scale-105">
                   <Image
                     src="/images/logo.png"
-                    alt="Axmin Prana"
-                    width={40}
-                    height={40}
+                    alt="Axmin Prana Ayurveda"
+                    width={44}
+                    height={44}
                     className="w-full h-full object-contain p-0.5"
                     priority
                   />
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-lg sm:text-xl font-serif font-bold tracking-[0.14em] text-[#1A1A1A] group-hover:text-[#1F4E34] transition-colors leading-none">
-                    AXMIN PRANA
-                  </span>
-                  <span className="text-[9px] uppercase tracking-[0.24em] text-[#7A746E] font-medium mt-1 leading-none">
-                    Haridwar • Ayurveda
+                <div className="flex flex-col justify-center">
+                  <span className="font-wishlist-heading text-xl sm:text-2xl font-bold text-[#1A1A1A] tracking-tight group-hover:text-[#1F4E34] transition-colors leading-none">
+                    Axmin Prana
                   </span>
                 </div>
               </Link>
@@ -237,21 +234,26 @@ export const Header: React.FC = () => {
               {isAuthenticated ? (
                 <div className="relative group">
                   <Link
-                    href="/account"
+                    href={isAdmin ? "/admin" : "/account"}
                     className="flex items-center gap-1.5 p-1.5 text-xs font-medium text-[#1A1A1A] hover:text-[#1F4E34] transition-colors"
                   >
                     <UserIcon className="w-5 h-5 text-[#241A14]" />
                     <span className="hidden md:inline">{user?.name?.split(' ')[0]}</span>
+                    {isAdmin && (
+                      <span className="hidden lg:inline text-[9px] bg-[#1F4E34] text-white px-1.5 py-0.5 rounded font-bold">
+                        Admin
+                      </span>
+                    )}
                   </Link>
-                  <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-[#EDE8E0] rounded-xl shadow-xl py-1 hidden group-hover:block z-50">
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[#EDE8E0] rounded-xl shadow-xl py-1 hidden group-hover:block z-50">
+                    {isAdmin && (
+                      <Link href="/admin" className="block px-4 py-2 text-xs text-[#1F4E34] font-bold bg-[#FAF8F1] border-b border-[#EDE8E0] hover:bg-[#EDE8E0]">
+                        🛡️ Admin Console
+                      </Link>
+                    )}
                     <Link href="/account" className="block px-4 py-2 text-xs text-[#1A1A1A] hover:bg-[#FAF8F5]">
                       My Orders & Profile
                     </Link>
-                    {isAdmin && (
-                      <Link href="/admin" className="block px-4 py-2 text-xs text-[#1F4E34] font-semibold hover:bg-[#FAF8F5]">
-                        Admin Dashboard
-                      </Link>
-                    )}
                     <button
                       onClick={logout}
                       className="w-full text-left px-4 py-2 text-xs text-red-600 hover:bg-[#FAF8F5]"
@@ -262,7 +264,7 @@ export const Header: React.FC = () => {
                 </div>
               ) : (
                 <Link
-                  href="/account/login"
+                  href="/login"
                   className="flex items-center gap-1.5 p-1.5 text-xs font-medium text-[#1A1A1A] hover:text-[#1F4E34] transition-colors"
                   title="Sign In"
                 >
@@ -614,15 +616,12 @@ export const Header: React.FC = () => {
               {/* Drawer Header */}
               <div className="flex items-center justify-between pb-3.5 border-b border-[#EDE8E0]">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full overflow-hidden border border-[#EDE8E0]">
-                    <Image src="/images/logo.png" alt="Logo" width={32} height={32} className="w-full h-full object-contain" />
+                  <div className="w-9 h-9 rounded-full overflow-hidden border border-[#E6E0D4] bg-white flex items-center justify-center p-0.5 shadow-2xs">
+                    <Image src="/images/logo.png" alt="Axmin Prana Logo" width={36} height={36} className="w-full h-full object-contain" />
                   </div>
-                  <div>
-                    <span className="font-serif font-bold text-[#1A1A1A] tracking-wider text-sm block leading-none">
-                      AXMIN PRANA
-                    </span>
-                    <span className="text-[9px] uppercase tracking-wider text-[#888]">
-                      Authentic Ayurveda
+                  <div className="flex flex-col justify-center">
+                    <span className="font-wishlist-heading font-bold text-[#1A1A1A] tracking-tight text-lg block leading-none">
+                      Axmin Prana
                     </span>
                   </div>
                 </div>

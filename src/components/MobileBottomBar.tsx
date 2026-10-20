@@ -9,7 +9,7 @@ import { useCart } from '../context/CartContext';
 
 export const MobileBottomBar: React.FC = () => {
   const pathname = usePathname();
-  const { isAuthenticated, wishlist } = useAuth();
+  const { isAuthenticated, isAdmin, wishlist } = useAuth();
   const { itemCount, openDrawer } = useCart();
 
   return (
@@ -69,13 +69,15 @@ export const MobileBottomBar: React.FC = () => {
       </Link>
 
       <Link
-        href={isAuthenticated ? '/account' : '/account/login'}
+        href={isAuthenticated ? (isAdmin ? '/admin' : '/account') : '/login'}
         className={`flex flex-col items-center gap-0.5 text-[10px] font-medium transition-colors ${
-          pathname.startsWith('/account/login') ? 'text-[#1F4E34] font-bold' : 'text-[#666]'
+          pathname.startsWith('/admin') || pathname.startsWith('/account') || pathname.startsWith('/login')
+            ? 'text-[#1F4E34] font-bold'
+            : 'text-[#666]'
         }`}
       >
         <User className="w-5 h-5" />
-        <span>Profile</span>
+        <span>{isAuthenticated && isAdmin ? 'Admin' : 'Profile'}</span>
       </Link>
     </div>
   );

@@ -3,9 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, ShieldCheck, Globe, Building2, Star, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { IProduct } from '../lib/api';
-import { useCart } from '../context/CartContext';
 
 interface HeroSectionProps {
   initialProducts?: IProduct[];
@@ -160,78 +159,6 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
               aria-label={`Go to slide ${idx + 1}`}
             />
           ))}
-        </div>
-      </section>
-
-      {/* 2. Trust Highlights Strip (Horizontal on smaller devices) */}
-      <section className="bg-white border-b border-[#EDE8E0] py-4 sm:py-6 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-4 gap-1.5 sm:gap-6 items-center text-center sm:text-left">
-            {/* 1. Years of Purity */}
-            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2.5 min-w-0">
-              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-[#FAF7F2] text-[#2C1D11] flex items-center justify-center shrink-0 border border-[#EDE8E0]">
-                <ShieldCheck className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#C59B27]" />
-              </div>
-              <div className="min-w-0">
-                <span className="font-bold text-[10px] sm:text-sm text-[#1A1A1A] block leading-tight truncate">10+ Years</span>
-                <span className="text-[8px] sm:text-[11px] text-[#666] block leading-tight truncate">
-                  <span className="hidden sm:inline">100% Natural Guarantee</span>
-                  <span className="sm:hidden">Purity</span>
-                </span>
-              </div>
-            </div>
-
-            {/* 2. Businesses Empowered */}
-            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2.5 min-w-0">
-              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-[#FAF7F2] text-[#2C1D11] flex items-center justify-center shrink-0 border border-[#EDE8E0]">
-                <Building2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#C59B27]" />
-              </div>
-              <div className="min-w-0">
-                <span className="font-bold text-[10px] sm:text-sm text-[#1A1A1A] block leading-tight truncate">40k+ B2B</span>
-                <span className="text-[8px] sm:text-[11px] text-[#666] block leading-tight truncate">
-                  <span className="hidden sm:inline">Spas & Formulators</span>
-                  <span className="sm:hidden">Partners</span>
-                </span>
-              </div>
-            </div>
-
-            {/* 3. Global Shipping */}
-            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2.5 min-w-0">
-              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-[#FAF7F2] text-[#2C1D11] flex items-center justify-center shrink-0 border border-[#EDE8E0]">
-                <Globe className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#C59B27]" />
-              </div>
-              <div className="min-w-0">
-                <span className="font-bold text-[10px] sm:text-sm text-[#1A1A1A] block leading-tight truncate">100+ Lands</span>
-                <span className="text-[8px] sm:text-[11px] text-[#666] block leading-tight truncate">
-                  <span className="hidden sm:inline">Express Delivery</span>
-                  <span className="sm:hidden">Delivery</span>
-                </span>
-              </div>
-            </div>
-
-            {/* 4. Customer Trust Counter & Stars */}
-            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2.5 min-w-0">
-              <div className="flex -space-x-1 shrink-0">
-                <span className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-[#C59B27] text-white text-[8px] sm:text-[9px] font-bold flex items-center justify-center border border-white">
-                  AP
-                </span>
-                <span className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-[#1F4E34] text-white text-[8px] sm:text-[9px] font-bold flex items-center justify-center border border-white">
-                  AY
-                </span>
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center justify-center sm:justify-start gap-0.5 text-[#E5A823]">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-[#E5A823]" />
-                  ))}
-                </div>
-                <span className="text-[8px] sm:text-[10px] text-[#555] block mt-0.5 leading-tight truncate">
-                  <span className="hidden sm:inline">Trusted by <strong>12,43,013+</strong></span>
-                  <span className="sm:hidden font-bold text-[#1A1A1A]">12L+ Trust</span>
-                </span>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
     </div>

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ShieldCheck, Award, Leaf, Sparkles, Phone, Mail, MapPin, CheckCircle2, Lock, ArrowRight } from 'lucide-react';
-import { InstagramIcon, FacebookIcon } from './SocialIcons';
+import { InstagramIcon, FacebookIcon, YouTubeIcon } from './SocialIcons';
 
 export const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -106,8 +106,8 @@ export const Footer: React.FC = () => {
                 />
               </div>
               <div>
-                <span className="text-xl sm:text-2xl font-serif-brand font-bold tracking-wider text-white block">
-                  AXMIN PRANA
+                <span className="text-xl sm:text-2xl font-wishlist-heading font-bold text-white tracking-tight block">
+                  Axmin Prana
                 </span>
                 <span className="block text-[8px] sm:text-[9px] tracking-[0.25em] uppercase text-[#C59B27] font-semibold">
                   Pure • Natural • Classical Ayurveda
@@ -195,6 +195,16 @@ export const Footer: React.FC = () => {
                 aria-label="Facebook"
               >
                 <FacebookIcon className="w-4 h-4" />
+              </a>
+              <a
+                href="https://youtube.com/@axminpranaayurvedic?si=vwxvuXuMpYtZy8A3"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full bg-[#1F4E34] hover:bg-[#FF0000] flex items-center justify-center text-white transition-all transform hover:scale-110 shadow-xs"
+                title="Axmin Prana on YouTube"
+                aria-label="YouTube"
+              >
+                <YouTubeIcon className="w-4 h-4" />
               </a>
             </div>
 
@@ -306,12 +316,12 @@ export const Footer: React.FC = () => {
                 </li>
                 <li>
                   <Link href="/policies/returns" className="hover:text-white transition-colors block">
-                    Return & Refund
+                    No Return & No Exchange Policy
                   </Link>
                 </li>
                 <li>
                   <Link href="/policies/cancellation" className="hover:text-white transition-colors block">
-                    Cancellation
+                    Order Cancellation Policy
                   </Link>
                 </li>
                 <li>
@@ -340,7 +350,7 @@ export const Footer: React.FC = () => {
             <Lock className="w-3 h-3" /> 256-Bit SSL Encrypted
           </span>
           <span className="text-white/20">•</span>
-          <span>UPI • Cards • NetBanking • Cash on Delivery</span>
+          <span>Prepaid Only: UPI • Debit/Credit Cards • NetBanking</span>
         </div>
       </div>
     </footer>

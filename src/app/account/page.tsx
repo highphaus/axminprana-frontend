@@ -26,6 +26,7 @@ export default function AccountDashboardPage() {
   const [activeTab, setActiveTab] = useState<'orders' | 'addresses' | 'profile'>('orders');
   const [orders, setOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
+  const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
 
   // New Address Form State
   const [showAddressModal, setShowAddressModal] = useState(false);
@@ -41,6 +42,11 @@ export default function AccountDashboardPage() {
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/account/login');
+      return;
+    }
+
+    if (isAdmin) {
+      router.push('/admin');
       return;
     }
 
@@ -61,6 +67,31 @@ export default function AccountDashboardPage() {
   }, [isAuthenticated, router]);
 
   if (!isAuthenticated) return null;
+
+  const handleCancelOrder = async (order: any) => {
+    if (
+      !confirm(
+        `Are you sure you want to cancel order ${order.orderNumber}?\n\nCancellations are strictly accepted before carrier dispatch. A 100% full refund will be initiated.`
+      )
+    ) {
+      return;
+    }
+    setCancellingOrderId(order._id);
+    try {
+      const res = await fetchFromAPI(`/orders/${order._id}/cancel`, { method: 'POST' });
+      if (res.success) {
+        alert(res.message || 'Order cancelled successfully before dispatch.');
+        const updated = await fetchFromAPI('/orders/my-orders');
+        if (updated.success && updated.data) setOrders(updated.data);
+      } else {
+        alert(res.message || 'Unable to cancel order.');
+      }
+    } catch (e: any) {
+      alert(e.message || 'Failed to cancel order.');
+    } finally {
+      setCancellingOrderId(null);
+    }
+  };
 
   const handleAddAddress = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -241,13 +272,38 @@ export default function AccountDashboardPage() {
                       ))}
                     </div>
 
-                    <div className="pt-3 border-t border-[#E5E8E0] flex justify-between items-center text-xs">
-                      <span className="text-[#687168]">
-                        Placed on: {new Date(order.createdAt).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}
-                      </span>
-                      <span className="font-bold text-sm text-[#202820]">
-                        Total: <strong className="text-[#214E34]">₹{order.totalAmount}</strong>
-                      </span>
+                    <div className="pt-3 border-t border-[#E5E8E0] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs">
+                      <div className="space-y-0.5">
+                        <span className="text-[#687168] block">
+                          Placed on: {new Date(order.createdAt).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}
+                        </span>
+                        <span className="font-bold text-sm text-[#202820]">
+                          Total: <strong className="text-[#214E34]">₹{order.totalAmount}</strong>
+                        </span>
+                      </div>
+
+                      {/* Cancellation & Policy Action */}
+                      <div className="flex items-center gap-2 self-end sm:self-auto">
+                        {order.orderStatus === 'cancelled' ? (
+                          <span className="text-[11px] font-semibold text-red-700 bg-red-50 border border-red-200 px-2.5 py-1 rounded-md">
+                            Cancelled & Refunded
+                          </span>
+                        ) : ['placed', 'confirmed', 'processing'].includes(order.orderStatus) ? (
+                          <button
+                            type="button"
+                            onClick={() => handleCancelOrder(order)}
+                            disabled={cancellingOrderId === order._id}
+                            className="text-red-700 hover:text-white hover:bg-red-600 text-xs font-semibold px-3 py-1.5 border border-red-300 rounded-md transition-colors disabled:opacity-50"
+                            title="Cancel this order before dispensary dispatch"
+                          >
+                            {cancellingOrderId === order._id ? 'Cancelling...' : 'Cancel Order (Pre-Dispatch)'}
+                          </button>
+                        ) : (
+                          <span className="text-[10px] text-[#687168] bg-[#FAF8F1] border border-[#E5E8E0] px-2.5 py-1 rounded-md" title="Formulations have dispatched. No returns or exchanges as per clinical hygiene standards.">
+                            Dispatched • Strictly No Return / Exchange
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))
@@ -418,10 +474,6 @@ export default function AccountDashboardPage() {
                 <div>
                   <span className="text-[#687168] block">Mobile Phone</span>
                   <span className="font-bold text-[#202820] text-sm">{user?.phone || 'Not provided'}</span>
-                </div>
-                <div>
-                  <span className="text-[#687168] block">Account Role</span>
-                  <span className="font-bold text-[#214E34] text-sm capitalize">{user?.role}</span>
                 </div>
               </div>
             </div>

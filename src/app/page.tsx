@@ -120,7 +120,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 5. As Seen In / Media Trust Strip */}
+      {/* 5. Interactive Dosha Diagnostic Banner */}
+      <HomeQuizBanner />
+
+      {/* 6. As Seen In / Media Trust Strip */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl border border-[#EDE8E0] p-6">
           <div className="text-center mb-4">
@@ -165,51 +168,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 6. VedaOils B2B Wholesale & Bulk Supply Feature */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-r from-[#2C1D11] to-[#452C1C] text-white rounded-3xl p-6 sm:p-10 shadow-lg relative overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
-            <div className="lg:col-span-8 space-y-3">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase bg-[#C59B27] text-black">
-                <Building2 className="w-3.5 h-3.5" /> Commercial B2B & Wholesale Supply
-              </span>
-              <h3 className="text-2xl sm:text-4xl font-serif font-bold text-white leading-tight">
-                Direct-From-Dispensary Wholesale Classical Oils & Botanicals
-              </h3>
-              <p className="text-xs sm:text-sm text-[#E5D5BA] max-w-2xl font-light leading-relaxed">
-                Supplying premier Ayurvedic resort spas, holistic clinics, cosmetic formulators, and wellness retailers with lab-tested raw tailams, unrefined oils, and standardized herbal churnas. Batch COA & GC/MS reports provided.
-              </p>
-              <div className="flex flex-wrap gap-4 pt-1 text-xs text-white/90 font-medium">
-                <span className="flex items-center gap-1.5">
-                  <FileCheck2 className="w-4 h-4 text-[#C59B27]" /> Batch-Wise COA & Lab Reports
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Truck className="w-4 h-4 text-[#C59B27]" /> Pan-India Express Freight & Pallet Dispatches
-                </span>
-              </div>
-            </div>
-
-            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-center">
-              <Link
-                href="/bulk-orders"
-                className="px-6 py-3.5 bg-[#C59B27] hover:bg-[#A67C1E] text-black text-xs sm:text-sm font-bold rounded-full shadow-md transition-all text-center flex items-center justify-center gap-2"
-              >
-                <span>Request Wholesale Quotation</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <a
-                href="tel:+917561836584"
-                className="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-semibold rounded-full transition-colors text-center"
-              >
-                Call B2B Desk: +91 75618 36584
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. Interactive Dosha Diagnostic Banner */}
-      <HomeQuizBanner />
 
       {/* 8. Shop by Wellness Concern */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -264,7 +222,7 @@ export default async function HomePage() {
             Verified Customer Reviews
           </span>
           <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#2C1D11] mt-1">
-            Trusted by 12,43,013+ Patrons Across India
+            Words of Trust from Our Customers
           </h2>
         </div>
 
@@ -340,7 +298,50 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 10. Educational Ayurveda Journal */}
+      {/* 10. Commercial B2B Wholesale & Bulk Supply Feature */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-gradient-to-r from-[#2C1D11] to-[#452C1C] text-white rounded-3xl p-6 sm:p-10 shadow-lg relative overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+            <div className="lg:col-span-8 space-y-3">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase bg-[#C59B27] text-black">
+                <Building2 className="w-3.5 h-3.5" /> Commercial B2B & Wholesale Supply
+              </span>
+              <h3 className="text-2xl sm:text-4xl font-serif font-bold text-white leading-tight">
+                Direct-From-Dispensary Wholesale Classical Oils & Botanicals
+              </h3>
+              <p className="text-xs sm:text-sm text-[#E5D5BA] max-w-2xl font-light leading-relaxed">
+                Supplying premier Ayurvedic resort spas, holistic clinics, cosmetic formulators, and wellness retailers with lab-tested raw tailams, unrefined oils, and standardized herbal churnas. Batch COA & GC/MS reports provided.
+              </p>
+              <div className="flex flex-wrap gap-4 pt-1 text-xs text-white/90 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <FileCheck2 className="w-4 h-4 text-[#C59B27]" /> Batch-Wise COA & Lab Reports
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Truck className="w-4 h-4 text-[#C59B27]" /> Pan-India Express Freight & Pallet Dispatches
+                </span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-center">
+              <Link
+                href="/bulk-orders"
+                className="px-6 py-3.5 bg-[#C59B27] hover:bg-[#A67C1E] text-black text-xs sm:text-sm font-bold rounded-full shadow-md transition-all text-center flex items-center justify-center gap-2"
+              >
+                <span>Request Wholesale Quotation</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <a
+                href="tel:+917561836584"
+                className="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-semibold rounded-full transition-colors text-center"
+              >
+                Call B2B Desk: +91 75618 36584
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 11. Educational Ayurveda Journal */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6 pb-2 border-b border-[#EAE5DC]">
           <div>

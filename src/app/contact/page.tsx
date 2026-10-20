@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle2, Clock } from 'lucide-react';
-import { InstagramIcon, FacebookIcon } from '../../components/SocialIcons';
+import { InstagramIcon, FacebookIcon, YouTubeIcon } from '../../components/SocialIcons';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -80,7 +80,7 @@ export default function ContactPage() {
             <span className="block text-[11px] font-bold uppercase tracking-wider text-[#DDE7D9]/70">
               Official Social Channels:
             </span>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5">
               <a
                 href="https://www.instagram.com/axmin_prana_?utm_source=ig_web_button_share_sheet&xtok=ZDNlZDc0MzIxNw=="
                 target="_blank"
@@ -98,6 +98,15 @@ export default function ContactPage() {
               >
                 <FacebookIcon className="w-3.5 h-3.5" />
                 <span>Facebook</span>
+              </a>
+              <a
+                href="https://youtube.com/@axminpranaayurvedic?si=vwxvuXuMpYtZy8A3"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 bg-[#214E34] hover:bg-[#FF0000] text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-all shadow-xs"
+              >
+                <YouTubeIcon className="w-3.5 h-3.5" />
+                <span>YouTube</span>
               </a>
             </div>
           </div>

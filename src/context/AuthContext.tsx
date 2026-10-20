@@ -16,11 +16,13 @@ export interface IUser {
 interface AuthContextType {
   user: IUser | null;
   token: string | null;
+  wishlist: string[];
   isAuthenticated: boolean;
   isAdmin: boolean;
-  wishlist: string[];
-  login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; message?: string; role?: string }>;
   register: (name: string, email: string, password: string, phone?: string) => Promise<{ success: boolean; message?: string }>;
+  sendOtp: (email: string, name?: string, phone?: string, password?: string) => Promise<{ success: boolean; message?: string }>;
+  verifyOtp: (email: string, otp: string, name?: string, phone?: string, password?: string) => Promise<{ success: boolean; message?: string; role?: string }>;
   logout: () => void;
   refreshUser: () => Promise<void>;
   toggleWishlist: (productId: string) => Promise<boolean>;
@@ -84,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(res.user);
         setWishlist(res.user.wishlist || []);
         localStorage.setItem('axmin_token', res.token);
-        return { success: true };
+        return { success: true, role: res.user?.role };
       } else {
         return { success: false, message: res.message || 'Login failed' };
       }
@@ -110,6 +112,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } catch (err: any) {
       return { success: false, message: err.message || 'Registration failed' };
+    }
+  };
+
+  const sendOtp = async (email: string, name?: string, phone?: string, password?: string) => {
+    try {
+      const res = await fetchFromAPI('/auth/send-otp', {
+        method: 'POST',
+        body: JSON.stringify({ email, name, phone, password }),
+      });
+      return { success: res.success, message: res.message };
+    } catch (err: any) {
+      return { success: false, message: err.message || 'Failed to send OTP' };
+    }
+  };
+
+  const verifyOtp = async (email: string, otp: string, name?: string, phone?: string, password?: string) => {
+    try {
+      const res = await fetchFromAPI('/auth/verify-otp', {
+        method: 'POST',
+        body: JSON.stringify({ email, otp, name, phone, password }),
+      });
+
+      if (res.success && res.token) {
+        setToken(res.token);
+        setUser(res.user);
+        setWishlist(res.user.wishlist || []);
+        localStorage.setItem('axmin_token', res.token);
+        return { success: true, role: res.user?.role };
+      } else {
+        return { success: false, message: res.message || 'OTP verification failed' };
+      }
+    } catch (err: any) {
+      return { success: false, message: err.message || 'OTP verification failed' };
     }
   };
 
@@ -163,6 +198,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         wishlist,
         login,
         register,
+        sendOtp,
+        verifyOtp,
         logout,
         refreshUser,
         toggleWishlist,

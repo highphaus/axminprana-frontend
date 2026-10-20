@@ -18,8 +18,8 @@ const FAQS = [
     a: 'Orders shipped to major metros (Delhi NCR, Mumbai, Bengaluru, Chennai, Hyderabad, Kolkata, Pune) are delivered within 2 business days via Delhivery Priority. Other regions and non-metro districts receive deliveries within 3 to 5 business days.'
   },
   {
-    q: 'Can I pay via Cash on Delivery (COD)?',
-    a: 'Yes. Cash on Delivery is available for all serviceable Indian PIN codes. You may pay with cash or scan the courier UPI QR code directly on delivery.'
+    q: 'What payment modes are accepted for orders?',
+    a: 'All orders on Axmin Prana are 100% prepaid online. We accept Instant UPI (Google Pay, PhonePe, Paytm, BHIM QR), all major Debit/Credit Cards (RuPay, Visa, MasterCard), and secure NetBanking via our encrypted 256-bit gateway. Orders are dispatched immediately upon payment confirmation.'
   },
   {
     q: 'What is Anupana and why is it important?',
@@ -28,6 +28,14 @@ const FAQS = [
   {
     q: 'Can I consume multiple Ayurvedic formulations together?',
     a: 'Most classical Rasayanas (like Ashwagandha with Triphala) work harmoniously together. However, we advise spacing out internal churnas or capsules by at least 30 minutes. You can also consult our in-house Vaidyas via our Contact page for tailored guidance.'
+  },
+  {
+    q: 'Can I cancel my order after placing it?',
+    a: 'Yes, you may cancel your order free of charge strictly before it has been dispatched from our Haridwar dispensary hub. Once Delhivery or our logistics partner picks up the consignment and tracking is generated, cancellation is no longer possible.'
+  },
+  {
+    q: 'What is your return and exchange policy?',
+    a: 'Due to the therapeutic, sterile, and consumable nature of Ayurvedic tailams (oils), churnas, and herbal formulations, we strictly maintain a No Return and No Exchange policy once orders have shipped or been delivered. If your shipment arrives damaged in transit, please share unboxing photos/video within 24–48 hours to receive a free replacement.'
   }
 ];
 
@@ -38,7 +46,7 @@ export default function FaqsPage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
       <div className="text-center space-y-2">
         <span className="text-xs font-bold tracking-widest uppercase text-[#B86F4B]">
-          Answers to Patron Queries
+          Answers to Customer Queries
         </span>
         <h1 className="text-3xl sm:text-4xl font-serif-brand font-bold text-[#214E34]">
           Frequently Asked Questions

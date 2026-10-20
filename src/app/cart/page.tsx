@@ -308,7 +308,7 @@ export default function CartPage() {
                 <p className="flex items-center justify-center gap-1 font-medium">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#1F4E34]" /> 256-bit Secure Encrypted Checkout
                 </p>
-                <p>Supports UPI, NetBanking, Debit/Credit Cards & Cash on Delivery</p>
+                <p>100% Prepaid: Supports Instant UPI QR, NetBanking, Debit & Credit Cards</p>
               </div>
             </div>
           </div>

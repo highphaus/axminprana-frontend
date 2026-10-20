@@ -17,7 +17,15 @@ import {
   CheckCircle2,
   Truck,
   Tag,
-  Building2
+  Building2,
+  Search,
+  ShieldCheck,
+  UserCheck,
+  UserX,
+  User,
+  RefreshCw,
+  X,
+  ChevronRight
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { fetchFromAPI } from '../../lib/api';
@@ -26,12 +34,19 @@ export default function AdminPage() {
   const router = useRouter();
   const { user, isAuthenticated, isAdmin } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'coupons' | 'enquiries'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'coupons' | 'enquiries' | 'users'>('overview');
   const [stats, setStats] = useState<any>(null);
   const [products, setProducts] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [coupons, setCoupons] = useState<any[]>([]);
   const [enquiries, setEnquiries] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [userRoleFilter, setUserRoleFilter] = useState<'all' | 'customer' | 'admin'>('all');
+  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [promotingUserId, setPromotingUserId] = useState<string | null>(null);
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
+  const [userActionMessage, setUserActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   // New Product Modal
@@ -51,6 +66,17 @@ export default function AdminPage() {
   );
   const [savingProduct, setSavingProduct] = useState(false);
 
+  // Edit Product Modal State
+  const [editingProduct, setEditingProduct] = useState<any | null>(null);
+  const [editProductName, setEditProductName] = useState('');
+  const [editProductCategory, setEditProductCategory] = useState('');
+  const [editProductPrice, setEditProductPrice] = useState(799);
+  const [editProductSalePrice, setEditProductSalePrice] = useState(699);
+  const [editProductStock, setEditProductStock] = useState(25);
+  const [editProductPackSize, setEditProductPackSize] = useState('60 Veggie Capsules');
+  const [editProductDescription, setEditProductDescription] = useState('');
+  const [savingEditProduct, setSavingEditProduct] = useState(false);
+
   // Order Status Update Modal
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [newOrderStatus, setNewOrderStatus] = useState('shipped');
@@ -63,15 +89,117 @@ export default function AdminPage() {
   const [newCouponMin, setNewCouponMin] = useState(1000);
   const [savingCoupon, setSavingCoupon] = useState(false);
 
+  const fetchUsers = async (search = userSearchQuery, role = userRoleFilter) => {
+    setLoadingUsers(true);
+    try {
+      const params = new URLSearchParams();
+      if (search.trim()) params.set('q', search.trim());
+      if (role !== 'all') params.set('role', role);
+      params.set('limit', '100');
+
+      const res = await fetchFromAPI(`/admin/users?${params.toString()}`);
+      if (res.success && res.data) {
+        setUsers(res.data);
+      }
+    } catch (e: any) {
+      console.error('Failed to fetch users', e);
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
+
+  const handleUpdateRole = async (targetUser: any, newRole: 'admin' | 'customer') => {
+    const isPromoting = newRole === 'admin';
+    const confirmMessage = isPromoting
+      ? `Are you sure you want to promote ${targetUser.name || targetUser.email} to Administrator? They will have full administrative rights to manage formulations, inventory, orders, and promotion console.`
+      : `Are you sure you want to demote ${targetUser.name || targetUser.email} to Customer? Their administrative access will be revoked.`;
+
+    if (!confirm(confirmMessage)) return;
+
+    setPromotingUserId(targetUser._id);
+    setUserActionMessage(null);
+    try {
+      const res = await fetchFromAPI(`/admin/users/${targetUser._id}/role`, {
+        method: 'PATCH',
+        body: JSON.stringify({ role: newRole })
+      });
+      if (res.success) {
+        setUserActionMessage({
+          type: 'success',
+          text: res.message || `Successfully updated ${targetUser.name || targetUser.email} to ${newRole}.`
+        });
+        await fetchUsers(userSearchQuery, userRoleFilter);
+        await loadData();
+      } else {
+        setUserActionMessage({
+          type: 'error',
+          text: res.message || 'Failed to update user privilege'
+        });
+      }
+    } catch (e: any) {
+      setUserActionMessage({
+        type: 'error',
+        text: e.message || 'Error occurred while updating user privilege'
+      });
+    } finally {
+      setPromotingUserId(null);
+    }
+  };
+
+  const handleDeleteUser = async (targetUser: any) => {
+    const isCurrentUser = user && (user.id === targetUser._id || (user as any)._id === targetUser._id);
+    if (isCurrentUser) {
+      alert('You cannot delete your own active administrator account.');
+      return;
+    }
+
+    const userName = targetUser.name || targetUser.email;
+    if (
+      !confirm(
+        `Are you sure you want to permanently delete user "${userName}"?\n\nThis will remove their profile and records from the system. This action cannot be undone.`
+      )
+    ) {
+      return;
+    }
+
+    setDeletingUserId(targetUser._id);
+    setUserActionMessage(null);
+    try {
+      const res = await fetchFromAPI(`/admin/users/${targetUser._id}`, {
+        method: 'DELETE'
+      });
+      if (res.success) {
+        setUserActionMessage({
+          type: 'success',
+          text: res.message || `User "${userName}" was deleted successfully.`
+        });
+        setUsers(prev => prev.filter(u => u._id !== targetUser._id));
+      } else {
+        setUserActionMessage({
+          type: 'error',
+          text: res.message || 'Failed to delete user.'
+        });
+      }
+    } catch (e: any) {
+      setUserActionMessage({
+        type: 'error',
+        text: e.message || 'Error occurred while deleting user.'
+      });
+    } finally {
+      setDeletingUserId(null);
+    }
+  };
+
   const loadData = async () => {
     setLoading(true);
     try {
-      const [statsRes, productsRes, ordersRes, couponsRes, enquiriesRes] = await Promise.all([
+      const [statsRes, productsRes, ordersRes, couponsRes, enquiriesRes, usersRes] = await Promise.all([
         fetchFromAPI('/admin/stats'),
         fetchFromAPI('/admin/products?limit=50'),
         fetchFromAPI('/admin/orders?limit=50'),
         fetchFromAPI('/admin/coupons'),
-        fetchFromAPI('/enquiries').catch(() => ({ success: false, data: [] }))
+        fetchFromAPI('/enquiries').catch(() => ({ success: false, data: [] })),
+        fetchFromAPI('/admin/users?limit=100').catch(() => ({ success: false, data: [] }))
       ]);
 
       if (statsRes.success) setStats(statsRes.data);
@@ -79,6 +207,7 @@ export default function AdminPage() {
       if (ordersRes.success) setOrders(ordersRes.data);
       if (couponsRes.success) setCoupons(couponsRes.data);
       if (enquiriesRes?.success) setEnquiries(enquiriesRes.data);
+      if (usersRes?.success) setUsers(usersRes.data);
     } catch (e) {
       console.error('Error loading admin records', e);
     } finally {
@@ -144,6 +273,74 @@ export default function AdminPage() {
       await loadData();
     } catch (e) {
       alert('Failed to delete product');
+    }
+  };
+
+  const openEditProduct = (p: any) => {
+    setEditingProduct(p);
+    setEditProductName(p.name || '');
+    setEditProductCategory(p.category || 'Immunity & Rasayana');
+    setEditProductPrice(p.price || 0);
+    setEditProductSalePrice(p.salePrice || p.price || 0);
+    setEditProductStock(p.stock !== undefined ? p.stock : 0);
+    setEditProductPackSize(p.packSize || '');
+    setEditProductDescription(p.description || '');
+  };
+
+  const handleUpdateProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingProduct) return;
+    setSavingEditProduct(true);
+    try {
+      await fetchFromAPI(`/admin/products/${editingProduct._id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          name: editProductName,
+          category: editProductCategory,
+          price: Number(editProductPrice),
+          salePrice: Number(editProductSalePrice),
+          stock: Math.max(0, Number(editProductStock)),
+          packSize: editProductPackSize,
+          description: editProductDescription
+        })
+      });
+      setEditingProduct(null);
+      await loadData();
+    } catch (e: any) {
+      alert(e.message || 'Failed to update formulation');
+    } finally {
+      setSavingEditProduct(false);
+    }
+  };
+
+  const handleQuickStockUpdate = async (id: string, newStock: number) => {
+    try {
+      await fetchFromAPI(`/admin/products/${id}/stock`, {
+        method: 'PATCH',
+        body: JSON.stringify({ stock: newStock })
+      });
+      await loadData();
+    } catch (e: any) {
+      alert(e.message || 'Failed to update stock');
+    }
+  };
+
+  const handleDeleteCoupon = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this promotional coupon?')) return;
+    try {
+      await fetchFromAPI(`/admin/coupons/${id}`, { method: 'DELETE' });
+      await loadData();
+    } catch (e: any) {
+      alert(e.message || 'Failed to delete coupon');
+    }
+  };
+
+  const handleToggleCoupon = async (id: string) => {
+    try {
+      await fetchFromAPI(`/admin/coupons/${id}/toggle`, { method: 'PATCH' });
+      await loadData();
+    } catch (e: any) {
+      alert(e.message || 'Failed to toggle coupon status');
     }
   };
 
@@ -298,6 +495,19 @@ export default function AdminPage() {
         >
           <Building2 className="w-4 h-4" /> B2B Enquiries ({enquiries.length})
         </button>
+        <button
+          onClick={() => {
+            setActiveTab('users');
+            fetchUsers(userSearchQuery, userRoleFilter);
+          }}
+          className={`px-4 py-2.5 rounded-t-lg transition-colors flex items-center gap-1.5 ${
+            activeTab === 'users'
+              ? 'bg-[#214E34] text-white'
+              : 'bg-white border border-[#E5E8E0] text-[#202820] hover:bg-[#FAF8F1]'
+          }`}
+        >
+          <Shield className="w-4 h-4 text-amber-300" /> Customers & Admins ({users.length})
+        </button>
       </div>
 
       {loading ? (
@@ -332,7 +542,7 @@ export default function AdminPage() {
                 </div>
 
                 <div className="bg-white p-5 rounded-xl border border-[#E5E8E0] shadow-2xs">
-                  <span className="text-xs font-semibold text-[#687168] block">Registered Patrons</span>
+                  <span className="text-xs font-semibold text-[#687168] block">Registered Customers</span>
                   <span className="text-2xl font-bold text-[#202820] mt-1 block">{stats.totalUsers}</span>
                   <span className="text-[10px] text-[#687168] mt-1 block">Customer profiles</span>
                 </div>
@@ -484,14 +694,59 @@ export default function AdminPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-[#687168] mb-1 font-semibold">Dispensary Stock *</label>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="block text-[#687168] font-semibold">Dispensary Stock *</label>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                            newProductStock === 0
+                              ? 'bg-red-100 text-red-700'
+                              : newProductStock <= 5
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-green-100 text-green-800'
+                          }`}>
+                            {newProductStock === 0 ? 'Out of Stock' : `${newProductStock} In Stock`}
+                          </span>
+                        </div>
                         <input
                           type="number"
+                          min={0}
                           required
                           value={newProductStock}
-                          onChange={e => setNewProductStock(Number(e.target.value))}
+                          onChange={e => setNewProductStock(Math.max(0, Number(e.target.value)))}
                           className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1]"
                         />
+                        {/* Out of Stock quick presets */}
+                        <div className="flex items-center gap-1.5 mt-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setNewProductStock(0)}
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-colors ${
+                              newProductStock === 0
+                                ? 'bg-red-700 text-white border-red-700'
+                                : 'bg-white text-red-700 border-red-300 hover:bg-red-50'
+                            }`}
+                          >
+                            Mark 0 (Out of Stock)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setNewProductStock(25)}
+                            className="px-2 py-0.5 rounded text-[10px] font-medium bg-white text-[#214E34] border border-[#E5E8E0] hover:border-[#214E34]"
+                          >
+                            25 Units
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setNewProductStock(100)}
+                            className="px-2 py-0.5 rounded text-[10px] font-medium bg-white text-[#214E34] border border-[#E5E8E0] hover:border-[#214E34]"
+                          >
+                            100 Bulk
+                          </button>
+                        </div>
+                        {newProductStock === 0 && (
+                          <p className="text-[10px] text-red-700 mt-1 font-semibold">
+                            ⚠️ Note: Setting stock to 0 automatically marks this product as &quot;Out of Stock&quot; on customer product pages and disables purchasing.
+                          </p>
+                        )}
                       </div>
                       <div>
                         <label className="block text-[#687168] mb-1 font-semibold">Format *</label>
@@ -504,6 +759,8 @@ export default function AdminPage() {
                           <option value="Oil">Oil (Tailam)</option>
                           <option value="Churna">Churna (Powder)</option>
                           <option value="Asava/Arishta">Asava/Arishta</option>
+                          <option value="Lepam">Lepam</option>
+                          <option value="Tablet">Tablet</option>
                         </select>
                       </div>
                     </div>
@@ -540,6 +797,167 @@ export default function AdminPage() {
                 </div>
               )}
 
+              {/* Edit Product Modal */}
+              {editingProduct && (
+                <div className="bg-white p-6 rounded-2xl border-2 border-[#B86F4B] shadow-xl space-y-4">
+                  <div className="flex justify-between items-center pb-3 border-b border-[#E5E8E0]">
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-[#B86F4B]">Edit Formulation</span>
+                      <h3 className="text-sm font-bold text-[#214E34]">
+                        {editingProduct.name} ({editingProduct.sku})
+                      </h3>
+                    </div>
+                    <button
+                      onClick={() => setEditingProduct(null)}
+                      className="text-xs text-red-600 font-semibold"
+                    >
+                      Close
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleUpdateProduct} className="space-y-4 text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-[#687168] mb-1 font-semibold">Formulation Name *</label>
+                        <input
+                          type="text"
+                          required
+                          value={editProductName}
+                          onChange={e => setEditProductName(e.target.value)}
+                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[#687168] mb-1 font-semibold">Category *</label>
+                        <select
+                          value={editProductCategory}
+                          onChange={e => setEditProductCategory(e.target.value)}
+                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1]"
+                        >
+                          <option value="Immunity & Rasayana">Immunity & Rasayana</option>
+                          <option value="Stress & Cognitive Health">Stress & Cognitive Health</option>
+                          <option value="Digestive & Gut Health">Digestive & Gut Health</option>
+                          <option value="Skin Radiance & Kanti">Skin Radiance & Kanti</option>
+                          <option value="Hair Therapy & Keshya">Hair Therapy & Keshya</option>
+                          <option value="Joint Care & Sandhi">Joint Care & Sandhi</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[#687168] mb-1 font-semibold">Pack Size *</label>
+                        <input
+                          type="text"
+                          required
+                          value={editProductPackSize}
+                          onChange={e => setEditProductPackSize(e.target.value)}
+                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[#687168] mb-1 font-semibold">MRP Price (₹) *</label>
+                        <input
+                          type="number"
+                          required
+                          value={editProductPrice}
+                          onChange={e => setEditProductPrice(Number(e.target.value))}
+                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[#687168] mb-1 font-semibold">Sale Price (₹)</label>
+                        <input
+                          type="number"
+                          value={editProductSalePrice}
+                          onChange={e => setEditProductSalePrice(Number(e.target.value))}
+                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1]"
+                        />
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="block text-[#687168] font-semibold">Dispensary Stock *</label>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                            editProductStock === 0
+                              ? 'bg-red-100 text-red-700'
+                              : editProductStock <= 5
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-green-100 text-green-800'
+                          }`}>
+                            {editProductStock === 0 ? 'Out of Stock' : `${editProductStock} In Stock`}
+                          </span>
+                        </div>
+                        <input
+                          type="number"
+                          min={0}
+                          required
+                          value={editProductStock}
+                          onChange={e => setEditProductStock(Math.max(0, Number(e.target.value)))}
+                          className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1]"
+                        />
+                        <div className="flex items-center gap-1.5 mt-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setEditProductStock(0)}
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-colors ${
+                              editProductStock === 0
+                                ? 'bg-red-700 text-white border-red-700'
+                                : 'bg-white text-red-700 border-red-300 hover:bg-red-50'
+                            }`}
+                          >
+                            Set 0 (Out of Stock)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEditProductStock(25)}
+                            className="px-2 py-0.5 rounded text-[10px] font-medium bg-white text-[#214E34] border border-[#E5E8E0] hover:border-[#214E34]"
+                          >
+                            25 Standard
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEditProductStock(100)}
+                            className="px-2 py-0.5 rounded text-[10px] font-medium bg-white text-[#214E34] border border-[#E5E8E0] hover:border-[#214E34]"
+                          >
+                            100 Units
+                          </button>
+                        </div>
+                        {editProductStock === 0 && (
+                          <p className="text-[10px] text-red-700 mt-1 font-semibold">
+                            ⚠️ This formulation will be marked OUT OF STOCK immediately across the store.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[#687168] mb-1 font-semibold">Botanical Description *</label>
+                      <textarea
+                        rows={3}
+                        required
+                        value={editProductDescription}
+                        onChange={e => setEditProductDescription(e.target.value)}
+                        className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1]"
+                      />
+                    </div>
+
+                    <div className="flex gap-2">
+                      <button
+                        type="submit"
+                        disabled={savingEditProduct}
+                        className="px-5 py-2.5 bg-[#214E34] text-white font-semibold rounded-md hover:bg-[#163A28]"
+                      >
+                        {savingEditProduct ? 'Updating...' : 'Update Formulation'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingProduct(null)}
+                        className="px-4 py-2.5 border border-[#E5E8E0] rounded-md"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
               {/* Products Table */}
               <div className="bg-white rounded-xl border border-[#E5E8E0] overflow-hidden shadow-2xs">
                 <div className="overflow-x-auto">
@@ -549,7 +967,7 @@ export default function AdminPage() {
                       <th className="p-3">Formulation</th>
                       <th className="p-3">Category</th>
                       <th className="p-3">Price</th>
-                      <th className="p-3">Stock</th>
+                      <th className="p-3">Dispensary Stock</th>
                       <th className="p-3">Rating</th>
                       <th className="p-3 text-right">Actions</th>
                     </tr>
@@ -571,25 +989,50 @@ export default function AdminPage() {
                           ₹{p.salePrice || p.price}
                         </td>
                         <td className="p-3">
-                          <span
-                            className={`px-2 py-0.5 rounded font-bold ${
-                              p.stock <= 5
-                                ? 'bg-red-100 text-red-700'
-                                : 'bg-green-100 text-green-800'
-                            }`}
-                          >
-                            {p.stock} units
-                          </span>
+                          <div>
+                            {p.stock === 0 ? (
+                              <span className="px-2.5 py-1 rounded-full font-bold bg-red-100 text-red-800 border border-red-200 inline-flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                                Out of Stock (0)
+                              </span>
+                            ) : p.stock <= 5 ? (
+                              <span className="px-2 py-0.5 rounded-full font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                Low Stock ({p.stock})
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 rounded-full font-bold bg-green-100 text-green-800 border border-green-200">
+                                {p.stock} units
+                              </span>
+                            )}
+                          </div>
+                          {/* Quick 1-click toggle */}
+                          <div className="mt-1">
+                            <button
+                              onClick={() => handleQuickStockUpdate(p._id, p.stock === 0 ? 25 : 0)}
+                              className="text-[10px] text-[#214E34] hover:underline font-semibold"
+                            >
+                              {p.stock === 0 ? '⚡ Restock 25' : '⚡ Mark Out of Stock'}
+                            </button>
+                          </div>
                         </td>
                         <td className="p-3 text-[#687168]">★ {p.rating} ({p.reviewCount})</td>
                         <td className="p-3 text-right">
-                          <button
-                            onClick={() => handleDeleteProduct(p._id)}
-                            className="p-1 text-red-600 hover:text-red-800"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              onClick={() => openEditProduct(p)}
+                              className="p-1.5 text-[#214E34] hover:bg-[#DDE7D9] rounded"
+                              title="Edit Formulation"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteProduct(p._id)}
+                              className="p-1.5 text-red-600 hover:bg-red-50 rounded"
+                              title="Delete Formulation"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -597,6 +1040,7 @@ export default function AdminPage() {
                 </table>
                 </div>
               </div>
+
             </div>
           )}
 
@@ -782,24 +1226,58 @@ export default function AdminPage() {
               {/* Active Coupons Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {coupons.map(c => (
-                  <div key={c._id} className="bg-white p-4 rounded-xl border border-[#E5E8E0] shadow-2xs space-y-2">
+                  <div key={c._id} className="bg-white p-4 rounded-xl border border-[#E5E8E0] shadow-2xs space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="font-mono font-bold text-sm text-[#214E34] bg-[#DDE7D9] px-2 py-0.5 rounded">
+                      <span className="font-mono font-bold text-sm text-[#214E34] bg-[#DDE7D9] px-2.5 py-0.5 rounded">
                         {c.code}
                       </span>
-                      <span className="text-[10px] bg-green-100 text-green-800 font-bold px-2 py-0.5 rounded">
-                        Active
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                          c.isActive
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}
+                      >
+                        {c.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </div>
-                    <p className="text-xs font-bold text-[#202820]">
-                      {c.discountValue}% OFF on orders above ₹{c.minOrderValue}
-                    </p>
-                    <p className="text-[10px] text-[#687168]">
-                      Redemptions logged: {c.usageCount} times
-                    </p>
+
+                    <div className="space-y-1">
+                      <p className="text-xs font-bold text-[#202820]">
+                        {c.discountValue}% OFF on orders above ₹{c.minOrderValue}
+                      </p>
+                      <p className="text-[10px] text-[#687168]">
+                        Redemptions logged: <strong>{c.usageCount}</strong> times
+                      </p>
+                      {c.validUntil && (
+                        <p className="text-[10px] text-[#687168]">
+                          Valid until: {new Date(c.validUntil).toLocaleDateString('en-IN')}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="pt-2 border-t border-[#E5E8E0] flex items-center justify-between text-xs">
+                      <button
+                        onClick={() => handleToggleCoupon(c._id)}
+                        className={`px-2 py-1 rounded text-[11px] font-semibold transition-colors ${
+                          c.isActive
+                            ? 'text-amber-700 hover:bg-amber-50'
+                            : 'text-green-700 hover:bg-green-50'
+                        }`}
+                      >
+                        {c.isActive ? 'Deactivate' : 'Activate'}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteCoupon(c._id)}
+                        className="px-2 py-1 rounded text-[11px] font-semibold text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
+
             </div>
           )}
 
@@ -878,6 +1356,343 @@ export default function AdminPage() {
                             </td>
                           </tr>
                         ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 6: Users & Admin Promotion Management */}
+          {activeTab === 'users' && (
+            <div className="space-y-6">
+              {/* Header and Summary Cards */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-base font-bold text-[#202820] uppercase tracking-wider flex items-center gap-2">
+                    <ShieldCheck className="w-5 h-5 text-[#B86F4B]" /> Customer & Administrative Privilege Directory
+                  </h2>
+                  <p className="text-xs text-[#687168] mt-0.5">
+                    Search registered customers across the system, verify credentials, and promote team members to Administrators.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="bg-white border border-[#E5E8E0] px-3 py-1.5 rounded-lg text-xs font-semibold text-[#202820] shadow-2xs">
+                    Total: <strong className="text-[#214E34]">{users.length}</strong>
+                  </div>
+                  <div className="bg-[#FAF8F1] border border-[#C59B27]/40 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#8F6B12] shadow-2xs flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#C59B27]" /> Admins:{' '}
+                    <strong>{users.filter(u => u.role === 'admin').length}</strong>
+                  </div>
+                  <div className="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 shadow-2xs">
+                    Customers:{' '}
+                    <strong>{users.filter(u => u.role === 'customer').length}</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Feedback Banner */}
+              {userActionMessage && (
+                <div
+                  className={`p-3.5 rounded-xl border text-xs flex items-center justify-between gap-3 ${
+                    userActionMessage.type === 'success'
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                      : 'bg-red-50 border-red-200 text-red-900'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    {userActionMessage.type === 'success' ? (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    ) : (
+                      <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+                    )}
+                    <span className="font-medium">{userActionMessage.text}</span>
+                  </div>
+                  <button
+                    onClick={() => setUserActionMessage(null)}
+                    className="p-1 rounded hover:bg-black/5 text-[#666]"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+
+              {/* Search & Filter Controls */}
+              <div className="bg-white p-4 rounded-xl border border-[#E5E8E0] shadow-2xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                {/* Search Input */}
+                <form
+                  onSubmit={e => {
+                    e.preventDefault();
+                    fetchUsers(userSearchQuery, userRoleFilter);
+                  }}
+                  className="flex-1 flex items-center gap-2"
+                >
+                  <div className="relative flex-1">
+                    <Search className="w-4 h-4 text-[#888] absolute left-3 top-2.5" />
+                    <input
+                      type="text"
+                      value={userSearchQuery}
+                      onChange={e => setUserSearchQuery(e.target.value)}
+                      placeholder="Search customer by name, email, or mobile number to promote..."
+                      className="w-full pl-9 pr-9 py-2 border border-[#E5E8E0] rounded-lg text-xs bg-[#FAF8F1] focus:bg-white text-[#202820] outline-none focus:border-[#214E34] transition-colors"
+                    />
+                    {userSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUserSearchQuery('');
+                          fetchUsers('', userRoleFilter);
+                        }}
+                        className="absolute right-3 top-2.5 text-[#888] hover:text-[#202820]"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-[#214E34] hover:bg-[#163A28] text-white text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 shrink-0 shadow-2xs cursor-pointer"
+                  >
+                    <Search className="w-3.5 h-3.5" /> Search
+                  </button>
+                </form>
+
+                {/* Role Filter & Refresh */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex bg-[#FAF8F1] p-1 rounded-lg border border-[#E5E8E0] text-xs font-semibold">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUserRoleFilter('all');
+                        fetchUsers(userSearchQuery, 'all');
+                      }}
+                      className={`px-3 py-1 rounded-md transition-colors ${
+                        userRoleFilter === 'all'
+                          ? 'bg-[#214E34] text-white font-bold shadow-xs'
+                          : 'text-[#687168] hover:text-[#202820]'
+                      }`}
+                    >
+                      All Roles
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUserRoleFilter('admin');
+                        fetchUsers(userSearchQuery, 'admin');
+                      }}
+                      className={`px-3 py-1 rounded-md transition-colors ${
+                        userRoleFilter === 'admin'
+                          ? 'bg-[#214E34] text-white font-bold shadow-xs'
+                          : 'text-[#687168] hover:text-[#202820]'
+                      }`}
+                    >
+                      Admins Only
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUserRoleFilter('customer');
+                        fetchUsers(userSearchQuery, 'customer');
+                      }}
+                      className={`px-3 py-1 rounded-md transition-colors ${
+                        userRoleFilter === 'customer'
+                          ? 'bg-[#214E34] text-white font-bold shadow-xs'
+                          : 'text-[#687168] hover:text-[#202820]'
+                      }`}
+                    >
+                      Customers Only
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => fetchUsers(userSearchQuery, userRoleFilter)}
+                    title="Refresh user directory"
+                    className="p-2 bg-[#FAF8F1] hover:bg-[#EDE8E0] border border-[#E5E8E0] rounded-lg text-[#202820] transition-colors cursor-pointer"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${loadingUsers ? 'animate-spin' : ''}`} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Users Table */}
+              <div className="bg-white rounded-xl border border-[#E5E8E0] shadow-2xs overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-[#FAF8F1] border-b border-[#E5E8E0] font-bold text-[#202820]">
+                      <tr>
+                        <th className="p-3.5">User Profile</th>
+                        <th className="p-3.5">Email Address</th>
+                        <th className="p-3.5">Mobile Contact</th>
+                        <th className="p-3.5">Current Role</th>
+                        <th className="p-3.5">Registered On</th>
+                        <th className="p-3.5 text-right">Access Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#E5E8E0]">
+                      {loadingUsers ? (
+                        <tr>
+                          <td colSpan={6} className="p-8 text-center text-xs text-[#687168]">
+                            <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-[#214E34]" />
+                            Searching and loading user accounts...
+                          </td>
+                        </tr>
+                      ) : users.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="p-10 text-center text-xs text-[#687168]">
+                            <Users className="w-8 h-8 text-[#CCC] mx-auto mb-2" />
+                            <p className="font-bold text-[#202820] text-sm">No matching customers found</p>
+                            <p className="text-[#888] mt-1 max-w-sm mx-auto">
+                              {userSearchQuery
+                                ? `No accounts match "${userSearchQuery}". Check for spelling or try searching by email.`
+                                : 'No registered users available in this role category.'}
+                            </p>
+                            {userSearchQuery && (
+                              <button
+                                onClick={() => {
+                                  setUserSearchQuery('');
+                                  setUserRoleFilter('all');
+                                  fetchUsers('', 'all');
+                                }}
+                                className="mt-3 px-3.5 py-1.5 bg-[#FAF8F1] border border-[#E5E8E0] rounded-lg text-xs font-semibold text-[#214E34] hover:bg-[#EDE8E0]"
+                              >
+                                Clear Search Filter
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ) : (
+                        users.map(u => {
+                          const isCurrentUser = user && (user.id === u._id || (user as any)._id === u._id);
+                          const isAdminRole = u.role === 'admin';
+                          const isProcessing = promotingUserId === u._id;
+
+                          return (
+                            <tr key={u._id} className="hover:bg-[#FAF8F1]/60 transition-colors">
+                              {/* Name & Avatar */}
+                              <td className="p-3.5">
+                                <div className="flex items-center gap-3">
+                                  <div
+                                    className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs uppercase border shadow-2xs shrink-0 ${
+                                      isAdminRole
+                                        ? 'bg-[#214E34] text-white border-amber-400'
+                                        : 'bg-[#FAF8F1] text-[#214E34] border-[#E5E8E0]'
+                                    }`}
+                                  >
+                                    {u.name ? u.name[0] : u.email[0]}
+                                  </div>
+                                  <div>
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="font-bold text-[#202820]">{u.name || 'Customer'}</span>
+                                      {isCurrentUser && (
+                                        <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.2 rounded border border-emerald-300">
+                                          You
+                                        </span>
+                                      )}
+                                    </div>
+                                    <span className="text-[11px] text-[#888] block font-mono">
+                                      ID: {u._id.slice(-6)}
+                                    </span>
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Email */}
+                              <td className="p-3.5">
+                                <a
+                                  href={`mailto:${u.email}`}
+                                  className="text-[#214E34] font-medium hover:underline font-mono"
+                                >
+                                  {u.email}
+                                </a>
+                              </td>
+
+                              {/* Phone */}
+                              <td className="p-3.5 font-mono text-[#687168]">
+                                {u.phone ? (
+                                  <a href={`tel:${u.phone}`} className="hover:text-[#202820]">
+                                    +91 {u.phone}
+                                  </a>
+                                ) : (
+                                  <span className="text-[#AAA] italic">Not provided</span>
+                                )}
+                              </td>
+
+                              {/* Role */}
+                              <td className="p-3.5">
+                                {isAdminRole ? (
+                                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#C59B27]/15 text-[#8F6B12] border border-[#C59B27]/30">
+                                    <ShieldCheck className="w-3.5 h-3.5 text-[#C59B27]" /> Administrator
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                                    <User className="w-3.5 h-3.5 text-slate-500" /> Customer
+                                  </span>
+                                )}
+                              </td>
+
+                              {/* Registered Date */}
+                              <td className="p-3.5 text-[#687168] whitespace-nowrap">
+                                {u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN', {
+                                  day: 'numeric',
+                                  month: 'short',
+                                  year: 'numeric'
+                                }) : '—'}
+                              </td>
+
+                              {/* Action Buttons */}
+                              <td className="p-3.5 text-right whitespace-nowrap">
+                                <div className="flex items-center justify-end gap-2">
+                                  {isCurrentUser ? (
+                                    <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                                      Active Session
+                                    </span>
+                                  ) : (
+                                    <>
+                                      {isAdminRole ? (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleUpdateRole(u, 'customer')}
+                                          disabled={isProcessing || deletingUserId === u._id}
+                                          className="px-2.5 py-1.5 bg-white hover:bg-amber-50 border border-amber-300 text-amber-800 text-xs font-semibold rounded-lg transition-colors inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                                          title="Demote administrator back to customer role"
+                                        >
+                                          <UserX className="w-3.5 h-3.5" />
+                                          <span>{isProcessing ? 'Demoting...' : 'Revoke Admin'}</span>
+                                        </button>
+                                      ) : (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleUpdateRole(u, 'admin')}
+                                          disabled={isProcessing || deletingUserId === u._id}
+                                          className="px-2.5 py-1.5 bg-[#214E34] hover:bg-[#163A28] text-white text-xs font-bold rounded-lg shadow-2xs transition-all inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                                          title="Promote customer to Administrator"
+                                        >
+                                          <ShieldCheck className="w-3.5 h-3.5 text-[#C59B27]" />
+                                          <span>{isProcessing ? 'Promoting...' : 'Promote to Admin'}</span>
+                                        </button>
+                                      )}
+
+                                      {/* Delete User Button */}
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDeleteUser(u)}
+                                        disabled={deletingUserId === u._id || isProcessing}
+                                        className="p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-200 cursor-pointer disabled:opacity-50 inline-flex items-center justify-center"
+                                        title={`Permanently delete user ${u.name || u.email}`}
+                                        aria-label="Delete user"
+                                      >
+                                        <Trash2 className="w-4 h-4" />
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
                       )}
                     </tbody>
                   </table>

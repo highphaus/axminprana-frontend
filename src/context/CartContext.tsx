@@ -22,6 +22,7 @@ interface CartContextType {
   isDrawerOpen: boolean;
   addToCart: (product: IProduct, quantity?: number, packSize?: string, price?: number) => void;
   removeFromCart: (productId: string, packSize: string) => void;
+  purgeStaleProduct: (productId: string) => void;
   updateQuantity: (productId: string, packSize: string, delta: number) => void;
   clearCart: () => void;
   applyCoupon: (code: string) => Promise<{ success: boolean; message?: string }>;
@@ -38,12 +39,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Load from local storage
+  // Load from local storage and auto-heal stale/reseeded products against DB
   useEffect(() => {
+    let parsed: ICartItem[] = [];
     try {
       const saved = localStorage.getItem('axmin_cart');
       if (saved) {
-        setItems(JSON.parse(saved));
+        parsed = JSON.parse(saved);
+        setItems(parsed);
       }
       const savedCoupon = localStorage.getItem('axmin_coupon');
       if (savedCoupon) {
@@ -52,6 +55,58 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (e) {
       console.error('Failed to parse cart from storage', e);
     }
+
+    // Auto-heal cart items against active catalog (fixes old IDs like 6ad4eb0b461987e2badbe91a)
+    const healCartItems = async () => {
+      try {
+        const res = await fetchFromAPI('/products?limit=100');
+        if (res.success && Array.isArray(res.data)) {
+          const activeProducts: IProduct[] = res.data;
+          const mapById = new Map<string, IProduct>(activeProducts.map(p => [p._id, p]));
+          const mapBySlug = new Map<string, IProduct>(activeProducts.map(p => [p.slug, p]));
+
+          setItems(prev => {
+            if (!prev || prev.length === 0) return prev;
+            let modified = false;
+            const healed: ICartItem[] = [];
+
+            for (const item of prev) {
+              const currentById = mapById.get(item.product?._id);
+              if (currentById) {
+                // Keep with latest product details
+                healed.push({
+                  ...item,
+                  product: currentById
+                });
+              } else {
+                // If ID is stale (e.g. from previous database seed), match by slug
+                const currentBySlug = item.product?.slug ? mapBySlug.get(item.product.slug) : undefined;
+                if (currentBySlug) {
+                  healed.push({
+                    ...item,
+                    product: currentBySlug,
+                    price: currentBySlug.salePrice && currentBySlug.salePrice > 0 ? currentBySlug.salePrice : currentBySlug.price
+                  });
+                  modified = true;
+                } else {
+                  // Completely removed product
+                  modified = true;
+                }
+              }
+            }
+
+            if (modified) {
+              localStorage.setItem('axmin_cart', JSON.stringify(healed));
+            }
+            return healed;
+          });
+        }
+      } catch (e) {
+        // Non-fatal if offline
+      }
+    };
+
+    healCartItems();
   }, []);
 
   // Save to local storage
@@ -62,6 +117,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Failed to save cart to storage', e);
     }
   }, [items]);
+
+  const purgeStaleProduct = (productId: string) => {
+    setItems(prev => {
+      const filtered = prev.filter(i => i.product._id !== productId);
+      try {
+        localStorage.setItem('axmin_cart', JSON.stringify(filtered));
+      } catch (e) {}
+      return filtered;
+    });
+  };
 
   const addToCart = (product: IProduct, quantity = 1, packSize?: string, price?: number) => {
     const selectedPackSize = packSize || product.packSize;
@@ -161,6 +226,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isDrawerOpen,
         addToCart,
         removeFromCart,
+        purgeStaleProduct,
         updateQuantity,
         clearCart,
         applyCoupon,

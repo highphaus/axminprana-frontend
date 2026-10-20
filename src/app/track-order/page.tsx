@@ -150,6 +150,16 @@ function TrackOrderContent() {
               <span className="font-bold text-[#202820]">₹{orderData.totalAmount}</span>
             </div>
           </div>
+
+          {/* Cancellation & No Return Notice */}
+          <div className="p-3.5 bg-white rounded-xl border border-[#E5E8E0] space-y-1 text-xs">
+            <span className="font-bold text-[#214E34] block">Consignment Guidelines:</span>
+            <p className="text-[#687168] text-[11px] leading-relaxed">
+              • <strong>Cancellation Window:</strong> Cancellations are permitted strictly before the consignment is dispatched. Once shipped, transit cancellation is closed.
+              <br />
+              • <strong>Strictly No Return & No Exchange:</strong> Due to botanical clinical purity and consumable hygiene standards, delivered products cannot be returned or exchanged.
+            </p>
+          </div>
         </div>
       )}
     </div>

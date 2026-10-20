@@ -1,13 +1,12 @@
 function getBaseUrl() {
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    const raw = process.env.NEXT_PUBLIC_API_URL;
-    return raw.endsWith('/api') ? raw : `${raw.replace(/\/+$/, '')}/api`;
-  }
   if (typeof window !== 'undefined') {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       return 'http://localhost:5000/api';
     }
-    return 'https://axminprana.onrender.com/api';
+  }
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    const raw = process.env.NEXT_PUBLIC_API_URL;
+    return raw.endsWith('/api') ? raw : `${raw.replace(/\/+$/, '')}/api`;
   }
   return 'http://localhost:5000/api';
 }

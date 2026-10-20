@@ -51,6 +51,15 @@ export default function ShippingPolicyPage() {
             Classical Ayurvedic oils and glass bottles are secured in triple-walled bubble cushioning and eco-friendly recyclable outer cartons to prevent thermal oxidation and breakage during transit.
           </p>
         </section>
+
+        <section className="space-y-2 border-t border-[#E5E8E0] pt-4">
+          <h2 className="text-base font-bold text-[#214E34]">5. Cancellation & No Return Guidelines</h2>
+          <p>
+            • <strong>Pre-Dispatch Cancellation:</strong> You can cancel your order free of charge strictly before it has been dispatched from our Haridwar hub.
+            <br />
+            • <strong>Strictly No Return & No Exchange:</strong> Once an order is shipped, cancellation is closed and, due to Ayurvedic medical safety and sterile hygiene regulations, items cannot be returned or exchanged.
+          </p>
+        </section>
       </div>
     </div>
   );

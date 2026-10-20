@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { SlidersHorizontal, ArrowUpDown, X, Star, Check } from 'lucide-react';
+import { SlidersHorizontal, ArrowUpDown, X, Star, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { IProduct, ICategory } from '../../lib/api';
 import { ProductCard } from '../../components/ProductCard';
 
@@ -31,6 +31,19 @@ export const ShopClient: React.FC<Props> = ({
 }) => {
   const router = useRouter();
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [desktopFilterOpen, setDesktopFilterOpen] = useState(true);
+
+  // Collapsible section accordions state
+  const [openSections, setOpenSections] = useState({
+    category: true,
+    dosha: true,
+    format: true,
+    price: true
+  });
+
+  const toggleSection = (section: keyof typeof openSections) => {
+    setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
 
   const selectedCategory = searchParams.category || '';
   const selectedDosha = searchParams.dosha || '';
@@ -78,6 +91,8 @@ export const ShopClient: React.FC<Props> = ({
     searchQuery
   );
 
+  const activePriceLabel = priceRanges.find(p => p.value === selectedPriceRange)?.label;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 bg-[#FAF7F2]">
       {/* Breadcrumb Navigation */}
@@ -111,17 +126,41 @@ export const ShopClient: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Mobile Filter Button & Sort Bar */}
-      <div className="bg-white p-3 sm:p-4 rounded-xl border border-[#E5E8E0] flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 mb-6 sm:mb-8 shadow-2xs">
-        <button
-          onClick={() => setMobileFilterOpen(true)}
-          className="lg:hidden flex items-center gap-2 px-3 py-2 bg-[#FAF8F1] border border-[#E5E8E0] rounded-lg text-xs font-bold text-[#214E34] hover:bg-[#DDE7D9]/40 transition-colors"
-        >
-          <SlidersHorizontal className="w-4 h-4" /> Filters {hasActiveFilters && '(Active)'}
-        </button>
+      {/* Filter & Sort Bar */}
+      <div className="bg-white p-3 sm:p-4 rounded-xl border border-[#E5E8E0] flex flex-wrap items-center justify-between gap-3 mb-6 sm:mb-8 shadow-2xs">
+        <div className="flex items-center gap-2">
+          {/* Mobile Filter Drawer Open Button */}
+          <button
+            type="button"
+            onClick={() => setMobileFilterOpen(true)}
+            className="lg:hidden flex items-center gap-2 px-3 py-2 bg-[#FAF8F1] border border-[#E5E8E0] rounded-lg text-xs font-bold text-[#214E34] hover:bg-[#DDE7D9]/40 transition-colors shadow-2xs cursor-pointer"
+          >
+            <SlidersHorizontal className="w-4 h-4 text-[#B86F4B]" />
+            <span>Filters</span>
+            {hasActiveFilters && (
+              <span className="w-2 h-2 rounded-full bg-[#B86F4B]" />
+            )}
+          </button>
+
+          {/* Desktop Filter Toggle (Open/Close Sidebar) */}
+          <button
+            type="button"
+            onClick={() => setDesktopFilterOpen(prev => !prev)}
+            className="hidden lg:flex items-center gap-2 px-3.5 py-2 bg-[#FAF8F1] hover:bg-[#EDE8E0] border border-[#E5E8E0] rounded-lg text-xs font-bold text-[#214E34] transition-all shadow-2xs cursor-pointer"
+            title={desktopFilterOpen ? 'Hide filter sidebar' : 'Open filter sidebar'}
+          >
+            <SlidersHorizontal className="w-4 h-4 text-[#B86F4B]" />
+            <span>{desktopFilterOpen ? 'Hide Filters' : 'Show Filters'}</span>
+            {hasActiveFilters && (
+              <span className="px-1.5 py-0.2 bg-[#B86F4B] text-white text-[10px] rounded-full font-bold">
+                Active
+              </span>
+            )}
+          </button>
+        </div>
 
         {/* Active Filters Display */}
-        <div className="hidden sm:flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs">
+        <div className="hidden sm:flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs flex-1 px-2">
           {hasActiveFilters && (
             <span className="text-[11px] text-[#687168] font-bold uppercase tracking-wider">
               Active:
@@ -151,10 +190,26 @@ export const ShopClient: React.FC<Props> = ({
               {selectedFormat} <X className="w-3 h-3" />
             </Link>
           )}
+          {selectedPriceRange && activePriceLabel && (
+            <Link
+              href={buildUrl({ priceRange: undefined, page: '1' })}
+              className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-100 text-amber-900 text-[11px] font-bold rounded-full hover:bg-red-100 hover:text-red-700 transition-colors"
+            >
+              {activePriceLabel} <X className="w-3 h-3" />
+            </Link>
+          )}
+          {searchQuery && (
+            <Link
+              href={buildUrl({ search: undefined, page: '1' })}
+              className="inline-flex items-center gap-1 px-2.5 py-1 bg-stone-200 text-stone-800 text-[11px] font-bold rounded-full hover:bg-red-100 hover:text-red-700 transition-colors"
+            >
+              &ldquo;{searchQuery}&rdquo; <X className="w-3 h-3" />
+            </Link>
+          )}
           {hasActiveFilters && (
             <Link
               href="/shop"
-              className="text-xs text-[#B86F4B] hover:underline font-semibold ml-2"
+              className="text-xs text-[#B86F4B] hover:underline font-semibold ml-1"
             >
               Reset All
             </Link>
@@ -180,99 +235,186 @@ export const ShopClient: React.FC<Props> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Desktop Sidebar Filters - Kama Ayurveda Inspired */}
-        <div className="hidden lg:block space-y-6 bg-white p-5 rounded-2xl border border-[#E5E8E0] shadow-2xs self-start sticky top-24">
-          <div className="flex items-center justify-between pb-3 border-b border-[#E5E8E0]">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#214E34] flex items-center gap-1.5">
-              <SlidersHorizontal className="w-4 h-4 text-[#B86F4B]" /> Filter Formulations
-            </h3>
-            {hasActiveFilters && (
-              <Link href="/shop" className="text-xs text-[#B86F4B] hover:underline font-bold">
-                Reset
-              </Link>
-            )}
-          </div>
+      <div className={`grid grid-cols-1 ${desktopFilterOpen ? 'lg:grid-cols-4' : 'lg:grid-cols-1'} gap-8`}>
+        {/* Desktop Sidebar Filters with Open/Close & Section Accordions */}
+        {desktopFilterOpen && (
+          <div className="hidden lg:block space-y-5 bg-white p-5 rounded-2xl border border-[#E5E8E0] shadow-2xs self-start sticky top-24 transition-all">
+            {/* Sidebar Header with Close Button */}
+            <div className="flex items-center justify-between pb-3 border-b border-[#E5E8E0]">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="w-4 h-4 text-[#B86F4B]" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#214E34]">
+                  Filter Formulations
+                </h3>
+              </div>
+              <div className="flex items-center gap-2">
+                {hasActiveFilters && (
+                  <Link href="/shop" className="text-xs text-[#B86F4B] hover:underline font-bold">
+                    Reset
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setDesktopFilterOpen(false)}
+                  className="p-1 rounded-md text-[#888] hover:text-[#1A1A1A] hover:bg-[#FAF8F1] transition-colors cursor-pointer"
+                  title="Close filter sidebar"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
 
-          {/* Categories */}
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-[#202820] mb-2.5">
-              Target Category
-            </h4>
-            <div className="space-y-1 text-xs">
-              <Link
-                href={buildUrl({ category: undefined, page: '1' })}
-                className={`flex items-center justify-between py-1.5 px-2 rounded-md transition-colors ${
-                  !selectedCategory ? 'bg-[#214E34] text-white font-bold' : 'text-[#202820] hover:bg-[#FAF8F1]'
-                }`}
+            {/* Section 1: Categories (Collapsible) */}
+            <div>
+              <button
+                type="button"
+                onClick={() => toggleSection('category')}
+                className="w-full flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#202820] py-1 cursor-pointer select-none hover:text-[#214E34] transition-colors"
               >
-                <span>All Formulations</span>
-              </Link>
-              {categories.map(c => (
-                <Link
-                  key={c._id}
-                  href={buildUrl({ category: c.name, page: '1' })}
-                  className={`flex items-center justify-between py-1.5 px-2 rounded-md transition-colors ${
-                    selectedCategory === c.name
-                      ? 'bg-[#214E34] text-white font-bold'
-                      : 'text-[#202820] hover:bg-[#FAF8F1]'
-                  }`}
-                >
-                  <span>{c.name}</span>
-                </Link>
-              ))}
+                <span>Target Category</span>
+                {openSections.category ? (
+                  <ChevronUp className="w-4 h-4 text-[#888]" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-[#888]" />
+                )}
+              </button>
+
+              {openSections.category && (
+                <div className="space-y-1 text-xs mt-2 transition-all">
+                  <Link
+                    href={buildUrl({ category: undefined, page: '1' })}
+                    className={`flex items-center justify-between py-1.5 px-2 rounded-md transition-colors ${
+                      !selectedCategory ? 'bg-[#214E34] text-white font-bold' : 'text-[#202820] hover:bg-[#FAF8F1]'
+                    }`}
+                  >
+                    <span>All Formulations</span>
+                  </Link>
+                  {categories.map(c => (
+                    <Link
+                      key={c._id}
+                      href={buildUrl({ category: c.name, page: '1' })}
+                      className={`flex items-center justify-between py-1.5 px-2 rounded-md transition-colors ${
+                        selectedCategory === c.name
+                          ? 'bg-[#214E34] text-white font-bold'
+                          : 'text-[#202820] hover:bg-[#FAF8F1]'
+                      }`}
+                    >
+                      <span>{c.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Section 2: Dosha Affinity (Collapsible) */}
+            <div className="pt-3 border-t border-[#E5E8E0]">
+              <button
+                type="button"
+                onClick={() => toggleSection('dosha')}
+                className="w-full flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#202820] py-1 cursor-pointer select-none hover:text-[#214E34] transition-colors"
+              >
+                <span>Dosha Affinity</span>
+                {openSections.dosha ? (
+                  <ChevronUp className="w-4 h-4 text-[#888]" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-[#888]" />
+                )}
+              </button>
+
+              {openSections.dosha && (
+                <div className="space-y-1 text-xs mt-2 transition-all">
+                  {doshas.map(d => (
+                    <Link
+                      key={d}
+                      href={buildUrl({ dosha: selectedDosha === d ? undefined : d, page: '1' })}
+                      className={`flex items-center justify-between py-1.5 px-2 rounded-md transition-colors ${
+                        selectedDosha === d
+                          ? 'bg-[#B86F4B] text-white font-bold'
+                          : 'text-[#202820] hover:bg-[#FAF8F1]'
+                      }`}
+                    >
+                      <span>{d} Pacifying</span>
+                      {selectedDosha === d && <Check className="w-3.5 h-3.5" />}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Section 3: Format (Collapsible) */}
+            <div className="pt-3 border-t border-[#E5E8E0]">
+              <button
+                type="button"
+                onClick={() => toggleSection('format')}
+                className="w-full flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#202820] py-1 cursor-pointer select-none hover:text-[#214E34] transition-colors"
+              >
+                <span>Dosage Format</span>
+                {openSections.format ? (
+                  <ChevronUp className="w-4 h-4 text-[#888]" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-[#888]" />
+                )}
+              </button>
+
+              {openSections.format && (
+                <div className="space-y-1 text-xs mt-2 transition-all">
+                  {formats.map(f => (
+                    <Link
+                      key={f}
+                      href={buildUrl({ format: selectedFormat === f ? undefined : f, page: '1' })}
+                      className={`flex items-center justify-between py-1.5 px-2 rounded-md transition-colors ${
+                        selectedFormat === f
+                          ? 'bg-[#214E34] text-white font-bold'
+                          : 'text-[#202820] hover:bg-[#FAF8F1]'
+                      }`}
+                    >
+                      <span>{f}</span>
+                      {selectedFormat === f && <Check className="w-3.5 h-3.5" />}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Section 4: Price Range (Collapsible) */}
+            <div className="pt-3 border-t border-[#E5E8E0]">
+              <button
+                type="button"
+                onClick={() => toggleSection('price')}
+                className="w-full flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#202820] py-1 cursor-pointer select-none hover:text-[#214E34] transition-colors"
+              >
+                <span>Price Range</span>
+                {openSections.price ? (
+                  <ChevronUp className="w-4 h-4 text-[#888]" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-[#888]" />
+                )}
+              </button>
+
+              {openSections.price && (
+                <div className="space-y-1 text-xs mt-2 transition-all">
+                  {priceRanges.map(p => (
+                    <Link
+                      key={p.value}
+                      href={buildUrl({ priceRange: selectedPriceRange === p.value ? undefined : p.value, page: '1' })}
+                      className={`flex items-center justify-between py-1.5 px-2 rounded-md transition-colors ${
+                        selectedPriceRange === p.value
+                          ? 'bg-[#214E34] text-white font-bold'
+                          : 'text-[#202820] hover:bg-[#FAF8F1]'
+                      }`}
+                    >
+                      <span>{p.label}</span>
+                      {selectedPriceRange === p.value && <Check className="w-3.5 h-3.5" />}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
+        )}
 
-          {/* Dosha Affinity */}
-          <div className="pt-4 border-t border-[#E5E8E0]">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-[#202820] mb-2.5">
-              Dosha Affinity
-            </h4>
-            <div className="space-y-1 text-xs">
-              {doshas.map(d => (
-                <Link
-                  key={d}
-                  href={buildUrl({ dosha: selectedDosha === d ? undefined : d, page: '1' })}
-                  className={`flex items-center justify-between py-1.5 px-2 rounded-md transition-colors ${
-                    selectedDosha === d
-                      ? 'bg-[#B86F4B] text-white font-bold'
-                      : 'text-[#202820] hover:bg-[#FAF8F1]'
-                  }`}
-                >
-                  <span>{d} Pacifying</span>
-                  {selectedDosha === d && <Check className="w-3.5 h-3.5" />}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Format */}
-          <div className="pt-4 border-t border-[#E5E8E0]">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-[#202820] mb-2.5">
-              Dosage Format
-            </h4>
-            <div className="space-y-1 text-xs">
-              {formats.map(f => (
-                <Link
-                  key={f}
-                  href={buildUrl({ format: selectedFormat === f ? undefined : f, page: '1' })}
-                  className={`flex items-center justify-between py-1.5 px-2 rounded-md transition-colors ${
-                    selectedFormat === f
-                      ? 'bg-[#214E34] text-white font-bold'
-                      : 'text-[#202820] hover:bg-[#FAF8F1]'
-                  }`}
-                >
-                  <span>{f}</span>
-                  {selectedFormat === f && <Check className="w-3.5 h-3.5" />}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Product Grid Area */}
-        <div className="lg:col-span-3 space-y-6">
+        {/* Product Grid Area - Expands when filter sidebar is closed */}
+        <div className={`${desktopFilterOpen ? 'lg:col-span-3' : 'lg:col-span-1 w-full'} space-y-6`}>
           {products.length === 0 ? (
             <div className="bg-white rounded-2xl border border-[#E5E8E0] p-12 text-center space-y-3">
               <p className="text-base font-bold text-[#202820]">No classical formulations matched your criteria</p>
@@ -287,7 +429,7 @@ export const ShopClient: React.FC<Props> = ({
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-6">
+            <div className={`grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 ${!desktopFilterOpen ? 'lg:grid-cols-4' : ''} gap-3.5 sm:gap-6`}>
               {products.map(product => (
                 <ProductCard key={product._id} product={product} />
               ))}
@@ -322,65 +464,153 @@ export const ShopClient: React.FC<Props> = ({
             className="w-[85vw] max-w-xs h-full bg-[#FAF8F1] p-5 shadow-2xl overflow-y-auto flex flex-col justify-between border-r border-[#E5E8E0]"
             onClick={e => e.stopPropagation()}
           >
-            <div className="space-y-6">
+            <div className="space-y-5">
               <div className="flex items-center justify-between pb-3 border-b border-[#E5E8E0]">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#214E34]">
-                  Filter Formulations
-                </h3>
-                <button onClick={() => setMobileFilterOpen(false)}>
-                  <X className="w-5 h-5 text-[#202820]" />
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal className="w-4 h-4 text-[#B86F4B]" />
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#214E34]">
+                    Filter Formulations
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setMobileFilterOpen(false)}
+                  className="p-1 rounded-md text-[#202820] hover:bg-black/5"
+                  title="Close Filters"
+                >
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Categories */}
               <div>
-                <h4 className="text-xs font-bold uppercase text-[#202820] mb-2">Category</h4>
-                <div className="space-y-1 text-xs">
-                  <Link
-                    href={buildUrl({ category: undefined, page: '1' })}
-                    onClick={() => setMobileFilterOpen(false)}
-                    className={`block py-1 px-2 rounded ${!selectedCategory ? 'bg-[#214E34] text-white font-bold' : ''}`}
-                  >
-                    All Formulations
-                  </Link>
-                  {categories.map(c => (
+                <button
+                  type="button"
+                  onClick={() => toggleSection('category')}
+                  className="w-full flex items-center justify-between text-xs font-bold uppercase text-[#202820] mb-2"
+                >
+                  <span>Category</span>
+                  {openSections.category ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
+                {openSections.category && (
+                  <div className="space-y-1 text-xs">
                     <Link
-                      key={c._id}
-                      href={buildUrl({ category: c.name, page: '1' })}
+                      href={buildUrl({ category: undefined, page: '1' })}
                       onClick={() => setMobileFilterOpen(false)}
-                      className={`block py-1 px-2 rounded ${selectedCategory === c.name ? 'bg-[#214E34] text-white font-bold' : ''}`}
+                      className={`block py-1.5 px-2 rounded ${!selectedCategory ? 'bg-[#214E34] text-white font-bold' : ''}`}
                     >
-                      {c.name}
+                      All Formulations
                     </Link>
-                  ))}
-                </div>
+                    {categories.map(c => (
+                      <Link
+                        key={c._id}
+                        href={buildUrl({ category: c.name, page: '1' })}
+                        onClick={() => setMobileFilterOpen(false)}
+                        className={`block py-1.5 px-2 rounded ${selectedCategory === c.name ? 'bg-[#214E34] text-white font-bold' : ''}`}
+                      >
+                        {c.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Dosha */}
-              <div className="pt-4 border-t border-[#E5E8E0]">
-                <h4 className="text-xs font-bold uppercase text-[#202820] mb-2">Dosha Affinity</h4>
-                <div className="space-y-1 text-xs">
-                  {doshas.map(d => (
-                    <Link
-                      key={d}
-                      href={buildUrl({ dosha: selectedDosha === d ? undefined : d, page: '1' })}
-                      onClick={() => setMobileFilterOpen(false)}
-                      className={`block py-1 px-2 rounded ${selectedDosha === d ? 'bg-[#B86F4B] text-white font-bold' : ''}`}
-                    >
-                      {d} Pacifying
-                    </Link>
-                  ))}
-                </div>
+              <div className="pt-3 border-t border-[#E5E8E0]">
+                <button
+                  type="button"
+                  onClick={() => toggleSection('dosha')}
+                  className="w-full flex items-center justify-between text-xs font-bold uppercase text-[#202820] mb-2"
+                >
+                  <span>Dosha Affinity</span>
+                  {openSections.dosha ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
+                {openSections.dosha && (
+                  <div className="space-y-1 text-xs">
+                    {doshas.map(d => (
+                      <Link
+                        key={d}
+                        href={buildUrl({ dosha: selectedDosha === d ? undefined : d, page: '1' })}
+                        onClick={() => setMobileFilterOpen(false)}
+                        className={`block py-1.5 px-2 rounded ${selectedDosha === d ? 'bg-[#B86F4B] text-white font-bold' : ''}`}
+                      >
+                        {d} Pacifying
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Format */}
+              <div className="pt-3 border-t border-[#E5E8E0]">
+                <button
+                  type="button"
+                  onClick={() => toggleSection('format')}
+                  className="w-full flex items-center justify-between text-xs font-bold uppercase text-[#202820] mb-2"
+                >
+                  <span>Format</span>
+                  {openSections.format ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
+                {openSections.format && (
+                  <div className="space-y-1 text-xs">
+                    {formats.map(f => (
+                      <Link
+                        key={f}
+                        href={buildUrl({ format: selectedFormat === f ? undefined : f, page: '1' })}
+                        onClick={() => setMobileFilterOpen(false)}
+                        className={`block py-1.5 px-2 rounded ${selectedFormat === f ? 'bg-[#214E34] text-white font-bold' : ''}`}
+                      >
+                        {f}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Price Range */}
+              <div className="pt-3 border-t border-[#E5E8E0]">
+                <button
+                  type="button"
+                  onClick={() => toggleSection('price')}
+                  className="w-full flex items-center justify-between text-xs font-bold uppercase text-[#202820] mb-2"
+                >
+                  <span>Price Range</span>
+                  {openSections.price ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
+                {openSections.price && (
+                  <div className="space-y-1 text-xs">
+                    {priceRanges.map(p => (
+                      <Link
+                        key={p.value}
+                        href={buildUrl({ priceRange: selectedPriceRange === p.value ? undefined : p.value, page: '1' })}
+                        onClick={() => setMobileFilterOpen(false)}
+                        className={`block py-1.5 px-2 rounded ${selectedPriceRange === p.value ? 'bg-[#214E34] text-white font-bold' : ''}`}
+                      >
+                        {p.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
-            <div className="pt-6 border-t border-[#E5E8E0]">
+            <div className="pt-6 border-t border-[#E5E8E0] space-y-2">
               <button
+                type="button"
                 onClick={() => setMobileFilterOpen(false)}
-                className="w-full py-2.5 bg-[#214E34] text-white text-xs font-bold rounded-lg"
+                className="w-full py-2.5 bg-[#214E34] text-white text-xs font-bold rounded-lg shadow-sm hover:bg-[#163A28] transition-colors"
               >
                 Apply Filters ({products.length} Results)
               </button>
+              {hasActiveFilters && (
+                <Link
+                  href="/shop"
+                  onClick={() => setMobileFilterOpen(false)}
+                  className="block text-center py-2 text-xs font-bold text-[#B86F4B] hover:underline"
+                >
+                  Reset All Filters
+                </Link>
+              )}
             </div>
           </div>
         </div>

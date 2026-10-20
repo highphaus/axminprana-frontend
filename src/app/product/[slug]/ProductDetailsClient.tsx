@@ -10,6 +10,8 @@ import {
   Truck,
   RotateCcw,
   CheckCircle2,
+  Clock,
+  ShieldAlert,
   Heart,
   Plus,
   Minus,
@@ -17,7 +19,11 @@ import {
   Info,
   Calendar,
   Layers,
-  Leaf
+  Leaf,
+  Share2,
+  Copy,
+  Check,
+  MessageCircle
 } from 'lucide-react';
 import { IProduct, fetchFromAPI } from '../../../lib/api';
 import { useCart } from '../../../context/CartContext';
@@ -52,6 +58,34 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [reviewsList, setReviewsList] = useState(product.related || []);
+  const [shareCopied, setShareCopied] = useState(false);
+  const [showShareDropdown, setShowShareDropdown] = useState(false);
+
+  const handleShare = async () => {
+    const url = typeof window !== 'undefined' ? window.location.href : '';
+    const title = `${product.name} | Axmin Prana Ayurveda`;
+    const text = `Explore ${product.name} - authentic classical formulation by Axmin Prana Ayurveda.`;
+
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ title, text, url });
+        return;
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          console.warn('Share error:', err);
+        }
+      }
+    }
+
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(url);
+        setShareCopied(true);
+        setTimeout(() => setShareCopied(false), 2500);
+      } catch (e) {}
+    }
+    setShowShareDropdown(prev => !prev);
+  };
 
   const isWishlisted = wishlist.includes(product._id);
 
@@ -61,12 +95,16 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
 
   const originalPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentPackSize = selectedVariant ? selectedVariant.packSize : product.packSize;
+  const currentStock = selectedVariant && typeof selectedVariant.stock === 'number' ? selectedVariant.stock : product.stock;
+  const isOutOfStock = currentStock <= 0;
 
   const handleAddToCart = () => {
+    if (isOutOfStock) return;
     addToCart(product, quantity, currentPackSize, activePrice);
   };
 
   const handleBuyNow = () => {
+    if (isOutOfStock) return;
     addToCart(product, quantity, currentPackSize, activePrice);
     router.push('/checkout');
   };
@@ -150,9 +188,29 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
         {/* Right: Product Details & Controls */}
         <div className="lg:col-span-6 space-y-6">
           <div>
-            <span className="text-xs font-bold tracking-widest uppercase text-[#B86F4B]">
-              {product.brand} • {product.category}
-            </span>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold tracking-widest uppercase text-[#B86F4B]">
+                {product.brand} • {product.category}
+              </span>
+              <button
+                type="button"
+                onClick={handleShare}
+                className="inline-flex items-center gap-1.5 text-xs text-[#687168] hover:text-[#214E34] font-medium transition-colors cursor-pointer px-2.5 py-1 rounded-md bg-[#FAF8F1] border border-[#E5E8E0] hover:border-[#214E34]"
+                title="Share this formulation"
+              >
+                {shareCopied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    <span className="text-emerald-700 font-bold">Link Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="w-3.5 h-3.5 text-[#214E34]" />
+                    <span>Share</span>
+                  </>
+                )}
+              </button>
+            </div>
             <h1 className="text-2xl sm:text-3xl font-serif-brand font-bold text-[#214E34] mt-1 leading-snug">
               {product.name}
             </h1>
@@ -173,7 +231,7 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
                 ))}
               </div>
               <span className="font-bold text-[#202820]">{product.rating}</span>
-              <span className="text-[#687168]">({product.reviewCount} Verified Patron Reviews)</span>
+              <span className="text-[#687168]">({product.reviewCount} Verified Customer Reviews)</span>
               <span className="text-green-700 font-semibold flex items-center gap-1 ml-2">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Authentic AYUSH Formula
               </span>
@@ -227,13 +285,36 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
             </div>
           )}
 
+          {/* Real-time Dispensary Stock Status Badge */}
+          <div className="pt-2">
+            {isOutOfStock ? (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-xs font-bold text-red-700">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse shrink-0"></span>
+                <span>Currently Out of Stock at the Dispensary. Restocking shortly.</span>
+              </div>
+            ) : currentStock <= 5 ? (
+              <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-lg flex items-center gap-2 text-xs font-semibold text-amber-800">
+                <span className="w-2 h-2 rounded-full bg-amber-600 shrink-0"></span>
+                <span>Limited Classical Batch: Only <strong>{currentStock} units</strong> remaining!</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-xs text-green-800 font-semibold">
+                <span className="w-2 h-2 rounded-full bg-green-600 shrink-0"></span>
+                <span>In Stock & Ready for Immediate Ayurvedic Dispatch ({currentStock} available)</span>
+              </div>
+            )}
+          </div>
+
           {/* Quantity & CTA Buttons */}
-          <div className="space-y-3 pt-2">
+          <div className="space-y-3 pt-1">
             <div className="flex items-center gap-2 sm:gap-3">
               {/* Quantity */}
-              <div className="flex items-center border border-[#E5E8E0] rounded-lg bg-white overflow-hidden shrink-0">
+              <div className={`flex items-center border border-[#E5E8E0] rounded-lg bg-white overflow-hidden shrink-0 ${
+                isOutOfStock ? 'opacity-50 pointer-events-none' : ''
+              }`}>
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  disabled={isOutOfStock}
                   className="px-2.5 sm:px-3 py-2.5 hover:bg-[#FAF8F1] transition-colors text-[#202820]"
                   aria-label="Decrease quantity"
                 >
@@ -242,6 +323,7 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
                 <span className="px-2.5 sm:px-4 text-xs font-bold text-[#202820]">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
+                  disabled={isOutOfStock}
                   className="px-2.5 sm:px-3 py-2.5 hover:bg-[#FAF8F1] transition-colors text-[#202820]"
                   aria-label="Increase quantity"
                 >
@@ -252,9 +334,14 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
               {/* Add to Basket */}
               <button
                 onClick={handleAddToCart}
-                className="flex-1 min-w-0 py-3 px-3 sm:px-6 bg-[#214E34] hover:bg-[#163A28] text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-1.5 sm:gap-2 truncate"
+                disabled={isOutOfStock}
+                className={`flex-1 min-w-0 py-3 px-3 sm:px-6 text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-1.5 sm:gap-2 truncate ${
+                  isOutOfStock
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed border border-gray-300'
+                    : 'bg-[#214E34] hover:bg-[#163A28] text-white'
+                }`}
               >
-                <span>Add to<span className="hidden sm:inline"> Ayurvedic</span> Basket</span>
+                <span>{isOutOfStock ? 'Sold Out / Out of Stock' : 'Add to Ayurvedic Basket'}</span>
               </button>
 
               {/* Wishlist */}
@@ -262,6 +349,7 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
                 onClick={() => toggleWishlist(product._id)}
                 className="p-3 border border-[#E5E8E0] bg-white rounded-lg hover:border-[#214E34] transition-colors shrink-0"
                 aria-label="Save to Wishlist"
+                title={isWishlisted ? "In Wishlist" : "Save to Wishlist"}
               >
                 <Heart
                   className={`w-5 h-5 ${
@@ -269,14 +357,73 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
                   }`}
                 />
               </button>
+
+              {/* Share Button with Dropdown */}
+              <div className="relative shrink-0">
+                <button
+                  type="button"
+                  onClick={handleShare}
+                  className="p-3 border border-[#E5E8E0] bg-white rounded-lg hover:border-[#214E34] hover:text-[#214E34] text-[#687168] transition-colors flex items-center justify-center cursor-pointer"
+                  aria-label="Share formulation"
+                  title="Share this formulation"
+                >
+                  <Share2 className="w-5 h-5" />
+                </button>
+
+                {/* Share Link Copied Toast */}
+                {shareCopied && (
+                  <div className="absolute right-0 bottom-full mb-2 bg-[#214E34] text-white text-[11px] font-semibold py-1.5 px-3 rounded-lg shadow-xl whitespace-nowrap animate-in fade-in flex items-center gap-1.5 z-30">
+                    <Check className="w-3.5 h-3.5 text-amber-300" />
+                    <span>Link Copied!</span>
+                  </div>
+                )}
+
+                {/* Share Dropdown */}
+                {showShareDropdown && !shareCopied && (
+                  <div className="absolute right-0 bottom-full mb-2 bg-white border border-[#E5E8E0] rounded-xl shadow-xl p-2 w-52 z-30 space-y-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                          navigator.clipboard.writeText(window.location.href);
+                          setShareCopied(true);
+                          setTimeout(() => setShareCopied(false), 2500);
+                        }
+                        setShowShareDropdown(false);
+                      }}
+                      className="w-full flex items-center gap-2 px-2.5 py-2 text-xs font-medium text-[#202820] hover:bg-[#FAF8F1] rounded-md transition-colors"
+                    >
+                      <Copy className="w-3.5 h-3.5 text-[#214E34]" />
+                      <span>Copy Product Link</span>
+                    </button>
+                    <a
+                      href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+                        `Check out ${product.name} on Axmin Prana Ayurveda: ${typeof window !== 'undefined' ? window.location.href : ''}`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setShowShareDropdown(false)}
+                      className="w-full flex items-center gap-2 px-2.5 py-2 text-xs font-medium text-[#202820] hover:bg-[#FAF8F1] rounded-md transition-colors"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5 text-green-600" />
+                      <span>Share on WhatsApp</span>
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Buy Now */}
             <button
               onClick={handleBuyNow}
-              className="w-full py-3 px-4 sm:px-6 bg-[#B86F4B] hover:bg-[#a05e3d] text-white text-xs sm:text-sm font-bold rounded-lg shadow-sm transition-colors text-center"
+              disabled={isOutOfStock}
+              className={`w-full py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold rounded-lg shadow-sm transition-colors text-center ${
+                isOutOfStock
+                  ? 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed'
+                  : 'bg-[#B86F4B] hover:bg-[#a05e3d] text-white'
+              }`}
             >
-              Buy Now with 1-Click Checkout
+              {isOutOfStock ? 'Batch Currently Unavailable' : 'Buy Now with 1-Click Checkout'}
             </button>
           </div>
 
@@ -321,6 +468,23 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
             <div className="p-3 bg-[#FAF8F1] rounded-lg border border-[#E5E8E0]/70">
               <span className="text-[#687168] block text-[10px] uppercase font-semibold">Batch & Expiry</span>
               <span className="font-bold text-[#214E34]">{product.batchNumber} • {product.expiryMonths} Mos</span>
+            </div>
+          </div>
+
+          {/* Cancellation & No Return/Exchange Policy Strip */}
+          <div className="p-3.5 bg-[#FAF8F1] rounded-xl border border-[#E5E8E0] space-y-2 text-xs">
+            <div className="flex items-start gap-2 text-[#202820]">
+              <Clock className="w-4 h-4 text-[#214E34] shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-[#214E34]">Order Cancellation:</strong> Permitted{' '}
+                <span className="font-semibold text-[#B86F4B]">strictly before dispensary shipping dispatch</span>.
+              </div>
+            </div>
+            <div className="flex items-start gap-2 text-[#202820] pt-1.5 border-t border-[#E5E8E0]/60">
+              <ShieldAlert className="w-4 h-4 text-[#B86F4B] shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-[#214E34]">No Return & No Exchange:</strong> In adherence to Ayurvedic clinical hygiene, pure oil sterilization, and safety standards, products once shipped/delivered cannot be returned or exchanged.
+              </div>
             </div>
           </div>
         </div>
