@@ -6,23 +6,18 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   Search,
-  ShoppingBag,
+  ShoppingCart,
   Heart,
   User as UserIcon,
   Menu,
   X,
   ChevronDown,
   Sparkles,
-  ShieldCheck,
-  Compass,
   ArrowRight,
-  Flame,
-  Wind,
-  Mountain,
-  ChevronRight,
-  Phone
+  Phone,
+  Building2,
+  ChevronRight
 } from 'lucide-react';
-import { InstagramIcon, FacebookIcon } from './SocialIcons';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useQuiz } from '../context/QuizContext';
@@ -30,12 +25,15 @@ import { fetchFromAPI, IProduct } from '../lib/api';
 
 export const Header: React.FC = () => {
   const router = useRouter();
-  const { itemCount, openDrawer } = useCart();
+  const { itemCount, subtotal, openDrawer } = useCart();
   const { user, isAuthenticated, isAdmin, wishlist, logout } = useAuth();
   const { openQuiz } = useQuiz();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mobileExpandedSection, setMobileExpandedSection] = useState<string | null>(null);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
+
+  // Search state
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<IProduct[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -54,7 +52,7 @@ export const Header: React.FC = () => {
     const timer = setTimeout(async () => {
       setIsSearching(true);
       try {
-        const res = await fetchFromAPI(`/products?search=${encodeURIComponent(searchQuery)}&limit=5`);
+        const res = await fetchFromAPI(`/products?search=${encodeURIComponent(searchQuery)}&limit=6`);
         if (res.success && res.data) {
           setSearchResults(res.data);
           setShowSearchDropdown(true);
@@ -64,7 +62,7 @@ export const Header: React.FC = () => {
       } finally {
         setIsSearching(false);
       }
-    }, 250);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, [searchQuery]);
@@ -96,596 +94,695 @@ export const Header: React.FC = () => {
   const handleMouseLeave = () => {
     megaMenuTimeoutRef.current = setTimeout(() => {
       setActiveMegaMenu(null);
-    }, 200);
+    }, 180);
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#FAF8F1] border-b border-[#E5E8E0]">
-      {/* 1. Announcement Bar */}
-      <div className="bg-[#163A28] text-white text-[10px] sm:text-xs py-1.5 sm:py-2 px-3 sm:px-4 font-medium tracking-wide">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 mx-auto sm:mx-0 text-center sm:text-left truncate">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#B86F4B] shrink-0 animate-pulse"></span>
-            <span className="truncate">Pan-India Express Delivery on Orders Above ₹999</span>
-            <span className="hidden md:inline text-white/40">|</span>
-            <span className="hidden md:inline text-[#DDE7D9]">100% Certified Classical Formulations</span>
-          </div>
-          <div className="hidden sm:flex items-center gap-3 md:gap-4 text-[11px] text-[#DDE7D9] shrink-0">
-            <a
-              href="tel:+917561836584"
-              className="flex items-center gap-1 hover:text-white transition-colors"
-              title="Customer Care Helpline"
-            >
-              <Phone className="w-3 h-3 text-[#B86F4B]" />
-              <span className="hidden md:inline">+91 75618 36584</span>
-              <span className="md:hidden">Call</span>
-            </a>
-            <span className="text-white/30">|</span>
-            <a
-              href="https://www.instagram.com/axmin_prana_?utm_source=ig_web_button_share_sheet&xtok=ZDNlZDc0MzIxNw=="
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors flex items-center gap-1"
-              title="Follow us on Instagram"
-              aria-label="Instagram"
-            >
-              <InstagramIcon className="w-3.5 h-3.5 text-[#E1306C]" />
-              <span className="hidden lg:inline">@axmin_prana_</span>
-            </a>
-            <a
-              href="https://www.facebook.com/profile.php?id=61594779705906"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors"
-              title="Follow us on Facebook"
-              aria-label="Facebook"
-            >
-              <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
-            </a>
-            <span className="text-white/30">|</span>
-            <Link href="/track-order" className="hover:text-white transition-colors">
-              Track Order
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. Main Header Bar */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-3 flex items-center justify-between gap-2 sm:gap-4">
-        {/* Mobile Hamburger Button */}
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="lg:hidden p-2 -ml-1 text-[#214E34] hover:bg-[#DDE7D9]/50 rounded-md transition-colors shrink-0"
-          aria-label="Toggle mobile menu"
-        >
-          {isMobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
-        </button>
-
-        {/* Brand Logo - Authentic Emblem & Vedic Typography */}
-        <Link href="/" className="flex items-center gap-2 sm:gap-3 select-none group min-w-0">
-          <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full overflow-hidden shadow-xs border border-[#214E34]/20 bg-[#FAF8F1] shrink-0 group-hover:scale-105 transition-transform duration-300">
-            <Image
-              src="/images/logo.png"
-              alt="Axmin Prana Ayurvedic Products Logo"
-              width={56}
-              height={56}
-              className="w-full h-full object-contain"
-              priority
-            />
-          </div>
-          <div className="flex flex-col min-w-0">
-            <span className="text-base sm:text-xl md:text-2xl font-serif-brand font-bold tracking-[0.06em] sm:tracking-[0.08em] text-[#214E34] leading-tight truncate">
-              AXMIN PRANA
-            </span>
-            <span className="text-[7px] sm:text-[8px] md:text-[9px] tracking-[0.16em] sm:tracking-[0.24em] uppercase text-[#B86F4B] font-bold truncate">
-              Ayurvedic Products • Pure • Holistic
-            </span>
-          </div>
-        </Link>
-
-        {/* Live Search Bar - Desktop */}
-        <div ref={searchRef} className="hidden md:flex flex-1 max-w-md mx-6 relative">
-          <form onSubmit={handleSearchSubmit} className="w-full relative">
-            <input
-              type="text"
-              placeholder="Search formulations, herbs (e.g. Ashwagandha, Triphala, Saffron)..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              onFocus={() => {
-                if (searchResults.length > 0) setShowSearchDropdown(true);
-              }}
-              className="w-full pl-9 pr-4 py-2 text-xs rounded-full border border-[#E5E8E0] bg-white focus:bg-[#FAF8F1] focus:border-[#214E34] transition-all text-[#202820] placeholder-[#687168]"
-            />
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-[#687168]" />
-          </form>
-
-          {/* Search Dropdown Preview */}
-          {showSearchDropdown && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg border border-[#E5E8E0] shadow-xl overflow-hidden z-50">
-              <div className="p-2 border-b border-[#E5E8E0] bg-[#FAF8F1] flex justify-between items-center text-[11px] text-[#687168]">
-                <span>Matching Formulations</span>
-                {isSearching && <span className="animate-pulse">Searching...</span>}
-              </div>
-              <div className="max-h-72 overflow-y-auto divide-y divide-[#E5E8E0]">
-                {searchResults.length === 0 ? (
-                  <div className="p-4 text-center text-xs text-[#687168]">
-                    No formulations found for &quot;{searchQuery}&quot;
-                  </div>
-                ) : (
-                  searchResults.map(item => (
-                    <Link
-                      key={item._id}
-                      href={`/product/${item.slug}`}
-                      onClick={() => setShowSearchDropdown(false)}
-                      className="flex items-center gap-3 p-2.5 hover:bg-[#FAF8F1] transition-colors"
-                    >
-                      <div className="relative w-10 h-10 rounded overflow-hidden bg-[#FAF8F1] shrink-0 border border-[#E5E8E0]">
-                        <Image
-                          src={item.thumbnail || item.images[0]}
-                          alt={item.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-[#202820] truncate">{item.name}</p>
-                        <p className="text-[10px] text-[#687168]">{item.packSize}</p>
-                      </div>
-                      <span className="text-xs font-bold text-[#214E34] shrink-0">
-                        ₹{item.salePrice || item.price}
-                      </span>
-                    </Link>
-                  ))
-                )}
-              </div>
-              <div className="p-2 bg-[#FAF8F1] border-t border-[#E5E8E0] text-center">
-                <Link
-                  href={`/shop?search=${encodeURIComponent(searchQuery)}`}
-                  onClick={() => setShowSearchDropdown(false)}
-                  className="text-xs font-semibold text-[#214E34] hover:text-[#B86F4B] transition-colors"
-                >
-                  View all results &rarr;
-                </Link>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right Action Icons */}
-        <div className="flex items-center gap-1 sm:gap-3 md:gap-4 shrink-0">
-          {/* Wishlist */}
-          <Link
-            href="/account"
-            className="relative p-2 text-[#214E34] hover:text-[#B86F4B] transition-colors"
-            title="Wishlist"
-          >
-            <Heart className="w-5 h-5" />
-            {wishlist.length > 0 && (
-              <span className="absolute top-1 right-1 w-4 h-4 bg-[#B86F4B] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                {wishlist.length}
-              </span>
-            )}
-          </Link>
-
-          {/* Account */}
-          {isAuthenticated ? (
-            <div className="relative group">
-              <Link
-                href="/account"
-                className="flex items-center gap-1.5 p-1.5 text-xs font-medium text-[#214E34] hover:text-[#B86F4B] transition-colors rounded-md"
+    <header className="sticky top-0 z-40 bg-white border-b border-[#EDE8E0]">
+      {/* MAIN HEADER ROW (Unified MNC Standard: Logo | Embedded Search | Actions) */}
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+          <div className="flex items-center justify-between gap-6 lg:gap-10">
+            
+            {/* LEFT: Mobile Menu Toggle + Clean MNC Brand Logo */}
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="lg:hidden p-2 -ml-2 text-[#241A14] hover:bg-[#F5F2EC] rounded-lg transition-colors"
+                aria-label="Toggle navigation menu"
               >
-                <UserIcon className="w-5 h-5" />
-                <span className="hidden sm:inline font-semibold">{user?.name?.split(' ')[0]}</span>
-                <ChevronDown className="w-3.5 h-3.5 hidden sm:inline" />
-              </Link>
-              <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[#E5E8E0] rounded-lg shadow-lg py-1 hidden group-hover:block z-50">
-                <Link href="/account" className="block px-4 py-2 text-xs text-[#202820] hover:bg-[#FAF8F1]">
-                  My Account & Orders
-                </Link>
-                {isAdmin && (
-                  <Link href="/admin" className="block px-4 py-2 text-xs text-[#214E34] font-bold hover:bg-[#DDE7D9]/50">
-                    Admin Console
-                  </Link>
-                )}
-                <button
-                  onClick={logout}
-                  className="w-full text-left px-4 py-2 text-xs text-red-600 hover:bg-[#FAF8F1]"
-                >
-                  Sign Out
-                </button>
-              </div>
-            </div>
-          ) : (
-            <Link
-              href="/account/login"
-              className="flex items-center gap-1.5 p-1.5 text-xs font-semibold text-[#214E34] hover:text-[#B86F4B] transition-colors"
-            >
-              <UserIcon className="w-5 h-5" />
-              <span className="hidden sm:inline">Sign In</span>
-            </Link>
-          )}
+                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
 
-          {/* Cart Trigger */}
-          <button
-            onClick={openDrawer}
-            className="flex items-center gap-2 px-3.5 py-1.5 bg-[#214E34] hover:bg-[#163A28] text-white rounded-full transition-all shadow-xs"
-            aria-label="Open shopping basket"
-          >
-            <ShoppingBag className="w-4 h-4" />
-            <span className="text-xs font-bold">{itemCount}</span>
-          </button>
+              {/* Clean MNC Logo Lockup (NO decorative || lines) */}
+              <Link href="/" className="flex items-center gap-3 group select-none">
+                <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-white border border-[#E6E0D4] shrink-0 flex items-center justify-center">
+                  <Image
+                    src="/images/logo.png"
+                    alt="Axmin Prana"
+                    width={40}
+                    height={40}
+                    className="w-full h-full object-contain p-0.5"
+                    priority
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg sm:text-xl font-serif font-bold tracking-[0.14em] text-[#1A1A1A] group-hover:text-[#1F4E34] transition-colors leading-none">
+                    AXMIN PRANA
+                  </span>
+                  <span className="text-[9px] uppercase tracking-[0.24em] text-[#7A746E] font-medium mt-1 leading-none">
+                    Haridwar • Ayurveda
+                  </span>
+                </div>
+              </Link>
+            </div>
+
+            {/* CENTER: Minimalist Embedded Search Bar */}
+            <div className="hidden lg:flex flex-1 max-w-lg mx-auto relative" ref={searchRef}>
+              <form onSubmit={handleSearchSubmit} className="relative w-full">
+                <div className="relative flex items-center">
+                  <input
+                    type="text"
+                    placeholder="Search classical tailams, herbal churnas, rasayanas..."
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    onFocus={() => {
+                      if (searchResults.length > 0) setShowSearchDropdown(true);
+                    }}
+                    className="w-full pl-10 pr-20 py-2.5 text-xs rounded-full border border-[#DCD5C9] bg-[#FAF8F5] focus:bg-white focus:border-[#2C1D11] shadow-none transition-all text-[#1A1A1A] placeholder-[#8C867E] outline-none"
+                  />
+                  <Search className="absolute left-3.5 w-4 h-4 text-[#8C867E]" />
+                  
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-16 text-[#888] hover:text-black p-1"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+
+                  <button
+                    type="submit"
+                    className="absolute right-1 px-3.5 py-1.5 bg-[#1F4E34] hover:bg-[#163B27] text-white text-xs font-medium rounded-full transition-colors"
+                  >
+                    Search
+                  </button>
+                </div>
+              </form>
+
+              {/* Instant Search Dropdown Modal */}
+              {showSearchDropdown && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl border border-[#EDE8E0] shadow-xl overflow-hidden z-50">
+                  <div className="p-3 border-b border-[#F0ECE4] bg-[#FAF8F5] flex justify-between items-center text-xs text-[#666]">
+                    <span className="font-semibold text-[#1A1A1A]">Matching Formulations</span>
+                    {isSearching && <span className="text-[#1F4E34] font-medium">Searching...</span>}
+                  </div>
+                  <div className="max-h-80 overflow-y-auto divide-y divide-[#F5F2EC]">
+                    {searchResults.length === 0 ? (
+                      <div className="p-6 text-center text-xs text-[#888]">
+                        No formulations found for &quot;{searchQuery}&quot;
+                      </div>
+                    ) : (
+                      searchResults.map(item => (
+                        <Link
+                          key={item._id}
+                          href={`/product/${item.slug}`}
+                          onClick={() => setShowSearchDropdown(false)}
+                          className="p-3 hover:bg-[#FAF8F5] flex items-center justify-between gap-3 transition-colors group"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="relative w-11 h-11 rounded-lg overflow-hidden bg-white shrink-0 border border-[#EDE8E0]">
+                              <Image
+                                src={item.thumbnail || item.images[0]}
+                                alt={item.name}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <div>
+                              <h4 className="text-xs font-semibold text-[#1A1A1A] group-hover:text-[#1F4E34] transition-colors line-clamp-1">
+                                {item.name}
+                              </h4>
+                              <span className="text-[10px] text-[#777]">{item.packSize} • {item.category}</span>
+                            </div>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <span className="text-xs font-bold text-[#1F4E34]">
+                              ₹{item.salePrice || item.price}
+                            </span>
+                          </div>
+                        </Link>
+                      ))
+                    )}
+                  </div>
+                  <div className="p-2.5 bg-[#FAF8F5] border-t border-[#EDE8E0] text-center">
+                    <Link
+                      href={`/shop?search=${encodeURIComponent(searchQuery)}`}
+                      onClick={() => setShowSearchDropdown(false)}
+                      className="text-xs font-medium text-[#1F4E34] hover:underline inline-flex items-center gap-1"
+                    >
+                      <span>View all search results</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* RIGHT: Currency, Wholesale, Account, Wishlist & Cart */}
+            <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+              {/* User Account */}
+              {isAuthenticated ? (
+                <div className="relative group">
+                  <Link
+                    href="/account"
+                    className="flex items-center gap-1.5 p-1.5 text-xs font-medium text-[#1A1A1A] hover:text-[#1F4E34] transition-colors"
+                  >
+                    <UserIcon className="w-5 h-5 text-[#241A14]" />
+                    <span className="hidden md:inline">{user?.name?.split(' ')[0]}</span>
+                  </Link>
+                  <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-[#EDE8E0] rounded-xl shadow-xl py-1 hidden group-hover:block z-50">
+                    <Link href="/account" className="block px-4 py-2 text-xs text-[#1A1A1A] hover:bg-[#FAF8F5]">
+                      My Orders & Profile
+                    </Link>
+                    {isAdmin && (
+                      <Link href="/admin" className="block px-4 py-2 text-xs text-[#1F4E34] font-semibold hover:bg-[#FAF8F5]">
+                        Admin Dashboard
+                      </Link>
+                    )}
+                    <button
+                      onClick={logout}
+                      className="w-full text-left px-4 py-2 text-xs text-red-600 hover:bg-[#FAF8F5]"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  href="/account/login"
+                  className="flex items-center gap-1.5 p-1.5 text-xs font-medium text-[#1A1A1A] hover:text-[#1F4E34] transition-colors"
+                  title="Sign In"
+                >
+                  <UserIcon className="w-5 h-5 text-[#241A14]" />
+                  <span className="hidden md:inline">Sign In</span>
+                </Link>
+              )}
+
+              {/* Wishlist Heart */}
+              <Link
+                href="/wishlist"
+                className="p-1.5 text-[#241A14] hover:text-[#1F4E34] transition-colors relative"
+                title="Wishlist"
+              >
+                <Heart className="w-5 h-5" />
+                {wishlist.length > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#B03A6A] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {wishlist.length}
+                  </span>
+                )}
+              </Link>
+
+              {/* Shopping Cart (Matching other icons' color and minimalist style) */}
+              <button
+                onClick={openDrawer}
+                className="p-1.5 text-[#241A14] hover:text-[#1F4E34] transition-colors relative"
+                aria-label="Open Cart Drawer"
+                title="Shopping Cart"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {itemCount > 0 && (
+                  <span className="absolute -top-0.5 -right-1 min-w-[17px] h-[17px] bg-[#1F4E34] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-0.5">
+                    {itemCount}
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* MOBILE SEARCH BAR (Compact on mobile) */}
+          <div className="lg:hidden mt-2.5 relative" ref={searchRef}>
+            <form onSubmit={handleSearchSubmit} className="relative w-full">
+              <input
+                type="text"
+                placeholder="Search oils, churnas, rasayanas..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-8 py-2 text-xs rounded-full border border-[#DCD5C9] bg-[#FAF8F5] focus:bg-white focus:border-[#2C1D11] outline-none text-[#1A1A1A] placeholder-[#8C867E]"
+              />
+              <Search className="absolute left-3 top-2.5 w-3.5 h-3.5 text-[#8C867E]" />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-2 text-[#888] hover:text-black"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </form>
+          </div>
         </div>
       </div>
 
-      {/* 3. Luxury Category Mega-Menu Navigation (Desktop) */}
-      <nav className="hidden lg:block bg-white border-t border-[#E5E8E0] py-2.5 px-4 relative">
-        <div className="max-w-7xl mx-auto flex items-center justify-center gap-8 text-xs font-semibold text-[#202820] tracking-wide uppercase">
-          <Link href="/shop" className="hover:text-[#214E34] transition-colors">
-            Shop All
-          </Link>
+      {/* 3. DESKTOP CATEGORY NAVIGATION BAR (Arranged strictly on ONE clean line with NO underline bars) */}
+      <nav className="hidden lg:block bg-white border-t border-[#EDE8E0]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center gap-8 py-3 text-[13px] font-medium text-[#241A14] tracking-normal whitespace-nowrap">
+            
+            {/* Shop All */}
+            <Link
+              href="/shop"
+              className="hover:text-[#1F4E34] transition-colors whitespace-nowrap"
+            >
+              Shop All
+            </Link>
 
-          {/* Skin Care Dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => handleMouseEnter('skincare')}
-            onMouseLeave={handleMouseLeave}
-          >
+            {/* Classical Oils & Tailams Mega Menu */}
+            <div
+              className="relative"
+              onMouseEnter={() => handleMouseEnter('oils')}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Link
+                href="/shop?format=Oil"
+                className={`flex items-center gap-1 transition-colors whitespace-nowrap ${
+                  activeMegaMenu === 'oils' ? 'text-[#1F4E34]' : 'hover:text-[#1F4E34]'
+                }`}
+              >
+                <span>Classical Oils & Tailams</span>
+                <ChevronDown className={`w-3.5 h-3.5 text-[#888] transition-transform ${activeMegaMenu === 'oils' ? 'rotate-180 text-[#1F4E34]' : ''}`} />
+              </Link>
+
+              {/* Mega Dropdown Panel for Oils */}
+              {activeMegaMenu === 'oils' && (
+                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-3 w-[780px] bg-white rounded-2xl border border-[#EDE8E0] shadow-xl p-6 z-50 animate-in fade-in duration-150">
+                  <div className="grid grid-cols-12 gap-6 text-left">
+                    {/* Col 1 */}
+                    <div className="col-span-4 space-y-2.5 border-r border-[#F0ECE4] pr-4">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#777] block mb-1">
+                        Classical Formulations
+                      </span>
+                      <ul className="space-y-2 text-xs text-[#333]">
+                        <li>
+                          <Link href="/product/kumkumadi-radiant-tailam" className="hover:text-[#1F4E34] transition-colors block font-semibold text-[#111]">
+                            Kumkumadi Radiant Tailam
+                            <span className="block text-[10px] text-[#777] font-normal">Kashmiri Saffron & Sandalwood</span>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/product/bringadi-hair-therapy-tailam" className="hover:text-[#1F4E34] transition-colors block font-semibold text-[#111]">
+                            Bringadi Hair Therapy Tailam
+                            <span className="block text-[10px] text-[#777] font-normal">Indigofera & Eclipta Alba</span>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/shop?format=Oil" className="hover:text-[#1F4E34] transition-colors block">
+                            Mahanarayan Joint Care Tailam
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/shop?format=Oil" className="hover:text-[#1F4E34] transition-colors block">
+                            Ksheerabala Scalp & Sleep Tailam
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* Col 2 */}
+                    <div className="col-span-4 space-y-2.5 border-r border-[#F0ECE4] pr-4">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#777] block mb-1">
+                        Cold-Pressed Carrier Oils
+                      </span>
+                      <ul className="space-y-2 text-xs text-[#333]">
+                        <li>
+                          <Link href="/shop?format=Oil" className="hover:text-[#1F4E34] transition-colors block">
+                            Virgin Sweet Almond Oil (Badam)
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/shop?format=Oil" className="hover:text-[#1F4E34] transition-colors block">
+                            Cold-Pressed Black Sesame Tailam
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/shop?format=Oil" className="hover:text-[#1F4E34] transition-colors block">
+                            Extra Virgin Coconut Oil (Narikela)
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/shop?format=Oil" className="hover:text-[#1F4E34] transition-colors block">
+                            Golden Jojoba & Castor Oils
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* Col 3 */}
+                    <div className="col-span-4">
+                      <div className="bg-[#FAF8F5] rounded-xl p-3.5 border border-[#EDE8E0] flex flex-col justify-between h-full">
+                        <div>
+                          <span className="text-[10px] font-semibold text-[#8C6207] uppercase">Featured</span>
+                          <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden my-2 bg-white">
+                            <Image
+                              src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=400&q=80"
+                              alt="Kumkumadi"
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <h5 className="font-semibold text-xs text-[#111]">Kumkumadi Radiant Tailam</h5>
+                          <p className="text-[10px] text-[#666]">Charaka Samhita Classical Formulation</p>
+                        </div>
+                        <Link
+                          href="/product/kumkumadi-radiant-tailam"
+                          className="mt-2 w-full py-1.5 bg-[#1F4E34] text-white text-[11px] font-medium rounded-lg text-center hover:bg-[#163B27] transition-colors"
+                        >
+                          View Product
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Herbal Churnas Mega Menu */}
+            <div
+              className="relative"
+              onMouseEnter={() => handleMouseEnter('churnas')}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Link
+                href="/shop?format=Churna"
+                className={`flex items-center gap-1 transition-colors whitespace-nowrap ${
+                  activeMegaMenu === 'churnas' ? 'text-[#1F4E34]' : 'hover:text-[#1F4E34]'
+                }`}
+              >
+                <span>Herbal Churnas & Medicines</span>
+                <ChevronDown className={`w-3.5 h-3.5 text-[#888] transition-transform ${activeMegaMenu === 'churnas' ? 'rotate-180 text-[#1F4E34]' : ''}`} />
+              </Link>
+
+              {/* Mega Dropdown Panel for Churnas */}
+              {activeMegaMenu === 'churnas' && (
+                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-3 w-[780px] bg-white rounded-2xl border border-[#EDE8E0] shadow-xl p-6 z-50 animate-in fade-in duration-150">
+                  <div className="grid grid-cols-12 gap-6 text-left">
+                    {/* Col 1 */}
+                    <div className="col-span-4 space-y-2.5 border-r border-[#F0ECE4] pr-4">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#777] block mb-1">
+                        Classical Churnas
+                      </span>
+                      <ul className="space-y-2 text-xs text-[#333]">
+                        <li>
+                          <Link href="/product/triphala-bio-active-churna" className="hover:text-[#1F4E34] transition-colors block font-semibold text-[#111]">
+                            Triphala Bio-Active Gut Cleanse
+                            <span className="block text-[10px] text-[#777] font-normal">Haritaki, Bibhitaki & Amla</span>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/shop?format=Churna" className="hover:text-[#1F4E34] transition-colors block">
+                            Avipattikar Churna (Digestive Agni)
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/shop?format=Churna" className="hover:text-[#1F4E34] transition-colors block">
+                            Sitopaladi Churna (Respiratory Prana)
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/shop?format=Churna" className="hover:text-[#1F4E34] transition-colors block">
+                            Trikatu Bio-Metabolic Churna
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* Col 2 */}
+                    <div className="col-span-4 space-y-2.5 border-r border-[#F0ECE4] pr-4">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#777] block mb-1">
+                        Rasayanas & Single Roots
+                      </span>
+                      <ul className="space-y-2 text-xs text-[#333]">
+                        <li>
+                          <Link href="/product/ashwagandha-supreme-ksm66" className="hover:text-[#1F4E34] transition-colors block font-semibold text-[#111]">
+                            Ashwagandha KSM-66® Organic
+                            <span className="block text-[10px] text-[#777] font-normal">Stress Cortisol Balance</span>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/product/chyawanprash-supreme-awaleha" className="hover:text-[#1F4E34] transition-colors block font-semibold text-[#111]">
+                            Chyawanprash Awaleha (A2 Ghee)
+                            <span className="block text-[10px] text-[#777] font-normal">Wild Amla Rejuvenation</span>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/shop?category=Immunity%20%26%20Rasayana" className="hover:text-[#1F4E34] transition-colors block">
+                            Brahmi Bacopa Cognitive Elixir
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/shop?category=Immunity%20%26%20Rasayana" className="hover:text-[#1F4E34] transition-colors block">
+                            Shatavari Root Vitality Churna
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* Col 3 */}
+                    <div className="col-span-4">
+                      <div className="bg-[#FAF8F5] rounded-xl p-3.5 border border-[#EDE8E0] flex flex-col justify-between h-full">
+                        <div>
+                          <span className="text-[10px] font-semibold text-[#1F4E34] uppercase">AYUSH Certified</span>
+                          <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden my-2 bg-white">
+                            <Image
+                              src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=400&q=80"
+                              alt="Ashwagandha"
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <h5 className="font-semibold text-xs text-[#111]">Ashwagandha KSM-66®</h5>
+                          <p className="text-[10px] text-[#666]">Standardized Organic Root Extract</p>
+                        </div>
+                        <Link
+                          href="/product/ashwagandha-supreme-ksm66"
+                          className="mt-2 w-full py-1.5 bg-[#1F4E34] text-white text-[11px] font-medium rounded-lg text-center hover:bg-[#163B27] transition-colors"
+                        >
+                          View Product
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Direct Category Links (Arranged on ONE Clean Line) */}
             <Link
               href="/shop?category=Skin%20Radiance%20%26%20Kanti"
-              className="hover:text-[#214E34] flex items-center gap-1 transition-colors py-1"
+              className="hover:text-[#1F4E34] transition-colors whitespace-nowrap"
             >
-              Skin Care <ChevronDown className="w-3 h-3 text-[#687168]" />
+              Skin Radiance
             </Link>
-            {activeMegaMenu === 'skincare' && (
-              <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-72 bg-white rounded-xl border border-[#E5E8E0] shadow-xl p-4 z-50 text-left normal-case">
-                <span className="text-[10px] font-bold text-[#B86F4B] uppercase tracking-wider block mb-2">
-                  Kanti Vardhaka Rituals
-                </span>
-                <div className="space-y-2 text-xs">
-                  <Link href="/product/kumkumadi-radiant-tailam" className="block text-[#202820] hover:text-[#214E34] font-medium">
-                    Kumkumadi Miraculous Radiant Tailam
-                  </Link>
-                  <Link href="/shop?category=Skin%20Radiance%20%26%20Kanti" className="block text-[#687168] hover:text-[#214E34]">
-                    Red Sandalwood & Saffron Elixirs
-                  </Link>
-                  <Link href="/shop?category=Skin%20Radiance%20%26%20Kanti" className="block text-[#687168] hover:text-[#214E34]">
-                    Pure Rose Floral Water (Gulab Jal)
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
 
-          {/* Hair Care Dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => handleMouseEnter('haircare')}
-            onMouseLeave={handleMouseLeave}
-          >
             <Link
               href="/shop?category=Hair%20Therapy%20%26%20Keshya"
-              className="hover:text-[#214E34] flex items-center gap-1 transition-colors py-1"
+              className="hover:text-[#1F4E34] transition-colors whitespace-nowrap"
             >
-              Hair Care <ChevronDown className="w-3 h-3 text-[#687168]" />
+              Hair Therapy
             </Link>
-            {activeMegaMenu === 'haircare' && (
-              <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-72 bg-white rounded-xl border border-[#E5E8E0] shadow-xl p-4 z-50 text-left normal-case">
-                <span className="text-[10px] font-bold text-[#B86F4B] uppercase tracking-wider block mb-2">
-                  Keshya Scalp Therapy
-                </span>
-                <div className="space-y-2 text-xs">
-                  <Link href="/product/bringadi-hair-therapy-tailam" className="block text-[#202820] hover:text-[#214E34] font-medium">
-                    Bringadi Intensive Scalp & Hair Tailam
-                  </Link>
-                  <Link href="/shop?category=Hair%20Therapy%20%26%20Keshya" className="block text-[#687168] hover:text-[#214E34]">
-                    Amla & Reetha Herbal Cleansers
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
 
-          {/* Ayurvedic Medicines & Rasayanas */}
-          <div
-            className="relative"
-            onMouseEnter={() => handleMouseEnter('medicines')}
-            onMouseLeave={handleMouseLeave}
-          >
             <Link
-              href="/shop?category=Immunity%20%26%20Rasayana"
-              className="hover:text-[#214E34] flex items-center gap-1 transition-colors py-1"
+              href="/bulk-orders"
+              className="hover:text-[#1F4E34] transition-colors whitespace-nowrap"
             >
-              Ayurvedic Medicines <ChevronDown className="w-3 h-3 text-[#687168]" />
+              Bulk & Wholesale
             </Link>
-            {activeMegaMenu === 'medicines' && (
-              <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-80 bg-white rounded-xl border border-[#E5E8E0] shadow-xl p-4 z-50 text-left normal-case">
-                <span className="text-[10px] font-bold text-[#B86F4B] uppercase tracking-wider block mb-2">
-                  Classical Rasayanas & Churnas
-                </span>
-                <div className="space-y-2 text-xs">
-                  <Link href="/product/chyawanprash-supreme-awaleha" className="block text-[#202820] hover:text-[#214E34] font-medium">
-                    Chyawanprash Supreme (A2 Gir Cow Ghee)
-                  </Link>
-                  <Link href="/product/ashwagandha-supreme-ksm66" className="block text-[#202820] hover:text-[#214E34] font-medium">
-                    Ashwagandha KSM-66® Organic Capsules
-                  </Link>
-                  <Link href="/product/triphala-bio-active-churna" className="block text-[#202820] hover:text-[#214E34] font-medium">
-                    Triphala Bio-Active Gut Cleanse Churna
-                  </Link>
-                  <Link href="/product/brahmi-shankhpushpi-elixir" className="block text-[#202820] hover:text-[#214E34] font-medium">
-                    Brahmi & Shankhpushpi Cognitive Elixir
-                  </Link>
-                  <Link href="/product/organic-guduchi-giloy-drops" className="block text-[#202820] hover:text-[#214E34] font-medium">
-                    Organic Giloy (Guduchi) Amrita Drops
-                  </Link>
-                </div>
-              </div>
-            )}
+
+            <Link
+              href="/articles"
+              className="hover:text-[#1F4E34] transition-colors whitespace-nowrap"
+            >
+              Vedic Journal
+            </Link>
+
+            {/* Prakriti Dosha Quiz Button (Minimalist, No Tacky Borders) */}
+            <button
+              onClick={openQuiz}
+              className="hover:text-[#1F4E34] transition-colors inline-flex items-center gap-1.5 whitespace-nowrap font-medium"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-[#C59B27]" />
+              <span>Prakriti Quiz</span>
+            </button>
           </div>
-
-          {/* Herbal Oils */}
-          <Link href="/shop?format=Oil" className="hover:text-[#214E34] transition-colors">
-            Herbal Oils
-          </Link>
-
-          {/* By Concern / Wellness Goals */}
-          <div
-            className="relative"
-            onMouseEnter={() => handleMouseEnter('concern')}
-            onMouseLeave={handleMouseLeave}
-          >
-            <span className="hover:text-[#214E34] flex items-center gap-1 cursor-pointer transition-colors py-1">
-              Shop by Concern <ChevronDown className="w-3 h-3 text-[#687168]" />
-            </span>
-            {activeMegaMenu === 'concern' && (
-              <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-72 bg-white rounded-xl border border-[#E5E8E0] shadow-xl p-4 z-50 text-left normal-case">
-                <span className="text-[10px] font-bold text-[#B86F4B] uppercase tracking-wider block mb-2">
-                  Targeted Health Needs
-                </span>
-                <div className="space-y-2 text-xs">
-                  <Link href="/shop?category=Stress%20%26%20Cognitive%20Health" className="block text-[#202820] hover:text-[#214E34]">
-                    Stress, Anxiety & Restful Sleep
-                  </Link>
-                  <Link href="/shop?category=Digestive%20%26%20Gut%20Health" className="block text-[#202820] hover:text-[#214E34]">
-                    Gut Health & Bio-Detox (Triphala)
-                  </Link>
-                  <Link href="/shop?category=Skin%20Radiance%20%26%20Kanti" className="block text-[#202820] hover:text-[#214E34]">
-                    Skin Glow & Hyperpigmentation
-                  </Link>
-                  <Link href="/shop?category=Joint%20Care%20%26%20Sandhi" className="block text-[#202820] hover:text-[#214E34]">
-                    Joint Mobility & Back Relief
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Prakriti Quiz Trigger */}
-          <button
-            onClick={openQuiz}
-            className="flex items-center gap-1.5 px-3 py-1 bg-[#DDE7D9] text-[#214E34] hover:bg-[#214E34] hover:text-white rounded-full font-bold transition-all normal-case text-xs shadow-2xs border border-[#214E34]/20"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-[#B86F4B]" />
-            <span>Prakriti Quiz</span>
-          </button>
-
-          {/* Prakriti & Dosha Science */}
-          <Link href="/education" className="flex items-center gap-1 text-[#B86F4B] font-bold hover:underline transition-colors normal-case">
-            <Compass className="w-3.5 h-3.5" /> Dosha Guide
-          </Link>
         </div>
       </nav>
 
-      {/* 4. Mobile Menu Drawer */}
+      {/* 4. MOBILE SLIDE-OUT DRAWER MENU (MNC Standard) */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/50" onClick={() => setIsMobileMenuOpen(false)}>
+        <div
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs lg:hidden animate-in fade-in duration-200"
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
           <div
-            className="w-[85vw] max-w-xs sm:max-w-sm h-full bg-[#FAF8F1] p-4 sm:p-5 shadow-2xl flex flex-col justify-between overflow-y-auto"
+            className="w-[85vw] max-w-sm h-full bg-white p-5 shadow-2xl overflow-y-auto flex flex-col justify-between"
             onClick={e => e.stopPropagation()}
           >
-            <div>
-              <div className="flex items-center justify-between pb-4 border-b border-[#E5E8E0]">
+            <div className="space-y-5">
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between pb-3.5 border-b border-[#EDE8E0]">
                 <div className="flex items-center gap-2.5">
-                  <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[#214E34]/20 bg-[#FAF8F1] shrink-0">
-                    <Image
-                      src="/images/logo.png"
-                      alt="Axmin Prana Logo"
-                      width={32}
-                      height={32}
-                      className="w-full h-full object-contain"
-                    />
+                  <div className="w-8 h-8 rounded-full overflow-hidden border border-[#EDE8E0]">
+                    <Image src="/images/logo.png" alt="Logo" width={32} height={32} className="w-full h-full object-contain" />
                   </div>
-                  <span className="font-serif-brand font-bold text-base text-[#214E34]">
-                    AXMIN PRANA
-                  </span>
+                  <div>
+                    <span className="font-serif font-bold text-[#1A1A1A] tracking-wider text-sm block leading-none">
+                      AXMIN PRANA
+                    </span>
+                    <span className="text-[9px] uppercase tracking-wider text-[#888]">
+                      Authentic Ayurveda
+                    </span>
+                  </div>
                 </div>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  aria-label="Close menu"
-                  className="p-1.5 -mr-1 text-[#202820] hover:text-[#214E34]"
+                  className="p-1 rounded-lg text-[#666] hover:text-black hover:bg-[#F5F2EC] transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              {/* Mobile Search */}
-              <form onSubmit={handleSearchSubmit} className="mt-4 relative">
-                <input
-                  type="text"
-                  placeholder="Search herbs & formulas..."
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-md border border-[#E5E8E0] bg-white text-[#202820]"
-                />
-                <Search className="absolute left-3 top-2.5 w-4 h-4 text-[#687168]" />
-              </form>
-
-              {/* Mobile Prakriti Quiz Callout */}
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  openQuiz();
-                }}
-                className="mt-3 w-full p-2.5 bg-[#DDE7D9] hover:bg-[#c8d9c2] border border-[#214E34]/20 rounded-xl flex items-center justify-between text-left transition-colors"
-              >
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-[#B86F4B]" />
-                  <div>
-                    <span className="text-xs font-bold text-[#214E34] block">Take Prakriti Quiz</span>
-                    <span className="text-[10px] text-[#687168]">Find your Ayurvedic body constitution</span>
-                  </div>
-                </div>
-                <ChevronRight className="w-4 h-4 text-[#214E34]" />
-              </button>
-
-              {/* Mobile Links */}
-              <div className="mt-6 space-y-3 text-sm font-medium text-[#202820]">
+              {/* Navigation Links */}
+              <div className="space-y-1 text-sm font-medium text-[#241A14]">
                 <Link
                   href="/shop"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-1.5 hover:text-[#214E34] font-bold"
+                  className="block py-2.5 px-3 rounded-lg hover:bg-[#FAF8F5] transition-colors"
                 >
                   Shop All Formulations
                 </Link>
+
+                {/* Oils Accordion */}
+                <div className="border-b border-[#F0ECE4] pb-1">
+                  <button
+                    onClick={() => setMobileExpandedSection(mobileExpandedSection === 'oils' ? null : 'oils')}
+                    className="w-full flex items-center justify-between py-2.5 px-3 rounded-lg hover:bg-[#FAF8F5] text-left transition-colors"
+                  >
+                    <span>Classical Oils & Tailams</span>
+                    <ChevronDown className={`w-4 h-4 text-[#888] transition-transform ${mobileExpandedSection === 'oils' ? 'rotate-180' : ''}`} />
+                  </button>
+                  {mobileExpandedSection === 'oils' && (
+                    <div className="pl-6 pr-3 py-1.5 space-y-2 text-xs text-[#555]">
+                      <Link
+                        href="/product/kumkumadi-radiant-tailam"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-1 hover:text-[#1F4E34]"
+                      >
+                        Kumkumadi Radiant Tailam
+                      </Link>
+                      <Link
+                        href="/product/bringadi-hair-therapy-tailam"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-1 hover:text-[#1F4E34]"
+                      >
+                        Bringadi Hair Therapy Tailam
+                      </Link>
+                      <Link
+                        href="/shop?format=Oil"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-1 hover:text-[#1F4E34]"
+                      >
+                        All Cold-Pressed Oils
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                {/* Churnas Accordion */}
+                <div className="border-b border-[#F0ECE4] pb-1">
+                  <button
+                    onClick={() => setMobileExpandedSection(mobileExpandedSection === 'churnas' ? null : 'churnas')}
+                    className="w-full flex items-center justify-between py-2.5 px-3 rounded-lg hover:bg-[#FAF8F5] text-left transition-colors"
+                  >
+                    <span>Herbal Churnas & Medicines</span>
+                    <ChevronDown className={`w-4 h-4 text-[#888] transition-transform ${mobileExpandedSection === 'churnas' ? 'rotate-180' : ''}`} />
+                  </button>
+                  {mobileExpandedSection === 'churnas' && (
+                    <div className="pl-6 pr-3 py-1.5 space-y-2 text-xs text-[#555]">
+                      <Link
+                        href="/product/triphala-bio-active-churna"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-1 hover:text-[#1F4E34]"
+                      >
+                        Triphala Bio-Active Gut Cleanse
+                      </Link>
+                      <Link
+                        href="/product/ashwagandha-supreme-ksm66"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-1 hover:text-[#1F4E34]"
+                      >
+                        Ashwagandha KSM-66® Organic
+                      </Link>
+                      <Link
+                        href="/product/chyawanprash-supreme-awaleha"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-1 hover:text-[#1F4E34]"
+                      >
+                        Chyawanprash Awaleha (A2 Ghee)
+                      </Link>
+                      <Link
+                        href="/shop?format=Churna"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-1 hover:text-[#1F4E34]"
+                      >
+                        All Herbal Churnas
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
                 <Link
                   href="/shop?category=Skin%20Radiance%20%26%20Kanti"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-1.5 hover:text-[#214E34]"
+                  className="block py-2.5 px-3 rounded-lg hover:bg-[#FAF8F5] transition-colors"
                 >
-                  Skin Care (Kumkumadi)
+                  Skin Radiance
                 </Link>
+
                 <Link
                   href="/shop?category=Hair%20Therapy%20%26%20Keshya"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-1.5 hover:text-[#214E34]"
+                  className="block py-2.5 px-3 rounded-lg hover:bg-[#FAF8F5] transition-colors"
                 >
-                  Hair Therapy (Bringadi)
+                  Hair Therapy
                 </Link>
+
                 <Link
-                  href="/shop?category=Immunity%20%26%20Rasayana"
+                  href="/bulk-orders"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-1.5 hover:text-[#214E34]"
+                  className="block py-2.5 px-3 rounded-lg hover:bg-[#FAF8F5] transition-colors"
                 >
-                  Immunity & Rasayanas (Chyawanprash)
+                  Bulk & Wholesale (B2B)
                 </Link>
-                <Link
-                  href="/shop?category=Stress%20%26%20Cognitive%20Health"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-1.5 hover:text-[#214E34]"
-                >
-                  Stress & Sleep (Ashwagandha)
-                </Link>
-                <Link
-                  href="/shop?category=Digestive%20%26%20Gut%20Health"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-1.5 hover:text-[#214E34]"
-                >
-                  Gut Health & Detox (Triphala)
-                </Link>
-                <Link
-                  href="/education"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-1.5 text-[#B86F4B] font-semibold"
-                >
-                  Dosha & Prakriti Guide
-                </Link>
+
                 <Link
                   href="/articles"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-1.5 hover:text-[#214E34]"
+                  className="block py-2.5 px-3 rounded-lg hover:bg-[#FAF8F5] transition-colors"
                 >
-                  Ayurveda Journal
+                  Vedic Journal
                 </Link>
-                <Link
-                  href="/about"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-1.5 hover:text-[#214E34]"
+
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    openQuiz();
+                  }}
+                  className="w-full text-left py-2.5 px-3 rounded-lg text-[#1F4E34] font-medium flex items-center justify-between hover:bg-[#FAF8F5] transition-colors"
                 >
-                  Our Vedic Heritage
-                </Link>
-                <Link
-                  href="/track-order"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-1.5 text-[#214E34]"
-                >
-                  Track Order
-                </Link>
-                {isAdmin && (
-                  <Link
-                    href="/admin"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block py-1.5 text-[#214E34] font-bold"
-                  >
-                    Admin Console
-                  </Link>
-                )}
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-[#C59B27]" />
+                    Prakriti Dosha Diagnostic
+                  </span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
 
-            {/* Mobile Footer Auth */}
-            <div className="pt-6 border-t border-[#E5E8E0]">
-              {isAuthenticated ? (
-                <div className="space-y-2">
-                  <p className="text-xs text-[#687168]">Signed in as {user?.name}</p>
-                  <Link
-                    href="/account"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block w-full py-2 text-center text-xs font-semibold bg-[#214E34] text-white rounded-md"
-                  >
-                    My Account
-                  </Link>
-                  <button
-                    onClick={() => {
-                      logout();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="block w-full py-1.5 text-center text-xs text-red-600"
-                  >
-                    Sign Out
-                  </button>
-                </div>
-              ) : (
-                <Link
-                  href="/account/login"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block w-full py-2.5 text-center text-xs font-semibold bg-[#214E34] text-white rounded-md"
-                >
-                  Sign In / Create Account
-                </Link>
-              )}
-            </div>
-
-            {/* Mobile Contact & Social Details */}
-            <div className="pt-6 mt-6 border-t border-[#E5E8E0] space-y-3">
-              <div className="text-[11px] text-[#687168] space-y-1.5">
-                <a href="tel:+917561836584" className="flex items-center gap-2 text-[#214E34] font-semibold">
-                  <Phone className="w-3.5 h-3.5 text-[#B86F4B]" />
-                  <span>+91 75618 36584</span>
-                </a>
-                <a href="mailto:axminprana@gmail.com" className="block text-[#687168] hover:text-[#214E34]">
-                  axminprana@gmail.com
-                </a>
-              </div>
-              <div className="flex items-center gap-3 pt-2">
-                <a
-                  href="https://www.instagram.com/axmin_prana_?utm_source=ig_web_button_share_sheet&xtok=ZDNlZDc0MzIxNw=="
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs font-medium text-[#E1306C] bg-[#FAF8F1] px-3 py-1.5 rounded-md border border-[#E5E8E0]"
-                >
-                  <InstagramIcon className="w-4 h-4" />
-                  <span>Instagram</span>
-                </a>
-                <a
-                  href="https://www.facebook.com/profile.php?id=61594779705906"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs font-medium text-[#1877F2] bg-[#FAF8F1] px-3 py-1.5 rounded-md border border-[#E5E8E0]"
-                >
-                  <FacebookIcon className="w-4 h-4" />
-                  <span>Facebook</span>
-                </a>
-              </div>
+            {/* Bottom Support & Info */}
+            <div className="pt-4 border-t border-[#EDE8E0] space-y-2.5 text-xs">
+              <a
+                href="tel:+917561836584"
+                className="flex items-center gap-2.5 text-[#1A1A1A] font-medium"
+              >
+                <Phone className="w-4 h-4 text-[#1F4E34]" />
+                <span>+91 75618 36584 (Helpline)</span>
+              </a>
+              <p className="text-[10px] text-[#888]">
+                © {new Date().getFullYear()} Axmin Prana Ayurveda • AYUSH Certified
+              </p>
             </div>
           </div>
         </div>

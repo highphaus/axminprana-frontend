@@ -13,12 +13,17 @@ import {
   Quote,
   BookOpen,
   ChevronRight,
-  Heart
+  Heart,
+  Building2,
+  FileCheck2,
+  Truck
 } from 'lucide-react';
 import { IProduct, ICategory, IArticle, API_BASE } from '../lib/api';
 import { ProductCard } from '../components/ProductCard';
 import { HomeQuizBanner } from '../components/HomeQuizBanner';
 import { HeroSection } from '../components/HeroSection';
+import { CategoryNavStrip } from '../components/CategoryNavStrip';
+import { ArchCategories } from '../components/ArchCategories';
 
 async function getHomeData() {
   try {
@@ -46,11 +51,15 @@ async function getHomeData() {
 export default async function HomePage() {
   const { bestsellers, categories, articles } = await getHomeData();
 
+  // Filter products by oils vs churnas for VedaOils section layout
+  const oilProducts = bestsellers.filter(p => p.format === 'Oil' || p.category.includes('Radiance') || p.category.includes('Hair'));
+  const herbalFormulations = bestsellers.filter(p => p.format !== 'Oil');
+
   const concernCategories = [
     {
       title: 'Skin Glow & Radiance',
       subtitle: 'Pure Kashmiri Saffron & Red Sandalwood',
-      image: 'https://images.unsplash.com/photo-1608248597359-0091d3d6e5a4?auto=format&fit=crop&w=600&q=80',
+      image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=600&q=80',
       link: '/shop?category=Skin%20Radiance%20%26%20Kanti'
     },
     {
@@ -74,99 +83,156 @@ export default async function HomePage() {
   ];
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-12">
-      {/* 1. Royal Vedic Interactive Formulation Hero Section */}
+    <div className="space-y-12 sm:space-y-16 pb-16 bg-[#FAF7F2]">
+      {/* 1. VedaOils Category Navigation Strip (Directly beneath Header & Search) */}
+      <CategoryNavStrip />
+
+      {/* 2. Full-Width Campaign Carousel Banner + Trust Highlights Row */}
       <HeroSection initialProducts={bestsellers} />
 
-      {/* 1.5. Interactive Dosha & Prakriti Assessment Banner */}
+      {/* 3. VedaOils Signature Scalloped Indian Palace Arch Categories */}
+      <ArchCategories />
+
+      {/* 4. Section 1: Carrier & Classical Oils */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#1A1A1A] tracking-tight">
+              Carrier & Classical Oils
+            </h2>
+            <p className="text-xs sm:text-sm text-[#777] mt-0.5 font-normal">
+              100% Pure, Cold-Pressed and Formulated from Classical Texts
+            </p>
+          </div>
+          <Link
+            href="/shop?format=Oil"
+            className="text-xs sm:text-sm font-medium text-[#1A1A1A] hover:text-[#1F4E34] hover:underline transition-colors shrink-0"
+          >
+            View all &rarr;
+          </Link>
+        </div>
+
+        {/* Product Cards Grid: 2 cols on mobile, 3 on tablet, 4 on desktop */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6">
+          {(oilProducts.length > 0 ? oilProducts : bestsellers.slice(0, 4)).map(product => (
+            <ProductCard key={product._id} product={product} />
+          ))}
+        </div>
+      </section>
+
+      {/* 5. As Seen In / Media Trust Strip */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-2xl border border-[#EDE8E0] p-6">
+          <div className="text-center mb-4">
+            <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] font-medium text-[#888]">
+              Featured & Recognized In
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center justify-around gap-6 sm:gap-12 opacity-65 grayscale hover:grayscale-0 transition-all text-[#1A1A1A]">
+            <span className="font-serif text-xl sm:text-2xl font-bold tracking-widest">ELLE</span>
+            <span className="font-serif text-xl sm:text-2xl font-bold tracking-widest">VOGUE</span>
+            <span className="font-serif text-xl sm:text-2xl font-medium tracking-wider">LOKMAT</span>
+            <span className="font-sans text-xl sm:text-2xl font-extrabold uppercase tracking-tight">MID-DAY</span>
+            <span className="font-serif text-xl sm:text-2xl font-bold tracking-widest">GRAZIA</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Section 2: Classical Churnas & Rasayanas */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#1A1A1A] tracking-tight">
+              Herbal Churnas & Medicines
+            </h2>
+            <p className="text-xs sm:text-sm text-[#777] mt-0.5 font-normal">
+              Ancient Charaka Samhita Formulas Prepared with Active Botanicals
+            </p>
+          </div>
+          <Link
+            href="/shop"
+            className="text-xs sm:text-sm font-medium text-[#1A1A1A] hover:text-[#1F4E34] hover:underline transition-colors shrink-0"
+          >
+            View all &rarr;
+          </Link>
+        </div>
+
+        {/* Product Cards Grid: 2 cols on mobile, 3 on tablet, 4 on desktop */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6">
+          {(herbalFormulations.length > 0 ? herbalFormulations : bestsellers).map(product => (
+            <ProductCard key={product._id} product={product} />
+          ))}
+        </div>
+      </section>
+
+      {/* 6. VedaOils B2B Wholesale & Bulk Supply Feature */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-gradient-to-r from-[#2C1D11] to-[#452C1C] text-white rounded-3xl p-6 sm:p-10 shadow-lg relative overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+            <div className="lg:col-span-8 space-y-3">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase bg-[#C59B27] text-black">
+                <Building2 className="w-3.5 h-3.5" /> Commercial B2B & Wholesale Supply
+              </span>
+              <h3 className="text-2xl sm:text-4xl font-serif font-bold text-white leading-tight">
+                Direct-From-Dispensary Wholesale Classical Oils & Botanicals
+              </h3>
+              <p className="text-xs sm:text-sm text-[#E5D5BA] max-w-2xl font-light leading-relaxed">
+                Supplying premier Ayurvedic resort spas, holistic clinics, cosmetic formulators, and wellness retailers with lab-tested raw tailams, unrefined oils, and standardized herbal churnas. Batch COA & GC/MS reports provided.
+              </p>
+              <div className="flex flex-wrap gap-4 pt-1 text-xs text-white/90 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <FileCheck2 className="w-4 h-4 text-[#C59B27]" /> Batch-Wise COA & Lab Reports
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Truck className="w-4 h-4 text-[#C59B27]" /> Pan-India Express Freight & Pallet Dispatches
+                </span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-center">
+              <Link
+                href="/bulk-orders"
+                className="px-6 py-3.5 bg-[#C59B27] hover:bg-[#A67C1E] text-black text-xs sm:text-sm font-bold rounded-full shadow-md transition-all text-center flex items-center justify-center gap-2"
+              >
+                <span>Request Wholesale Quotation</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <a
+                href="tel:+917561836584"
+                className="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-semibold rounded-full transition-colors text-center"
+              >
+                Call B2B Desk: +91 75618 36584
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Interactive Dosha Diagnostic Banner */}
       <HomeQuizBanner />
 
-      {/* 2. Shop by Category - Curated Ayurveda Catalog Grid */}
+      {/* 8. Shop by Wellness Concern */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4 border-b border-[#E5E8E0] pb-4">
+        <div className="flex items-center justify-between mb-6 pb-2 border-b border-[#EAE5DC]">
           <div>
-            <span className="text-xs font-bold tracking-widest uppercase text-[#B86F4B]">Targeted Wellness</span>
-            <h2 className="text-2xl sm:text-3xl font-serif-brand font-bold text-[#214E34] mt-1">
-              Shop by Category
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-[#2C1D11] tracking-tight">
+              Shop by Wellness Concern — <span className="font-normal text-[#666] text-base sm:text-xl lg:text-2xl">Targeted Holistic Healing</span>
             </h2>
           </div>
           <Link
             href="/shop"
-            className="text-xs font-semibold text-[#214E34] hover:text-[#B86F4B] flex items-center gap-1 transition-colors"
+            className="px-4 py-1.5 rounded-full bg-[#F0ECE4] hover:bg-[#E5E0D5] text-[#2C1D11] text-xs font-bold transition-colors shrink-0"
           >
-            View all categories <ArrowRight className="w-3.5 h-3.5" />
+            View all
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categories.map(cat => (
-            <Link
-              key={cat._id}
-              href={`/shop?category=${encodeURIComponent(cat.name)}`}
-              className="group bg-white rounded-xl border border-[#E5E8E0] hover:border-[#214E34] hover:shadow-md transition-all p-3 text-center flex flex-col items-center justify-between"
-            >
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-[#FAF8F1] mb-3 border border-[#E5E8E0] group-hover:scale-105 transition-transform">
-                <Image
-                  src={cat.image}
-                  alt={cat.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <h3 className="text-xs font-bold text-[#202820] group-hover:text-[#214E34] transition-colors leading-snug">
-                {cat.name}
-              </h3>
-              <p className="text-[10px] text-[#687168] mt-1 font-medium">{cat.doshaAffinity || 'All Doshas'}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* 3. Bestsellers - Desktop Grid + Smooth Mobile Scroll */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4 border-b border-[#E5E8E0] pb-4">
-          <div>
-            <span className="text-xs font-bold tracking-widest uppercase text-[#B86F4B]">Time-Tested Classical Remedies</span>
-            <h2 className="text-2xl sm:text-3xl font-serif-brand font-bold text-[#214E34] mt-1">
-              Bestselling Ayurvedic Formulations
-            </h2>
-          </div>
-          <Link
-            href="/shop?sort=popularity"
-            className="text-xs font-semibold text-[#214E34] hover:text-[#B86F4B] flex items-center gap-1 transition-colors"
-          >
-            Explore all bestsellers <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        {/* Mobile Horizontal Scroller + Desktop Grid */}
-        <div className="flex sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6 overflow-x-auto sm:overflow-visible pb-4 sm:pb-0 no-scrollbar snap-x">
-          {bestsellers.map(product => (
-            <div key={product._id} className="min-w-[220px] xs:min-w-[260px] sm:min-w-0 snap-start">
-              <ProductCard product={product} />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 4. Shop by Concern or Use - Inspired by Kama Ayurveda & Forest Essentials */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <span className="text-xs font-bold tracking-widest uppercase text-[#B86F4B]">Customized Remedies</span>
-          <h2 className="text-2xl sm:text-3xl font-serif-brand font-bold text-[#214E34] mt-1">
-            Shop by Wellness Concern
-          </h2>
-          <p className="text-xs sm:text-sm text-[#687168] mt-2">
-            Target your daily routine with classical Ayurvedic herbs tailored to specific bodily systems and doshas.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {concernCategories.map((item, idx) => (
             <Link
               key={idx}
               href={item.link}
-              className="group relative rounded-2xl overflow-hidden shadow-sm border border-[#E5E8E0] aspect-4/3 flex flex-col justify-end p-5 transition-transform hover:-translate-y-1"
+              className="group relative rounded-2xl overflow-hidden shadow-xs border border-[#EAE5DC] aspect-4/3 flex flex-col justify-end p-5 transition-transform hover:-translate-y-1"
             >
               <Image
                 src={item.image}
@@ -174,15 +240,15 @@ export default async function HomePage() {
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
               <div className="relative z-10 text-white space-y-1">
-                <span className="text-[10px] text-[#DDE7D9] font-medium tracking-wide block uppercase">
+                <span className="text-[10px] text-[#E5D5BA] font-medium tracking-wide block uppercase">
                   {item.subtitle}
                 </span>
-                <h3 className="text-base font-bold font-serif-brand text-white group-hover:text-[#DDE7D9] transition-colors">
+                <h3 className="text-base font-bold font-serif text-white group-hover:text-[#E5D5BA] transition-colors">
                   {item.title}
                 </h3>
-                <span className="text-xs font-semibold text-[#B86F4B] flex items-center gap-1 pt-1">
+                <span className="text-xs font-semibold text-[#C59B27] flex items-center gap-1 pt-1">
                   Explore Rituals &rarr;
                 </span>
               </div>
@@ -191,189 +257,82 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 5. Featured Collections Banner */}
+      {/* 9. Verified Customer Experiences */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#DDE7D9]/50 border border-[#214E34]/20 rounded-2xl p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-8 space-y-4">
-            <span className="text-xs font-bold tracking-widest uppercase text-[#B86F4B]">Classical Ayurvedic Alchemy</span>
-            <h3 className="text-2xl sm:text-3xl font-serif-brand font-bold text-[#214E34]">
-              Kumkumadi & Bringadi Royal Beauty Rituals
-            </h3>
-            <p className="text-xs sm:text-sm text-[#202820] max-w-xl leading-relaxed">
-              Formulated according to the Ashtanga Hridaya. Each batch of our facial and hair tailams is simmered over woodfire for up to 96 hours in pure copper caldrons with saffron, goat milk, and cold-pressed sesame.
-            </p>
-            <div className="flex flex-wrap gap-3 pt-2">
-              <Link
-                href="/product/kumkumadi-radiant-tailam"
-                className="px-5 py-2.5 bg-[#214E34] text-white text-xs font-semibold rounded-md hover:bg-[#163A28] shadow-2xs"
-              >
-                Kumkumadi Radiant Tailam
-              </Link>
-              <Link
-                href="/product/bringadi-hair-therapy-tailam"
-                className="px-5 py-2.5 bg-white border border-[#214E34] text-[#214E34] text-xs font-semibold rounded-md hover:bg-[#FAF8F1] shadow-2xs"
-              >
-                Bringadi Scalp Therapy Tailam
-              </Link>
-            </div>
-          </div>
-          <div className="lg:col-span-4 text-center lg:text-right">
-            <div className="p-4 bg-white/80 rounded-xl border border-[#214E34]/20 text-center space-y-1">
-              <span className="text-[10px] uppercase font-bold text-[#B86F4B]">Special Inaugural Offer</span>
-              <p className="text-xs font-bold text-[#202820]">10% Off Your Entire First Order</p>
-              <span className="inline-block font-mono text-xs font-bold bg-[#214E34] text-white px-3 py-1 rounded">
-                PRANA10
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Brand Story - Kerala & Haridwar Classical Lineage */}
-      <section className="bg-[#FAF8F1] border-y border-[#E5E8E0] py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-5">
-            <span className="text-xs font-bold tracking-widest uppercase text-[#B86F4B]">Our Vedic Heritage</span>
-            <h2 className="text-2xl sm:text-4xl font-serif-brand font-bold text-[#214E34] leading-tight">
-              The Unbroken Lineage of Charaka & Sushruta
-            </h2>
-            <p className="text-xs sm:text-sm text-[#202820] leading-relaxed">
-              Every formulation at Axmin Prana is crafted according to strict classical methods (Samskara). We never cut corners with solvent extractions or artificial fragrances. Our oils are simmered for up to 96 hours in pure copper caldrons using wood fire and raw herbs wildcrafted from organic sanctuaries in Uttarakhand and Kerala.
-            </p>
-            <div className="space-y-3 pt-2 text-xs text-[#202820]">
-              <div className="flex items-start gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-[#B86F4B] shrink-0 mt-0.5" />
-                <span><strong>Ethical Wild-Harvesting:</strong> Sourced sustainably during peak botanical potency seasons (Ritu-Charya).</span>
-              </div>
-              <div className="flex items-start gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-[#B86F4B] shrink-0 mt-0.5" />
-                <span><strong>Zero Dilution:</strong> No synthetic silicones, mineral oils, paraffin, or parabens.</span>
-              </div>
-              <div className="flex items-start gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-[#B86F4B] shrink-0 mt-0.5" />
-                <span><strong>Government Certified:</strong> Approved under Ministry of AYUSH regulatory frameworks.</span>
-              </div>
-            </div>
-            <div className="pt-3">
-              <Link
-                href="/about"
-                className="inline-flex items-center gap-2 text-xs font-bold text-[#214E34] hover:text-[#B86F4B] transition-colors"
-              >
-                Read our full formulation manifesto &rarr;
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-4">
-              <div className="relative aspect-square rounded-xl overflow-hidden shadow-md border border-[#E5E8E0]">
-                <Image
-                  src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80"
-                  alt="Ayurveda meditation and balance"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="bg-[#DDE7D9]/80 p-4 rounded-xl text-center">
-                <span className="text-2xl font-serif-brand font-bold text-[#214E34]">72-96 Hrs</span>
-                <p className="text-[11px] text-[#202820] mt-1 font-medium">Classical copper boiling for cellular bioavailability</p>
-              </div>
-            </div>
-            <div className="space-y-4 pt-8">
-              <div className="bg-[#214E34] text-white p-4 rounded-xl text-center">
-                <span className="text-2xl font-serif-brand font-bold text-[#FAF8F1]">100%</span>
-                <p className="text-[11px] text-[#DDE7D9] mt-1 font-medium">Traceable botanical ingredients from farm to jar</p>
-              </div>
-              <div className="relative aspect-square rounded-xl overflow-hidden shadow-md border border-[#E5E8E0]">
-                <Image
-                  src="https://images.unsplash.com/photo-1509358271058-acd22cc93898?auto=format&fit=crop&w=600&q=80"
-                  alt="Herbal ingredients"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. Genuine Customer Reviews */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="text-xs font-bold tracking-widest uppercase text-[#B86F4B]">Verified Experiences</span>
-          <h2 className="text-2xl sm:text-3xl font-serif-brand font-bold text-[#214E34] mt-1">
-            Revered by Over 25,000 Patrons
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <span className="text-[11px] font-bold tracking-widest uppercase text-[#C59B27]">
+            Verified Customer Reviews
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#2C1D11] mt-1">
+            Trusted by 12,43,013+ Patrons Across India
           </h2>
-          <p className="text-xs sm:text-sm text-[#687168] mt-2">
-            Real feedback from customers who have transformed their sleep, skin radiance, and digestion through authentic classical Ayurveda.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-xl border border-[#E5E8E0] shadow-2xs flex flex-col justify-between">
+          <div className="bg-white p-6 rounded-2xl border border-[#EAE5DC] shadow-2xs flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-1 text-[#B86F4B] mb-3">
+              <div className="flex items-center gap-1 text-[#E5A823] mb-3">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#B86F4B]" />
+                  <Star key={i} className="w-4 h-4 fill-[#E5A823]" />
                 ))}
               </div>
-              <Quote className="w-6 h-6 text-[#DDE7D9] mb-2" />
-              <p className="text-xs text-[#202820] leading-relaxed italic">
+              <Quote className="w-6 h-6 text-[#EAE5DC] mb-2" />
+              <p className="text-xs text-[#333] leading-relaxed italic">
                 &quot;The Kumkumadi Tailam is sublime. Within three weeks of nighttime use, my stubborn pigmentation faded significantly, and my skin has a genuine inner radiance that chemical serums never gave me.&quot;
               </p>
             </div>
-            <div className="mt-5 pt-4 border-t border-[#E5E8E0] flex items-center justify-between">
+            <div className="mt-5 pt-4 border-t border-[#F0ECE4] flex items-center justify-between">
               <div>
-                <h4 className="text-xs font-bold text-[#202820]">Meera Nambiar</h4>
-                <p className="text-[10px] text-[#687168]">Verified Buyer • Kochi, Kerala</p>
+                <h4 className="text-xs font-bold text-[#1A1A1A]">Meera Nambiar</h4>
+                <p className="text-[10px] text-[#777]">Verified Buyer • Kochi, Kerala</p>
               </div>
-              <span className="text-[10px] bg-[#DDE7D9] text-[#214E34] font-semibold px-2 py-0.5 rounded">
+              <span className="text-[10px] bg-[#FAF7F2] text-[#1F4E34] font-bold px-2 py-0.5 rounded border border-[#EAE5DC]">
                 Kumkumadi Tailam
               </span>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl border border-[#E5E8E0] shadow-2xs flex flex-col justify-between">
+          <div className="bg-white p-6 rounded-2xl border border-[#EAE5DC] shadow-2xs flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-1 text-[#B86F4B] mb-3">
+              <div className="flex items-center gap-1 text-[#E5A823] mb-3">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#B86F4B]" />
+                  <Star key={i} className="w-4 h-4 fill-[#E5A823]" />
                 ))}
               </div>
-              <Quote className="w-6 h-6 text-[#DDE7D9] mb-2" />
-              <p className="text-xs text-[#202820] leading-relaxed italic">
+              <Quote className="w-6 h-6 text-[#EAE5DC] mb-2" />
+              <p className="text-xs text-[#333] leading-relaxed italic">
                 &quot;As a corporate consultant dealing with high cortisol, the Ashwagandha KSM-66 capsules have revolutionized my evening unwinding. Deep, restorative sleep without any morning grogginess.&quot;
               </p>
             </div>
-            <div className="mt-5 pt-4 border-t border-[#E5E8E0] flex items-center justify-between">
+            <div className="mt-5 pt-4 border-t border-[#F0ECE4] flex items-center justify-between">
               <div>
-                <h4 className="text-xs font-bold text-[#202820]">Vikram Singhania</h4>
-                <p className="text-[10px] text-[#687168]">Verified Buyer • Gurgaon, Haryana</p>
+                <h4 className="text-xs font-bold text-[#1A1A1A]">Vikram Singhania</h4>
+                <p className="text-[10px] text-[#777]">Verified Buyer • Gurgaon, Haryana</p>
               </div>
-              <span className="text-[10px] bg-[#DDE7D9] text-[#214E34] font-semibold px-2 py-0.5 rounded">
+              <span className="text-[10px] bg-[#FAF7F2] text-[#1F4E34] font-bold px-2 py-0.5 rounded border border-[#EAE5DC]">
                 Ashwagandha KSM-66
               </span>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl border border-[#E5E8E0] shadow-2xs flex flex-col justify-between">
+          <div className="bg-white p-6 rounded-2xl border border-[#EAE5DC] shadow-2xs flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-1 text-[#B86F4B] mb-3">
+              <div className="flex items-center gap-1 text-[#E5A823] mb-3">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#B86F4B]" />
+                  <Star key={i} className="w-4 h-4 fill-[#E5A823]" />
                 ))}
               </div>
-              <Quote className="w-6 h-6 text-[#DDE7D9] mb-2" />
-              <p className="text-xs text-[#202820] leading-relaxed italic">
-                &quot;The Triphala churna is pure stone-ground quality. The taste is authentic (all five rasas present) and it gently normalized my digestion after years of chronic gut distress. Unmatched authenticity.&quot;
+              <Quote className="w-6 h-6 text-[#EAE5DC] mb-2" />
+              <p className="text-xs text-[#333] leading-relaxed italic">
+                &quot;The Triphala churna is pure stone-ground quality. The taste is authentic and it gently normalized my digestion after years of chronic gut distress. Unmatched authenticity.&quot;
               </p>
             </div>
-            <div className="mt-5 pt-4 border-t border-[#E5E8E0] flex items-center justify-between">
+            <div className="mt-5 pt-4 border-t border-[#F0ECE4] flex items-center justify-between">
               <div>
-                <h4 className="text-xs font-bold text-[#202820]">Dr. Ananya Roy</h4>
-                <p className="text-[10px] text-[#687168]">Verified Buyer • Kolkata, West Bengal</p>
+                <h4 className="text-xs font-bold text-[#1A1A1A]">Dr. Ananya Roy</h4>
+                <p className="text-[10px] text-[#777]">Verified Buyer • Kolkata, West Bengal</p>
               </div>
-              <span className="text-[10px] bg-[#DDE7D9] text-[#214E34] font-semibold px-2 py-0.5 rounded">
+              <span className="text-[10px] bg-[#FAF7F2] text-[#1F4E34] font-bold px-2 py-0.5 rounded border border-[#EAE5DC]">
                 Triphala Churna
               </span>
             </div>
@@ -381,20 +340,19 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 8. Educational Ayurveda Journal */}
+      {/* 10. Educational Ayurveda Journal */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4 border-b border-[#E5E8E0] pb-4">
+        <div className="flex items-center justify-between mb-6 pb-2 border-b border-[#EAE5DC]">
           <div>
-            <span className="text-xs font-bold tracking-widest uppercase text-[#B86F4B]">Vaidya Wisdom</span>
-            <h2 className="text-2xl sm:text-3xl font-serif-brand font-bold text-[#214E34] mt-1">
-              Ayurveda Health Journal
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-[#2C1D11] tracking-tight">
+              Ayurveda Health Journal — <span className="font-normal text-[#666] text-base sm:text-xl lg:text-2xl">Vedic Wellness & Guides</span>
             </h2>
           </div>
           <Link
             href="/articles"
-            className="text-xs font-semibold text-[#214E34] hover:text-[#B86F4B] flex items-center gap-1 transition-colors"
+            className="px-4 py-1.5 rounded-full bg-[#F0ECE4] hover:bg-[#E5E0D5] text-[#2C1D11] text-xs font-bold transition-colors shrink-0"
           >
-            Read all articles <ArrowRight className="w-3.5 h-3.5" />
+            Read all
           </Link>
         </div>
 
@@ -403,32 +361,32 @@ export default async function HomePage() {
             <Link
               key={art._id}
               href={`/articles/${art.slug}`}
-              className="group bg-white rounded-xl border border-[#E5E8E0] overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between"
+              className="group bg-white rounded-2xl border border-[#EAE5DC] overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between"
             >
               <div>
-                <div className="relative aspect-16/10 w-full overflow-hidden bg-[#FAF8F1]">
+                <div className="relative aspect-16/10 w-full overflow-hidden bg-[#FAF7F2]">
                   <Image
                     src={art.image}
                     alt={art.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <span className="absolute top-3 left-3 bg-[#214E34] text-white text-[10px] font-semibold px-2.5 py-1 rounded shadow-xs">
+                  <span className="absolute top-3 left-3 bg-[#1F4E34] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-xs">
                     {art.category}
                   </span>
                 </div>
                 <div className="p-4 sm:p-5">
-                  <span className="text-[11px] text-[#687168] font-medium">{art.readTime} • By {art.author}</span>
-                  <h3 className="text-sm sm:text-base font-bold text-[#202820] group-hover:text-[#214E34] transition-colors mt-1.5 leading-snug">
+                  <span className="text-[11px] text-[#777] font-medium">{art.readTime} • By {art.author}</span>
+                  <h3 className="text-sm sm:text-base font-bold text-[#1A1A1A] group-hover:text-[#1F4E34] transition-colors mt-1.5 leading-snug">
                     {art.title}
                   </h3>
-                  <p className="text-xs text-[#687168] mt-2 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-[#666] mt-2 line-clamp-2 leading-relaxed">
                     {art.excerpt}
                   </p>
                 </div>
               </div>
               <div className="px-4 pb-4 sm:px-5 sm:pb-5">
-                <span className="text-xs font-semibold text-[#B86F4B] flex items-center gap-1 group-hover:underline">
+                <span className="text-xs font-bold text-[#C59B27] flex items-center gap-1 group-hover:underline">
                   Read article <ArrowRight className="w-3 h-3" />
                 </span>
               </div>
@@ -437,36 +395,33 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 9. Newsletter & Promotional Coupon Banner */}
+      {/* 11. Welcome Discount Banner */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#214E34] text-white rounded-2xl p-6 sm:p-10 lg:p-12 text-center relative overflow-hidden shadow-xl">
+        <div className="bg-[#2C1D11] text-white rounded-3xl p-6 sm:p-10 lg:p-12 text-center relative overflow-hidden shadow-xl">
           <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-            <span className="inline-block bg-[#B86F4B] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            <span className="inline-block bg-[#C59B27] text-black text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider">
               Exclusive Vedic Welcome
             </span>
-            <h3 className="text-2xl sm:text-4xl font-serif-brand font-bold">
-              Receive 10% Off Your First Order
+            <h3 className="text-2xl sm:text-4xl font-serif font-bold text-white">
+              Receive 10% Off Your First Classical Order
             </h3>
-            <p className="text-xs sm:text-sm text-[#DDE7D9] leading-relaxed">
-              Use code <strong className="font-mono text-white bg-white/20 px-2 py-0.5 rounded">PRANA10</strong> at checkout. Plus receive our complimentary 28-page Dinacharya Daily Wellness Guide directly in your inbox.
+            <p className="text-xs sm:text-sm text-[#E5D5BA] leading-relaxed">
+              Use code <strong className="font-mono text-white bg-white/20 px-2.5 py-0.5 rounded">PRANA10</strong> at checkout. Plus receive our complimentary 28-page Dinacharya Daily Wellness Guide directly in your inbox.
             </p>
             <form className="pt-2 flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
               <input
                 type="email"
                 placeholder="Enter your email address"
                 required
-                className="flex-1 px-4 py-3 text-base sm:text-xs rounded-md bg-white text-[#202820] focus:outline-none"
+                className="flex-1 px-4 py-3 text-sm rounded-full bg-white text-[#1A1A1A] focus:outline-none"
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-[#B86F4B] hover:bg-[#a05e3d] text-white text-xs font-bold rounded-md transition-colors shrink-0"
+                className="px-6 py-3 bg-[#C59B27] hover:bg-[#A67C1E] text-black text-xs font-bold rounded-full transition-colors shrink-0"
               >
                 Claim 10% Code
               </button>
             </form>
-            <p className="text-[10px] text-[#DDE7D9]/60">
-              Zero spam. Unsubscribe at any time. We respect your constitutional privacy.
-            </p>
           </div>
         </div>
       </section>

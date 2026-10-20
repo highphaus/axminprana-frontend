@@ -7,7 +7,7 @@ import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { CartDrawer } from '../components/CartDrawer';
 import { QuizProvider } from '../context/QuizContext';
-import { FloatingVaidyaButton } from '../components/FloatingVaidyaButton';
+import { MobileBottomBar } from '../components/MobileBottomBar';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -47,9 +47,16 @@ export const metadata: Metadata = {
     type: 'website'
   },
   icons: {
-    icon: '/logo.png',
-    shortcut: '/logo.png',
-    apple: '/logo.png'
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon.png', type: 'image/png' },
+      { url: '/logo.png', type: 'image/png' }
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/apple-icon.png' },
+      { url: '/logo.png' }
+    ]
   }
 };
 
@@ -74,8 +81,8 @@ export default function RootLayout({
               <Header />
               <CartDrawer />
               <main className="flex-1">{children}</main>
-              <FloatingVaidyaButton />
               <Footer />
+              <MobileBottomBar />
             </QuizProvider>
           </CartProvider>
         </AuthProvider>

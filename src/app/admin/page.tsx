@@ -16,7 +16,8 @@ import {
   Trash2,
   CheckCircle2,
   Truck,
-  Tag
+  Tag,
+  Building2
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { fetchFromAPI } from '../../lib/api';
@@ -25,11 +26,12 @@ export default function AdminPage() {
   const router = useRouter();
   const { user, isAuthenticated, isAdmin } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'coupons'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'coupons' | 'enquiries'>('overview');
   const [stats, setStats] = useState<any>(null);
   const [products, setProducts] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [coupons, setCoupons] = useState<any[]>([]);
+  const [enquiries, setEnquiries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // New Product Modal
@@ -64,17 +66,19 @@ export default function AdminPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [statsRes, productsRes, ordersRes, couponsRes] = await Promise.all([
+      const [statsRes, productsRes, ordersRes, couponsRes, enquiriesRes] = await Promise.all([
         fetchFromAPI('/admin/stats'),
         fetchFromAPI('/admin/products?limit=50'),
         fetchFromAPI('/admin/orders?limit=50'),
-        fetchFromAPI('/admin/coupons')
+        fetchFromAPI('/admin/coupons'),
+        fetchFromAPI('/enquiries').catch(() => ({ success: false, data: [] }))
       ]);
 
       if (statsRes.success) setStats(statsRes.data);
       if (productsRes.success) setProducts(productsRes.data);
       if (ordersRes.success) setOrders(ordersRes.data);
       if (couponsRes.success) setCoupons(couponsRes.data);
+      if (enquiriesRes?.success) setEnquiries(enquiriesRes.data);
     } catch (e) {
       console.error('Error loading admin records', e);
     } finally {
@@ -188,6 +192,20 @@ export default function AdminPage() {
     }
   };
 
+  const handleUpdateEnquiryStatus = async (id: string, status: string) => {
+    try {
+      const res = await fetchFromAPI(`/enquiries/${id}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status })
+      });
+      if (res.success) {
+        setEnquiries(prev => prev.map(e => (e._id === id ? { ...e, status } : e)));
+      }
+    } catch (e: any) {
+      alert(e.message || 'Failed to update enquiry status');
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       {/* Top Banner */}
@@ -269,6 +287,16 @@ export default function AdminPage() {
           }`}
         >
           <Tag className="w-4 h-4" /> Promo Coupons ({coupons.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('enquiries')}
+          className={`px-4 py-2.5 rounded-t-lg transition-colors flex items-center gap-1.5 ${
+            activeTab === 'enquiries'
+              ? 'bg-[#214E34] text-white'
+              : 'bg-white border border-[#E5E8E0] text-[#202820] hover:bg-[#FAF8F1]'
+          }`}
+        >
+          <Building2 className="w-4 h-4" /> B2B Enquiries ({enquiries.length})
         </button>
       </div>
 
@@ -771,6 +799,89 @@ export default function AdminPage() {
                     </p>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 5: B2B Wholesale Enquiries */}
+          {activeTab === 'enquiries' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-sm font-bold text-[#202820] uppercase tracking-wider">
+                  Wholesale & Bulk Order Requests ({enquiries.length})
+                </h2>
+              </div>
+
+              <div className="bg-white rounded-xl border border-[#E5E8E0] shadow-2xs overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-[#FAF8F1] border-b border-[#E5E8E0] font-bold text-[#202820]">
+                      <tr>
+                        <th className="p-3">Company & Contact</th>
+                        <th className="p-3">Email & Phone</th>
+                        <th className="p-3">Product Interest</th>
+                        <th className="p-3">Required Volume</th>
+                        <th className="p-3">Notes</th>
+                        <th className="p-3">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#E5E8E0]">
+                      {enquiries.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="p-6 text-center text-[#687168]">
+                            No wholesale enquiries recorded yet.
+                          </td>
+                        </tr>
+                      ) : (
+                        enquiries.map(enq => (
+                          <tr key={enq._id} className="hover:bg-[#FAF8F1]">
+                            <td className="p-3">
+                              <span className="font-bold text-[#202820] block">{enq.company}</span>
+                              <span className="text-[11px] text-[#687168]">{enq.name} ({enq.businessType})</span>
+                            </td>
+                            <td className="p-3">
+                              <a href={`mailto:${enq.email}`} className="text-[#214E34] hover:underline block font-mono">
+                                {enq.email}
+                              </a>
+                              <a href={`tel:${enq.phone}`} className="text-[#687168] hover:text-[#202820] font-mono">
+                                {enq.phone}
+                              </a>
+                            </td>
+                            <td className="p-3 font-medium text-[#202820]">
+                              {enq.productInterest}
+                            </td>
+                            <td className="p-3 font-semibold text-[#B86F4B]">
+                              {enq.quantity}
+                            </td>
+                            <td className="p-3 text-[#687168] max-w-xs truncate" title={enq.message}>
+                              {enq.message || '—'}
+                            </td>
+                            <td className="p-3">
+                              <select
+                                value={enq.status}
+                                onChange={e => handleUpdateEnquiryStatus(enq._id, e.target.value)}
+                                className={`text-[11px] font-bold rounded px-2 py-1 border ${
+                                  enq.status === 'resolved'
+                                    ? 'bg-green-100 text-green-800 border-green-300'
+                                    : enq.status === 'contacted'
+                                    ? 'bg-blue-100 text-blue-800 border-blue-300'
+                                    : enq.status === 'in_progress'
+                                    ? 'bg-amber-100 text-amber-800 border-amber-300'
+                                    : 'bg-yellow-50 text-yellow-800 border-yellow-300'
+                                }`}
+                              >
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="contacted">Contacted</option>
+                                <option value="resolved">Resolved</option>
+                              </select>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}

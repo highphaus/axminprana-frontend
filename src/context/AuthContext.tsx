@@ -59,6 +59,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setToken(savedToken);
         fetchProfile(savedToken);
       } else {
+        const savedWishlist = localStorage.getItem('axmin_wishlist');
+        if (savedWishlist) {
+          try {
+            setWishlist(JSON.parse(savedWishlist));
+          } catch (e) {}
+        }
         setLoading(false);
       }
     } catch (e) {
@@ -123,11 +129,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const toggleWishlist = async (productId: string) => {
     if (!token) {
       // Offline wishlist toggle
+      let isAdded = false;
       setWishlist(prev => {
         const next = prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId];
+        isAdded = next.includes(productId);
+        try {
+          localStorage.setItem('axmin_wishlist', JSON.stringify(next));
+        } catch (e) {}
         return next;
       });
-      return !wishlist.includes(productId);
+      return isAdded;
     }
 
     try {

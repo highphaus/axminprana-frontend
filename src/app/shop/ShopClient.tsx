@@ -79,29 +79,29 @@ export const ShopClient: React.FC<Props> = ({
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 bg-[#FAF7F2]">
       {/* Breadcrumb Navigation */}
       <div className="mb-6">
-        <div className="flex items-center gap-2 text-xs text-[#687168] mb-2 font-medium">
-          <Link href="/" className="hover:text-[#214E34]">Home</Link>
+        <div className="flex items-center gap-2 text-xs text-[#777] mb-2 font-medium">
+          <Link href="/" className="hover:text-[#1F4E34]">Home</Link>
           <span>/</span>
-          <span className="text-[#202820]">Ayurvedic Formulations</span>
+          <span className="text-[#1A1A1A]">Ayurvedic Formulations</span>
           {selectedCategory && (
             <>
               <span>/</span>
-              <span className="text-[#214E34] font-semibold">{selectedCategory}</span>
+              <span className="text-[#1F4E34] font-semibold">{selectedCategory}</span>
             </>
           )}
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-4xl font-serif-brand font-bold text-[#214E34]">
+            <h1 className="text-2xl sm:text-4xl font-serif font-bold text-[#2C1D11] tracking-tight">
               {searchQuery
                 ? `Search: "${searchQuery}"`
-                : selectedCategory || 'All Classical Ayurvedic Formulations'}
+                : selectedCategory ? `${selectedCategory} — Pure & Natural` : 'All Classical Formulations — Cold-Pressed, Lab-Tested & Pure'}
             </h1>
-            <p className="text-xs sm:text-sm text-[#687168] mt-1.5 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#666] mt-1.5 max-w-2xl leading-relaxed">
               Standardized botanical medicines, Rasayana churnas, and classical oils formulated in strict accordance with the Charaka Samhita and certified under the Ministry of AYUSH.
             </p>
           </div>

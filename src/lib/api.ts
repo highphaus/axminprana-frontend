@@ -1,5 +1,18 @@
-const rawBase = process.env.NEXT_PUBLIC_API_URL || 'https://axminprana.onrender.com/api';
-export const API_BASE = rawBase.endsWith('/api') ? rawBase : `${rawBase.replace(/\/+$/, '')}/api`;
+function getBaseUrl() {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    const raw = process.env.NEXT_PUBLIC_API_URL;
+    return raw.endsWith('/api') ? raw : `${raw.replace(/\/+$/, '')}/api`;
+  }
+  if (typeof window !== 'undefined') {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://localhost:5000/api';
+    }
+    return 'https://axminprana.onrender.com/api';
+  }
+  return 'http://localhost:5000/api';
+}
+
+export const API_BASE = getBaseUrl();
 
 export interface IIngredient {
   name: string;

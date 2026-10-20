@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Star, Heart, ShoppingBag, Check } from 'lucide-react';
+import { Star, Heart, Plus, Check } from 'lucide-react';
 import { IProduct } from '../lib/api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -38,109 +38,114 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     toggleWishlist(product._id);
   };
 
-  const discountPercent =
-    product.salePrice && product.salePrice < product.price
-      ? Math.round(((product.price - product.salePrice) / product.price) * 100)
-      : 0;
+  const activePrice = product.salePrice || product.price;
+  const originalPrice = product.price;
+  const savings = originalPrice > activePrice ? originalPrice - activePrice : 0;
+
+  const imageUrl =
+    product.thumbnail ||
+    (product.images && product.images.length > 0
+      ? product.images[0]
+      : 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=600&q=80');
 
   return (
-    <div className="group bg-white rounded-lg border border-[#E5E8E0] hover:border-[#214E34]/40 hover:shadow-md transition-all flex flex-col h-full overflow-hidden relative">
-      <Link href={`/product/${product.slug}`} className="flex flex-col flex-1 justify-between h-full">
+    <div className="group bg-white rounded-2xl border border-[#EAE5DC] hover:border-[#214E34]/40 hover:shadow-md transition-all flex flex-col h-full overflow-hidden relative">
+      <Link href={`/product/${product.slug}`} className="flex flex-col flex-1 justify-between h-full p-3 sm:p-4">
         <div>
-          {/* Image Container */}
-          <div className="relative aspect-square w-full bg-[#FAF8F1] overflow-hidden">
+          {/* Top Row: Save ₹ Badge & Wishlist Heart */}
+          <div className="flex items-center justify-between mb-1 min-h-[24px]">
+            {savings > 0 ? (
+              <span className="text-[11px] sm:text-xs font-semibold text-[#3A3A3A] tracking-tight">
+                Save ₹{savings}
+              </span>
+            ) : (
+              <span className="text-[10px] uppercase font-bold text-[#214E34] bg-emerald-50 px-2 py-0.5 rounded">
+                Pure Herbal
+              </span>
+            )}
+
+            <button
+              onClick={handleWishlistClick}
+              className="p-1 rounded-full text-[#888] hover:text-[#B86F4B] transition-colors"
+              aria-label="Save to wishlist"
+            >
+              <Heart
+                className={`w-4 h-4 transition-colors ${
+                  isWishlisted ? 'fill-[#B86F4B] text-[#B86F4B]' : 'text-[#888]'
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Product Image Container */}
+          <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#FAF7F2] my-2 flex items-center justify-center">
             <Image
-              src={product.thumbnail || product.images[0]}
+              src={imageUrl}
               alt={product.name}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
+          </div>
 
-            {/* Badges */}
-            <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
-              {discountPercent > 0 && (
-                <span className="bg-[#B86F4B] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
-                  {discountPercent}% OFF
-                </span>
-              )}
-              {product.isBestseller && (
-                <span className="bg-[#214E34] text-white text-[10px] font-semibold px-2 py-0.5 rounded shadow-xs">
-                  Bestseller
-                </span>
-              )}
+          {/* Title */}
+          <h3 className="text-sm sm:text-base font-bold text-[#1A1A1A] group-hover:text-[#214E34] transition-colors line-clamp-1 leading-snug mt-1">
+            {product.name}
+          </h3>
+
+          {/* Star Rating & Review Count (VedaOils exact yellow star layout) */}
+          <div className="flex items-center gap-1.5 mt-1.5 text-xs">
+            <div className="flex items-center text-[#E5A823]">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-3.5 h-3.5 ${
+                    i < Math.floor(product.rating || 5)
+                      ? 'fill-[#E5A823] text-[#E5A823]'
+                      : 'text-gray-300'
+                  }`}
+                />
+              ))}
             </div>
+            <span className="text-[11px] text-[#666] font-medium">
+              {product.reviewCount || 120} Reviews
+            </span>
+          </div>
 
-            {/* Wishlist Button */}
-            <button
-              onClick={handleWishlistClick}
-              className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/95 hover:bg-white text-[#214E34] flex items-center justify-center shadow-xs transition-colors z-10"
-              aria-label="Save to wishlist"
-            >
-              <Heart
-                className={`w-4 h-4 transition-colors ${
-                  isWishlisted ? 'fill-[#B86F4B] text-[#B86F4B]' : 'text-[#687168]'
-                }`}
-              />
-            </button>
+          <p className="text-[11px] text-[#777] mt-0.5">{product.packSize}</p>
+        </div>
 
-            {/* Dosha Tag */}
-            {product.doshaBalancing?.primaryDosha && (
-              <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-xs text-[10px] font-semibold text-[#214E34] px-2 py-0.5 rounded border border-[#E5E8E0]">
-                {product.doshaBalancing.primaryDosha}
-              </div>
+        {/* Bottom Price & VedaOils Signature Circular (+) Button */}
+        <div className="pt-3 mt-2 border-t border-[#F0ECE4] flex items-center justify-between">
+          <div className="flex items-baseline gap-2">
+            <span className="text-base sm:text-lg font-extrabold text-[#111]">
+              ₹{activePrice}
+            </span>
+            {savings > 0 && (
+              <span className="text-xs text-[#888] line-through font-normal">
+                ₹{originalPrice}
+              </span>
             )}
           </div>
 
-          {/* Content */}
-          <div className="p-3 sm:p-4">
-            <div className="flex items-center gap-1 text-[#B86F4B] text-[11px] mb-1">
-              <Star className="w-3.5 h-3.5 fill-[#B86F4B]" />
-              <span className="font-bold text-[#202820]">{product.rating}</span>
-              <span className="text-[#687168]">({product.reviewCount})</span>
-            </div>
-
-            <h3 className="text-xs sm:text-sm font-semibold text-[#202820] line-clamp-2 group-hover:text-[#214E34] transition-colors leading-snug">
-              {product.name}
-            </h3>
-
-            <p className="text-[11px] text-[#687168] mt-1 font-medium">{product.packSize}</p>
-          </div>
-        </div>
-
-        <div className="p-3 sm:p-4 pt-0">
-          <div className="pt-2 border-t border-[#E5E8E0]/70 flex items-center justify-between">
-            <div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-sm sm:text-base font-bold text-[#214E34]">
-                  ₹{product.salePrice || product.price}
-                </span>
-                {product.salePrice && product.salePrice < product.price && (
-                  <span className="text-[11px] text-[#687168] line-through">
-                    ₹{product.price}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Add to Basket Button */}
-            <button
-              onClick={handleAddToCart}
-              disabled={isAdding || product.stock <= 0}
-              className={`min-w-[36px] min-h-[36px] p-2 rounded-md transition-all flex items-center justify-center ${
-                justAdded
-                  ? 'bg-green-700 text-white'
-                  : 'bg-[#214E34] text-white hover:bg-[#163A28]'
-              } disabled:opacity-50`}
-              aria-label="Add to cart"
-            >
-              {justAdded ? (
-                <Check className="w-4 h-4" />
-              ) : (
-                <ShoppingBag className="w-4 h-4" />
-              )}
-            </button>
-          </div>
+          {/* Signature VedaOils Circular Green Outline Add Button with (+) */}
+          <button
+            onClick={handleAddToCart}
+            disabled={isAdding || product.stock <= 0}
+            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#1F4E34] flex items-center justify-center transition-all ${
+              justAdded
+                ? 'bg-[#1F4E34] text-white scale-95'
+                : 'text-[#1F4E34] hover:bg-[#1F4E34] hover:text-white bg-transparent'
+            } disabled:opacity-50 shrink-0 shadow-2xs`}
+            aria-label="Add to cart"
+            title="Add to Cart"
+          >
+            {justAdded ? (
+              <Check className="w-5 h-5 stroke-[2.5]" />
+            ) : (
+              <Plus className="w-5 h-5 stroke-[2.5]" />
+            )}
+          </button>
         </div>
       </Link>
     </div>
