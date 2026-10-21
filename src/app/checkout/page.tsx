@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ShieldCheck, Lock, CreditCard, QrCode, ArrowRight, CheckCircle2, ChevronRight, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Lock, CreditCard, QrCode, Building2, ArrowRight, CheckCircle2, ChevronRight, AlertCircle } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { fetchFromAPI } from '../../lib/api';
@@ -46,10 +46,10 @@ export default function CheckoutPage() {
   const [addressLine1, setAddressLine1] = useState(user?.addresses?.[0]?.addressLine1 || '');
   const [addressLine2, setAddressLine2] = useState(user?.addresses?.[0]?.addressLine2 || '');
   const [city, setCity] = useState(user?.addresses?.[0]?.city || '');
-  const [state, setState] = useState(user?.addresses?.[0]?.state || 'Uttarakhand');
+  const [state, setState] = useState(user?.addresses?.[0]?.state || 'Kerala');
   const [pincode, setPincode] = useState(user?.addresses?.[0]?.pincode || '');
 
-  const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'upi'>('upi');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi' | 'razorpay'>('card');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -159,96 +159,90 @@ export default function CheckoutPage() {
 
       const createdOrder = orderRes.data;
 
-      // 2. Razorpay Online Payment Flow
-      if (paymentMethod === 'razorpay') {
-        const scriptLoaded = await loadRazorpayScript();
-        const razorpayKey =
-          orderRes.razorpayKey ||
-          process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
-          'rzp_test_axminprana2026';
+      // 2. Razorpay Online Payment Flow (Cards, UPI & NetBanking/Wallets)
+      const scriptLoaded = await loadRazorpayScript();
+      const razorpayKey =
+        orderRes.razorpayKey ||
+        process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
+        'rzp_test_axminprana2026';
 
-        if (scriptLoaded && (window as any).Razorpay) {
-          const options = {
-            key: razorpayKey,
-            amount: Math.round(createdOrder.totalAmount * 100), // amount in paise
-            currency: 'INR',
-            name: 'Axmin Prana Ayurveda',
-            description: `Order #${createdOrder.orderNumber || createdOrder._id.slice(-6).toUpperCase()}`,
-            image: '/favicon.ico',
-            order_id: createdOrder.razorpayOrderId,
-            prefill: {
-              name: fullName,
-              email: email,
-              contact: phone
-            },
-            theme: {
-              color: '#1F4E34'
-            },
-            handler: async function (response: any) {
-              try {
-                const verifyRes = await fetchFromAPI('/orders/verify-payment', {
-                  method: 'POST',
-                  body: JSON.stringify({
-                    orderId: createdOrder._id,
-                    razorpayPaymentId: response.razorpay_payment_id || `pay_${Date.now()}`,
-                    razorpaySignature: response.razorpay_signature || 'sig_verified_prod'
-                  })
-                });
-                if (!verifyRes.success) {
-                  throw new Error('Payment confirmation failed');
-                }
-                clearCart();
-                router.push(`/order-success/${createdOrder._id}`);
-              } catch (verifyErr: any) {
-                setErrorMessage(verifyErr.message || 'Payment confirmation failed');
-                setLoading(false);
-              }
-            },
-            modal: {
-              ondismiss: function () {
-                setLoading(false);
-                setErrorMessage('Razorpay payment cancelled. You can retry placing the order.');
-              }
-            }
-          };
+      const prefillMethod =
+        paymentMethod === 'card'
+          ? 'card'
+          : paymentMethod === 'upi'
+          ? 'upi'
+          : undefined;
 
-          try {
-            const rzp = new (window as any).Razorpay(options);
-            rzp.on('payment.failed', function (resp: any) {
+      if (scriptLoaded && (window as any).Razorpay) {
+        const options: any = {
+          key: razorpayKey,
+          amount: Math.round(createdOrder.totalAmount * 100), // amount in paise
+          currency: 'INR',
+          name: 'Axmin Prana Ayurveda',
+          description: `Order #${createdOrder.orderNumber || createdOrder._id.slice(-6).toUpperCase()}`,
+          image: '/images/Logo/logo.png',
+          order_id: createdOrder.razorpayOrderId,
+          prefill: {
+            name: fullName,
+            email: email,
+            contact: phone,
+            ...(prefillMethod ? { method: prefillMethod } : {})
+          },
+          theme: {
+            color: '#214E34'
+          },
+          handler: async function (response: any) {
+            try {
+              const verifyRes = await fetchFromAPI('/orders/verify-payment', {
+                method: 'POST',
+                body: JSON.stringify({
+                  orderId: createdOrder._id,
+                  razorpayPaymentId: response.razorpay_payment_id || `pay_${Date.now()}`,
+                  razorpaySignature: response.razorpay_signature || 'sig_verified_prod'
+                })
+              });
+              if (!verifyRes.success) {
+                throw new Error('Payment confirmation failed');
+              }
+              clearCart();
+              router.push(`/order-success/${createdOrder._id}`);
+            } catch (verifyErr: any) {
+              setErrorMessage(verifyErr.message || 'Payment confirmation failed');
               setLoading(false);
-              setErrorMessage(resp.error?.description || 'Payment failed. Please retry.');
-            });
-            rzp.open();
-            return;
-          } catch (rzpOpenErr) {
-            console.warn('Razorpay open failed, completing verification fallback', rzpOpenErr);
+            }
+          },
+          modal: {
+            ondismiss: function () {
+              setLoading(false);
+              setErrorMessage('Razorpay payment cancelled. You can retry placing the order.');
+            }
           }
-        }
+        };
 
-        // Fallback verification for test sandbox or blocked scripts
-        const verifyRes = await fetchFromAPI('/orders/verify-payment', {
-          method: 'POST',
-          body: JSON.stringify({
-            orderId: createdOrder._id,
-            razorpayPaymentId: `pay_${Date.now()}`,
-            razorpaySignature: 'sig_verified_prod'
-          })
-        });
-        if (!verifyRes.success) {
-          throw new Error('Payment confirmation failed');
+        try {
+          const rzp = new (window as any).Razorpay(options);
+          rzp.on('payment.failed', function (resp: any) {
+            setLoading(false);
+            setErrorMessage(resp.error?.description || 'Payment failed. Please retry.');
+          });
+          rzp.open();
+          return;
+        } catch (rzpOpenErr) {
+          console.warn('Razorpay open failed, executing fallback verification', rzpOpenErr);
         }
-      } else if (paymentMethod === 'upi') {
-        const verifyRes = await fetchFromAPI('/orders/verify-payment', {
-          method: 'POST',
-          body: JSON.stringify({
-            orderId: createdOrder._id,
-            razorpayPaymentId: `upi_${Date.now()}`,
-            razorpaySignature: 'upi_verified_prod'
-          })
-        });
-        if (!verifyRes.success) {
-          throw new Error('Payment confirmation failed');
-        }
+      }
+
+      // Fallback verification for test sandbox or blocked scripts
+      const verifyRes = await fetchFromAPI('/orders/verify-payment', {
+        method: 'POST',
+        body: JSON.stringify({
+          orderId: createdOrder._id,
+          razorpayPaymentId: `${paymentMethod}_${Date.now()}`,
+          razorpaySignature: 'sig_verified_prod'
+        })
+      });
+      if (!verifyRes.success) {
+        throw new Error('Payment confirmation failed');
       }
 
       // 3. Clear cart and redirect to order success
@@ -336,7 +330,7 @@ export default function CheckoutPage() {
                     required
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    placeholder="aditi@example.com (for order tracking & GST invoice)"
+                    placeholder="aditi@example.com (for order tracking & updates)"
                     className="w-full px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
                   />
                 </div>
@@ -440,7 +434,43 @@ export default function CheckoutPage() {
               </h2>
 
               <div className="space-y-3 text-xs">
-                {/* Instant UPI Payment */}
+                {/* 1. Debit & Credit Cards via Razorpay */}
+                <label
+                  className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition-all ${
+                    paymentMethod === 'card'
+                      ? 'border-[#214E34] bg-[#DDE7D9]/20 shadow-2xs'
+                      : 'border-[#E5E8E0] hover:bg-[#FAF8F1]'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="payment"
+                    checked={paymentMethod === 'card'}
+                    onChange={() => setPaymentMethod('card')}
+                    className="mt-1 text-[#214E34] focus:ring-[#214E34]"
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-[#202820] flex items-center gap-1.5">
+                        <CreditCard className="w-4 h-4 text-[#214E34]" /> Credit / Debit Cards (Razorpay Secure)
+                      </span>
+                      <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded border border-emerald-200">
+                        Razorpay
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#687168] mt-1">
+                      Pay securely with Visa, MasterCard, RuPay, Maestro, or Corporate Cards. 256-bit bank-grade encryption powered by Razorpay.
+                    </p>
+                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-white border border-[#E5E8E0] text-[#202820]">Visa</span>
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-white border border-[#E5E8E0] text-[#202820]">Mastercard</span>
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-white border border-[#E5E8E0] text-[#202820]">RuPay</span>
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-white border border-[#E5E8E0] text-[#202820]">Maestro</span>
+                    </div>
+                  </div>
+                </label>
+
+                {/* 2. Instant UPI via Razorpay */}
                 <label
                   className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition-all ${
                     paymentMethod === 'upi'
@@ -458,19 +488,19 @@ export default function CheckoutPage() {
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-[#202820] flex items-center gap-1.5">
-                        <QrCode className="w-4 h-4 text-[#214E34]" /> Instant UPI Payment (Google Pay, PhonePe, Paytm, BHIM)
+                        <QrCode className="w-4 h-4 text-[#214E34]" /> Instant UPI Payment via Razorpay
                       </span>
                       <span className="text-[10px] bg-green-100 text-green-800 font-bold px-2 py-0.5 rounded">
                         Recommended
                       </span>
                     </div>
                     <p className="text-[11px] text-[#687168] mt-1">
-                      Scan QR or pay with your preferred UPI application. Immediate payment verification and expedited dispatch.
+                      Google Pay, PhonePe, Paytm, BHIM, CRED UPI, or any UPI ID. Instant QR scan and mobile app authorization.
                     </p>
                   </div>
                 </label>
 
-                {/* Razorpay Online */}
+                {/* 3. NetBanking & Other Methods via Razorpay */}
                 <label
                   className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition-all ${
                     paymentMethod === 'razorpay'
@@ -488,11 +518,14 @@ export default function CheckoutPage() {
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-[#202820] flex items-center gap-1.5">
-                        <CreditCard className="w-4 h-4 text-[#214E34]" /> Cards & NetBanking (Debit/Credit, RuPay, Visa, Master)
+                        <Building2 className="w-4 h-4 text-[#214E34]" /> NetBanking & Other Methods (Razorpay)
+                      </span>
+                      <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">
+                        50+ Banks & Wallets
                       </span>
                     </div>
                     <p className="text-[11px] text-[#687168] mt-1">
-                      100% Encrypted 256-bit gateway. Supports all major Indian banks, RuPay, Visa, and MasterCard.
+                      Direct NetBanking for all Indian banks (HDFC, SBI, ICICI, Axis, Kotak), plus Amazon Pay, Mobikwik, and Airtel Money.
                     </p>
                   </div>
                 </label>
@@ -501,7 +534,7 @@ export default function CheckoutPage() {
                 <div className="p-3 bg-[#FAF8F1] border border-[#E5E8E0] rounded-lg text-[11px] text-[#687168] flex items-start gap-2">
                   <ShieldCheck className="w-4 h-4 text-[#214E34] shrink-0 mt-0.5" />
                   <div>
-                    <strong className="text-[#202820]">100% Secure Prepaid Orders:</strong> Direct online payment via Instant UPI QR, Debit/Credit Cards, or NetBanking guarantees prioritized dispensary fulfillment and climate-controlled dispatch for your classical Ayurvedic formulations.
+                    <strong className="text-[#202820]">100% Secure Prepaid Orders:</strong> Direct online payment via Debit/Credit Cards, UPI QR, or NetBanking powered by <strong>Razorpay</strong> guarantees prioritized dispensary fulfillment and climate-controlled dispatch for your classical Ayurvedic formulations.
                   </div>
                 </div>
               </div>
@@ -569,16 +602,7 @@ export default function CheckoutPage() {
                   <span>-₹{discountAmount}</span>
                 </div>
               )}
-              <div className="flex justify-between">
-                <span>GST (5% Ayurvedic Healthcare)</span>
-                <span className="font-bold text-[#202820]">₹{taxAmount}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Delivery (Delhivery Express)</span>
-                <span className="font-bold text-[#202820]">
-                  {shippingFee === 0 ? <strong className="text-[#214E34]">FREE</strong> : `₹${shippingFee}`}
-                </span>
-              </div>
+
               <div className="flex justify-between text-base font-bold text-[#202820] pt-3 border-t border-[#E5E8E0]">
                 <span>Total Amount</span>
                 <span className="text-[#214E34] text-xl">₹{totalAmount}</span>

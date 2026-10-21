@@ -21,7 +21,7 @@ import { fetchFromAPI } from '../../lib/api';
 
 export default function AccountDashboardPage() {
   const router = useRouter();
-  const { user, token, isAuthenticated, isAdmin, logout, refreshUser } = useAuth();
+  const { user, token, isAuthenticated, isAdmin, loading: authLoading, logout, refreshUser } = useAuth();
 
   const [activeTab, setActiveTab] = useState<'orders' | 'addresses' | 'profile'>('orders');
   const [orders, setOrders] = useState<any[]>([]);
@@ -35,11 +35,13 @@ export default function AccountDashboardPage() {
   const [newAddressLine1, setNewAddressLine1] = useState('');
   const [newAddressLine2, setNewAddressLine2] = useState('');
   const [newCity, setNewCity] = useState('');
-  const [newState, setNewState] = useState('Uttarakhand');
+  const [newState, setNewState] = useState('Kerala');
   const [newPincode, setNewPincode] = useState('');
   const [savingAddress, setSavingAddress] = useState(false);
 
   useEffect(() => {
+    if (authLoading) return;
+
     if (!isAuthenticated) {
       router.push('/account/login');
       return;

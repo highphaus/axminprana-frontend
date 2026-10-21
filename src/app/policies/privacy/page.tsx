@@ -15,7 +15,7 @@ import {
   Eye,
   Server
 } from 'lucide-react';
-import { YouTubeIcon, InstagramIcon, FacebookIcon } from '../../../components/SocialIcons';
+import { YouTubeIcon, InstagramIcon, WhatsAppIcon, FacebookIcon } from '../../../components/SocialIcons';
 
 export const metadata = {
   title: 'Privacy & Data Governance Policy | Axmin Prana Ayurveda',
@@ -82,11 +82,11 @@ export default function PrivacyPolicyPage() {
           <div className="bg-[#FAF8F1] p-4 rounded-xl border border-[#E5E8E0] grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div>
               <span className="text-[#687168] block text-[10px] uppercase font-bold">Manufacturing & Central Hub</span>
-              <span className="font-semibold text-[#202820]">Vedic Wellness Hub, Haridwar, Uttarakhand – 249401, India</span>
+              <span className="font-semibold text-[#202820]">Axmin Prana Wellness Hub, Kallara, Trivandrum, Kerala – 695608, India</span>
             </div>
             <div>
               <span className="text-[#687168] block text-[10px] uppercase font-bold">Licensing & Regulatory Compliance</span>
-              <span className="font-semibold text-[#202820]">Govt. of India AYUSH License: AYU/DL/IND-2024-8841 | GSTIN: 07AAACA1234F1Z8</span>
+              <span className="font-semibold text-[#202820]">Govt. of India AYUSH License: AYU/DL/IND-2024-8841</span>
             </div>
           </div>
         </section>
@@ -107,7 +107,7 @@ export default function PrivacyPolicyPage() {
               <strong>Account Authentication:</strong> Email verification One-Time Passwords (OTPs) and account passwords stored strictly in salted, irreversible cryptographic hashes (bcrypt).
             </li>
             <li>
-              <strong>Order & Fulfillment History:</strong> Formulation codes, pack sizes, quantities, order numbers, dispatch timestamps, and GST invoices.
+              <strong>Order & Fulfillment History:</strong> Formulation codes, pack sizes, quantities, order numbers, and dispatch timestamps.
             </li>
             <li>
               <strong>Ayurvedic Prakriti Consultation Data:</strong> Voluntary responses submitted through the 60-second Dosha Assessment (Vata, Pitta, Kapha) and Vaidya consultation requests, utilized solely to recommend tailored botanical oils and churnas.
@@ -143,7 +143,7 @@ export default function PrivacyPolicyPage() {
           </p>
           <ul className="list-disc pl-5 space-y-1.5 text-xs text-[#687168]">
             <li>
-              <strong>Permitted Window:</strong> While your consignment is in <em>Placed</em>, <em>Confirmed</em>, or <em>Processing</em> state at our Haridwar dispensary hub.
+              <strong>Permitted Window:</strong> While your consignment is in <em>Placed</em>, <em>Confirmed</em>, or <em>Processing</em> state at our Kerala dispensary hub.
             </li>
             <li>
               <strong>Post-Dispatch Restriction:</strong> Once carrier collection has occurred and an Air Waybill (AWB) tracking number has been generated, orders enter active transit and <strong>cannot be cancelled</strong>.
@@ -215,6 +215,15 @@ export default function PrivacyPolicyPage() {
             >
               <InstagramIcon className="w-4 h-4" />
               <span>Instagram (@axmin_prana_)</span>
+            </a>
+            <a
+              href="https://wa.me/917561836584?text=Hello%20Axmin%20Prana%20Ayurveda"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-[#214E34] hover:bg-[#25D366] text-white px-3.5 py-2 rounded-lg text-xs font-semibold transition-all shadow-2xs"
+            >
+              <WhatsAppIcon className="w-4 h-4" />
+              <span>WhatsApp (+91 75618 36584)</span>
             </a>
             <a
               href="https://www.facebook.com/profile.php?id=61594779705906"

@@ -28,9 +28,7 @@ export default function ShippingPolicyPage() {
         <section className="space-y-2">
           <h2 className="text-base font-bold text-[#214E34]">2. Shipping Charges</h2>
           <p>
-            • <strong>Orders Above ₹999:</strong> Eligible for <strong>FREE Pan-India Express Delivery</strong>.
-            <br />
-            • <strong>Orders Below ₹999:</strong> A nominal flat standard logistics fee of <strong>₹80</strong> applies across all Indian locations.
+            • All orders placed on Axmin Prana include complimentary standard dispatch across India with zero extra delivery fee added at checkout.
           </p>
         </section>
 
@@ -55,7 +53,7 @@ export default function ShippingPolicyPage() {
         <section className="space-y-2 border-t border-[#E5E8E0] pt-4">
           <h2 className="text-base font-bold text-[#214E34]">5. Cancellation & No Return Guidelines</h2>
           <p>
-            • <strong>Pre-Dispatch Cancellation:</strong> You can cancel your order free of charge strictly before it has been dispatched from our Haridwar hub.
+            • <strong>Pre-Dispatch Cancellation:</strong> You can cancel your order free of charge strictly before it has been dispatched from our Kerala dispensary hub.
             <br />
             • <strong>Strictly No Return & No Exchange:</strong> Once an order is shipped, cancellation is closed and, due to Ayurvedic medical safety and sterile hygiene regulations, items cannot be returned or exchanged.
           </p>

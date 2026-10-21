@@ -56,7 +56,7 @@ export default function TermsPage() {
             <li>All orders must be completed via <strong>100% prepaid online transactions</strong> at checkout.</li>
             <li>We accept Instant UPI (Google Pay, PhonePe, Paytm, BHIM QR), RuPay, Visa, MasterCard, and NetBanking via 256-bit SSL encrypted RBI-authorized gateways.</li>
             <li><strong>No Cash on Delivery:</strong> Offline payment methods or cash collection upon delivery are strictly not supported.</li>
-            <li>All product prices are quoted in Indian Rupees (₹ INR) inclusive of applicable Ayurvedic Goods and Services Tax (GST).</li>
+            <li>All product prices are quoted in Indian Rupees (₹ INR) inclusive of all applicable taxes.</li>
           </ul>
         </section>
 
@@ -97,7 +97,7 @@ export default function TermsPage() {
             <Truck className="w-4 h-4 text-[#214E34]" /> 5. Pan-India Logistics & Delivery
           </h2>
           <p>
-            We deliver to over 19,000+ PIN codes across India in partnership with Delhivery Priority and India Post Speed Post. Orders above ₹999 qualify for <strong>Free Express Delivery</strong>. Standard transit times are 2–3 business days for major metros and 3–5 business days for regional areas.
+            We deliver to over 19,000+ PIN codes across India in partnership with Delhivery Priority and India Post Speed Post with zero extra delivery fee at checkout. Standard transit times are 2–3 business days for major metros and 3–5 business days for regional areas.
           </p>
         </section>
 
@@ -118,7 +118,7 @@ export default function TermsPage() {
         <section className="space-y-3 pt-2 border-t border-[#E5E8E0]">
           <h2 className="text-base font-bold text-[#214E34]">7. Governing Law & Jurisdiction</h2>
           <p>
-            These Terms and any contractual disputes shall be governed by and construed in accordance with the substantive laws of India. Any legal proceedings or dispute arbitrations shall be submitted exclusively to the competent courts of <strong>Haridwar / Dehradun, Uttarakhand, India</strong>.
+            These Terms and any contractual disputes shall be governed by and construed in accordance with the substantive laws of India. Any legal proceedings or dispute arbitrations shall be submitted exclusively to the competent courts of <strong>Trivandrum, Kerala, India</strong>.
           </p>
         </section>
 

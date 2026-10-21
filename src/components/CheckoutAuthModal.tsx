@@ -234,7 +234,7 @@ export const CheckoutAuthModal: React.FC<CheckoutAuthModalProps> = ({
             {activeTab === 'signin' ? 'Sign In to Complete Order' : 'Create an Account to Place Order'}
           </h3>
           <p className="text-xs text-white/80 mt-1">
-            Authentic dispensary orders require verified customer identification for order tracking and GST invoices.
+            Authentic dispensary orders require verified customer identification for order tracking and dispatch updates.
           </p>
         </div>
 

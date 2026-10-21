@@ -7,7 +7,6 @@ import {
   Star,
   ShieldCheck,
   Award,
-  Truck,
   RotateCcw,
   CheckCircle2,
   Clock,
@@ -46,9 +45,7 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'ingredients' | 'dosage' | 'details' | 'reviews'>('ingredients');
 
-  // Pincode Delivery Checker
-  const [pincode, setPincode] = useState('');
-  const [pincodeStatus, setPincodeStatus] = useState<string | null>(null);
+
 
   // Review Form
   const [reviewRating, setReviewRating] = useState(5);
@@ -109,16 +106,6 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
     router.push('/checkout');
   };
 
-  const handleCheckPincode = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!/^\d{6}$/.test(pincode)) {
-      setPincodeStatus('Please enter a valid 6-digit Indian PIN code');
-      return;
-    }
-    // Simulated live delivery estimate for Indian metro & non-metro
-    const days = pincode.startsWith('11') || pincode.startsWith('40') || pincode.startsWith('56') ? '2 Business Days' : '3-4 Business Days';
-    setPincodeStatus(`Available! Estimated Express Delivery: Within ${days} (Delhivery Priority)`);
-  };
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -257,7 +244,7 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
               )}
             </div>
             <p className="text-[11px] text-[#687168]">
-              Inclusive of all taxes ({product.taxPercent}% Ayurvedic GST). Free delivery on orders above ₹999.
+              100% Classical Herbal Formulation • AYUSH Certified
             </p>
           </div>
 
@@ -427,37 +414,6 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
             </button>
           </div>
 
-          {/* Indian PIN Code Delivery Checker */}
-          <div className="bg-white p-4 rounded-xl border border-[#E5E8E0] space-y-2">
-            <span className="text-xs font-bold text-[#202820] flex items-center gap-1.5">
-              <Truck className="w-4 h-4 text-[#214E34]" /> Check Pan-India Delivery Estimate:
-            </span>
-            <form onSubmit={handleCheckPincode} className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Enter 6-digit PIN code (e.g. 110001)"
-                value={pincode}
-                maxLength={6}
-                onChange={e => setPincode(e.target.value.replace(/\D/g, ''))}
-                className="flex-1 text-xs px-3 py-2 border border-[#E5E8E0] rounded-md bg-[#FAF8F1] focus:bg-white focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="px-4 py-2 bg-[#214E34] text-white text-xs font-semibold rounded-md hover:bg-[#163A28]"
-              >
-                Verify
-              </button>
-            </form>
-            {pincodeStatus && (
-              <p
-                className={`text-[11px] font-medium ${
-                  pincodeStatus.startsWith('Available') ? 'text-green-700' : 'text-red-600'
-                }`}
-              >
-                {pincodeStatus}
-              </p>
-            )}
-          </div>
 
           {/* Quick Specifications list */}
           <div className="grid grid-cols-2 gap-3 text-xs text-[#202820]">

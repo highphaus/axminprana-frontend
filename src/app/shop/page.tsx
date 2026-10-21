@@ -17,7 +17,7 @@ interface SearchParams {
 export const metadata: Metadata = {
   title: 'Classical Ayurvedic Formulations & Herbal Medicines | Axmin Prana',
   description:
-    'Explore classical Ayurvedic formulations prepared according to the Charaka Samhita. Standardized Ashwagandha, Triphala, Kumkumadi Tailam, and Bringadi hair oils with pan-India delivery.'
+    'Explore classical Ayurvedic formulations prepared according to the Charaka Samhita. Standardized Ashwagandha, Triphala, Kumkumadi Tailam, and Bringadi hair oils crafted in Kerala.'
 };
 
 async function getCatalog(searchParams: SearchParams) {

@@ -36,7 +36,7 @@ const SLIDES: BannerSlide[] = [
     description: 'Direct-from-source classical elixirs crafted according to the Ashtanga Hridaya. 100% active botanicals with zero dilution.',
     ctaText: 'Order Now @ ₹1,599*',
     ctaLink: '/product/kumkumadi-radiant-tailam',
-    priceNote: '*Special Inaugural Launch Price • Pan-India Free Delivery',
+    priceNote: '*Special Inaugural Launch Price • Authentic Classical Formulations',
     image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85',
     bgGradient: 'from-[#0F1E2E] via-[#162A3B] to-[#1F3A4D]'
   },
@@ -64,7 +64,7 @@ const SLIDES: BannerSlide[] = [
     description: 'Stabilize stress cortisol rhythms, rejuvenate cellular Ojas, and kindle digestive Agni.',
     ctaText: 'Shop Classical Rasayanas',
     ctaLink: '/shop?category=Immunity%20%26%20Rasayana',
-    priceNote: 'AYUSH Certified Formulations • Pan-India Express Delivery',
+    priceNote: 'AYUSH Certified Formulations • 100% Classical Purity',
     image: 'https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1000&q=85',
     bgGradient: 'from-[#2B1B12] via-[#382317] to-[#452C1C]'
   }

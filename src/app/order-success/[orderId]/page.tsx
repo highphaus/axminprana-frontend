@@ -124,16 +124,7 @@ export default async function OrderSuccessPage({ params }: PageProps) {
               <span>-₹{order.discountAmount}</span>
             </div>
           )}
-          <div className="flex justify-between">
-            <span>GST (5% Ayurvedic Healthcare)</span>
-            <span className="font-medium text-[#202820]">₹{order.taxAmount}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Delivery Fee</span>
-            <span className="font-medium text-[#202820]">
-              {order.shippingFee === 0 ? <strong className="text-[#214E34]">FREE</strong> : `₹${order.shippingFee}`}
-            </span>
-          </div>
+
           <div className="flex justify-between text-sm font-bold text-[#202820] pt-2 border-t border-[#E5E8E0]">
             <span>Total Paid ({order.paymentMethod.toUpperCase()})</span>
             <span className="text-[#214E34] text-base">₹{order.totalAmount}</span>

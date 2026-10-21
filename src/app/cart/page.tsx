@@ -27,9 +27,7 @@ export default function CartPage() {
   const [couponError, setCouponError] = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
 
-  const freeShippingThreshold = 999;
-  const remainingForFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
-  const progressPercent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
+
 
   const handleApplyCoupon = async (codeToApply?: string) => {
     const code = (codeToApply || inputCoupon).trim();
@@ -102,25 +100,7 @@ export default function CartPage() {
           </Link>
         </div>
 
-        {/* Free Delivery Unlock Bar */}
-        <div className="bg-white border border-[#EDE8E0] rounded-xl p-4 mb-8 text-xs text-[#1A1A1A] shadow-2xs">
-          {remainingForFreeShipping > 0 ? (
-            <p className="font-normal text-[#555]">
-              Add <strong className="text-[#1F4E34] font-bold">₹{remainingForFreeShipping}</strong> more to qualify for <span className="font-semibold text-[#1A1A1A]">FREE Pan-India Express Delivery</span>!
-            </p>
-          ) : (
-            <p className="font-semibold text-[#1F4E34] flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-[#1F4E34]" />
-              You have qualified for FREE Express Delivery!
-            </p>
-          )}
-          <div className="w-full bg-[#FAF8F5] h-2 rounded-full mt-2.5 overflow-hidden border border-[#EDE8E0]">
-            <div
-              className="bg-[#1F4E34] h-full rounded-full transition-all duration-300"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
-        </div>
+
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left: Cart Items List */}
@@ -280,16 +260,7 @@ export default function CartPage() {
                     <span>-₹{discountAmount.toLocaleString('en-IN')}</span>
                   </div>
                 )}
-                <div className="flex justify-between">
-                  <span>Tax ({taxAmount > 0 ? '5% Ayurvedic GST' : 'Inclusive'})</span>
-                  <span className="font-semibold text-[#1A1A1A]">₹{taxAmount.toLocaleString('en-IN')}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Express Pan-India Shipping</span>
-                  <span className="font-semibold text-[#1A1A1A]">
-                    {shippingFee === 0 ? <strong className="text-[#1F4E34]">FREE</strong> : `₹${shippingFee}`}
-                  </span>
-                </div>
+
                 <div className="flex justify-between text-base font-bold text-[#1A1A1A] pt-3 border-t border-[#EDE8E0]">
                   <span>Total</span>
                   <span className="text-[#1F4E34] text-xl font-black">₹{totalAmount.toLocaleString('en-IN')}</span>

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { X, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Tag } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ArrowRight, Tag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 export const CartDrawer: React.FC = () => {
@@ -30,9 +30,7 @@ export const CartDrawer: React.FC = () => {
 
   if (!isDrawerOpen) return null;
 
-  const freeShippingThreshold = 999;
-  const progressPercent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
-  const remainingForFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
+
 
   const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,24 +73,7 @@ export const CartDrawer: React.FC = () => {
             </button>
           </div>
 
-          {/* Free Shipping Bar */}
-          <div className="bg-[#DDE7D9] px-4 py-3 text-xs text-[#214E34]">
-            {remainingForFreeShipping > 0 ? (
-              <p className="font-medium">
-                Add <span className="font-bold text-[#B86F4B]">₹{remainingForFreeShipping}</span> more to unlock <span className="font-bold">FREE Express Delivery</span>!
-              </p>
-            ) : (
-              <p className="font-semibold flex items-center gap-1.5 text-[#214E34]">
-                <ShieldCheck className="w-4 h-4 text-[#214E34]" /> You have unlocked FREE Express Delivery!
-              </p>
-            )}
-            <div className="w-full bg-white/70 h-1.5 rounded-full mt-2 overflow-hidden">
-              <div
-                className="bg-[#214E34] h-full rounded-full transition-all duration-300"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-          </div>
+
 
           {/* Items List */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -193,7 +174,7 @@ export const CartDrawer: React.FC = () => {
                 <form onSubmit={handleApplyCoupon} className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Enter Coupon (e.g. PRANA10)"
+                    placeholder="Enter Coupon Code"
                     value={inputCoupon}
                     onChange={e => setInputCoupon(e.target.value)}
                     className="flex-1 text-xs px-3 py-2 rounded-md border border-[#E5E8E0] bg-[#FAF8F1] focus:bg-white uppercase font-mono"
@@ -221,16 +202,7 @@ export const CartDrawer: React.FC = () => {
                     <span>-₹{discountAmount}</span>
                   </div>
                 )}
-                <div className="flex justify-between">
-                  <span>GST (5% Ayurvedic Wellness)</span>
-                  <span className="font-medium text-[#202820]">₹{taxAmount}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Delivery</span>
-                  <span className="font-medium text-[#202820]">
-                    {shippingFee === 0 ? <strong className="text-[#214E34]">FREE</strong> : `₹${shippingFee}`}
-                  </span>
-                </div>
+
                 <div className="flex justify-between text-sm font-bold text-[#202820] pt-2 border-t border-[#E5E8E0]">
                   <span>Total Amount</span>
                   <span className="text-[#214E34] text-base">₹{totalAmount}</span>

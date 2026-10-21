@@ -28,9 +28,10 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://axminprana.com'),
   title: 'Axmin Prana | Authentic Ayurvedic Wellness & Classical Formulations',
   description:
-    'Experience classical Ayurveda inspired by the Charaka Samhita. 100% natural, AYUSH-certified Ashwagandha, Triphala, Kumkumadi Tailam & Bringadi oils with pan-India express shipping.',
+    'Experience classical Ayurveda inspired by the Charaka Samhita. 100% natural, AYUSH-certified Ashwagandha, Triphala, Kumkumadi Tailam & Bringadi oils crafted in Kerala.',
   keywords: [
     'Ayurveda',
     'Ayurvedic medicine',

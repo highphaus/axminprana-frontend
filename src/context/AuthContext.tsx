@@ -19,6 +19,7 @@ interface AuthContextType {
   wishlist: string[];
   isAuthenticated: boolean;
   isAdmin: boolean;
+  loading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string; role?: string }>;
   register: (name: string, email: string, password: string, phone?: string) => Promise<{ success: boolean; message?: string }>;
   sendOtp: (email: string, name?: string, phone?: string, password?: string) => Promise<{ success: boolean; message?: string }>;
@@ -195,6 +196,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         token,
         isAuthenticated: !!user,
         isAdmin: user?.role === 'admin',
+        loading,
         wishlist,
         login,
         register,

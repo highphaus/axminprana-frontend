@@ -5,7 +5,7 @@ import { Award, ShieldCheck, Leaf, Sparkles, CheckCircle2, ArrowRight } from 'lu
 
 export const metadata = {
   title: 'Our Vedic Heritage & Formulation Manifesto | Axmin Prana',
-  description: 'Learn about Axmin Prana Ayurveda, our classical Haridwar manufacturing traditions, AYUSH licenses, and wildcrafting practices.'
+  description: 'Learn about Axmin Prana Ayurveda, our classical Kerala manufacturing traditions, AYUSH licenses, and wildcrafting practices.'
 };
 
 export default function AboutPage() {
@@ -19,7 +19,7 @@ export default function AboutPage() {
           Where Ancient Charaka Samhita Traditions Meet Modern Pharmaceutical Rigour
         </h1>
         <p className="text-xs sm:text-sm text-[#687168] leading-relaxed">
-          Founded on the sacred banks of the Ganges in Haridwar, Uttarakhand, Axmin Prana was born to rescue authentic classical Ayurveda from modern industrial compromises.
+          Founded in the heart of Kerala (Kallara, Trivandrum), the cradle of authentic Ayurveda, Axmin Prana was born to rescue classical wellness from modern industrial compromises.
         </p>
       </div>
 
@@ -34,7 +34,7 @@ export default function AboutPage() {
           <div className="pt-2 space-y-2 text-xs">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-[#214E34]" />
-              <span><strong>100% Traceable Botanicals:</strong> Harvested ethically from organic sanctuaries in Kerala and Uttarakhand.</span>
+              <span><strong>100% Traceable Botanicals:</strong> Harvested ethically from organic botanical sanctuaries across Kerala and India.</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-[#214E34]" />

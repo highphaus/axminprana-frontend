@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ShieldCheck, Award, Leaf, Sparkles, Phone, Mail, MapPin, CheckCircle2, Lock, ArrowRight } from 'lucide-react';
-import { InstagramIcon, FacebookIcon, YouTubeIcon } from './SocialIcons';
+import { InstagramIcon, WhatsAppIcon, FacebookIcon, YouTubeIcon } from './SocialIcons';
 
 export const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -123,7 +123,7 @@ export const Footer: React.FC = () => {
             <div className="pt-1 space-y-2 text-xs text-[#DDE7D9]/85">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#C59B27] shrink-0 mt-0.5" />
-                <span className="leading-snug">Dispensary Hub: Haridwar, Uttarakhand 249401, India</span>
+                <span className="leading-snug">Dispensary Hub: Kallara, Trivandrum, Kerala – 695608, India</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#C59B27] shrink-0" />
@@ -187,6 +187,16 @@ export const Footer: React.FC = () => {
                 <InstagramIcon className="w-4 h-4" />
               </a>
               <a
+                href="https://wa.me/917561836584?text=Hello%20Axmin%20Prana%20Ayurveda"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full bg-[#1F4E34] hover:bg-[#25D366] flex items-center justify-center text-white transition-all transform hover:scale-110 shadow-xs"
+                title="Chat with Axmin Prana on WhatsApp (+91 75618 36584)"
+                aria-label="WhatsApp (+91 75618 36584)"
+              >
+                <WhatsAppIcon className="w-4 h-4" />
+              </a>
+              <a
                 href="https://www.facebook.com/profile.php?id=61594779705906"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -209,7 +219,7 @@ export const Footer: React.FC = () => {
             </div>
 
             <p className="text-[10px] text-[#DDE7D9]/50 pt-1">
-              Govt. of India AYUSH License: AYU/DL/IND-2024-8841 | GSTIN: 07AAACA1234F1Z8
+              Govt. of India AYUSH License: AYU/DL/IND-2024-8841
             </p>
           </div>
 

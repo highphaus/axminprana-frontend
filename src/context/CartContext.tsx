@@ -205,11 +205,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const taxableAmount = Math.max(0, subtotal - discountAmount);
-  // Indian Ayurveda GST at 5%
-  const taxAmount = Math.round(taxableAmount * 0.05);
-  // Free shipping over ₹999
-  const shippingFee = subtotal > 0 && taxableAmount >= 999 ? 0 : subtotal > 0 ? 80 : 0;
-  const totalAmount = taxableAmount + taxAmount + shippingFee;
+  const taxAmount = 0;
+  const shippingFee = 0;
+  const totalAmount = taxableAmount;
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (

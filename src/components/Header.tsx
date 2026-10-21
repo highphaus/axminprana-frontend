@@ -116,13 +116,13 @@ export const Header: React.FC = () => {
 
               {/* Luxury Royal Ayurvedic Logo Lockup */}
               <Link href="/" className="flex items-center gap-3 group select-none">
-                <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden bg-white border border-[#E6E0D4] shadow-2xs shrink-0 flex items-center justify-center group-hover:border-[#C59B27] transition-all transform group-hover:scale-105">
+                <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white border-2 border-[#C59B27]/40 shadow-xs shrink-0 flex items-center justify-center group-hover:border-[#C59B27] group-hover:shadow-md transition-all transform group-hover:scale-105">
                   <Image
-                    src="/images/logo.png"
+                    src="/images/Logo/logo.png"
                     alt="Axmin Prana Ayurveda"
-                    width={44}
-                    height={44}
-                    className="w-full h-full object-contain p-0.5"
+                    width={48}
+                    height={48}
+                    className="w-full h-full object-contain"
                     priority
                   />
                 </div>
@@ -616,8 +616,8 @@ export const Header: React.FC = () => {
               {/* Drawer Header */}
               <div className="flex items-center justify-between pb-3.5 border-b border-[#EDE8E0]">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-full overflow-hidden border border-[#E6E0D4] bg-white flex items-center justify-center p-0.5 shadow-2xs">
-                    <Image src="/images/logo.png" alt="Axmin Prana Logo" width={36} height={36} className="w-full h-full object-contain" />
+                  <div className="w-10 h-10 rounded-full overflow-hidden border border-[#C59B27]/40 bg-white flex items-center justify-center p-0.5 shadow-xs">
+                    <Image src="/images/Logo/logo.png" alt="Axmin Prana Logo" width={40} height={40} className="w-full h-full object-contain" priority />
                   </div>
                   <div className="flex flex-col justify-center">
                     <span className="font-wishlist-heading font-bold text-[#1A1A1A] tracking-tight text-lg block leading-none">

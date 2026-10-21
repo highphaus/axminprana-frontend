@@ -396,36 +396,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 11. Welcome Discount Banner */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#2C1D11] text-white rounded-3xl p-6 sm:p-10 lg:p-12 text-center relative overflow-hidden shadow-xl">
-          <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-            <span className="inline-block bg-[#C59B27] text-black text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider">
-              Exclusive Vedic Welcome
-            </span>
-            <h3 className="text-2xl sm:text-4xl font-serif font-bold text-white">
-              Receive 10% Off Your First Classical Order
-            </h3>
-            <p className="text-xs sm:text-sm text-[#E5D5BA] leading-relaxed">
-              Use code <strong className="font-mono text-white bg-white/20 px-2.5 py-0.5 rounded">PRANA10</strong> at checkout. Plus receive our complimentary 28-page Dinacharya Daily Wellness Guide directly in your inbox.
-            </p>
-            <form className="pt-2 flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                required
-                className="flex-1 px-4 py-3 text-sm rounded-full bg-white text-[#1A1A1A] focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="px-6 py-3 bg-[#C59B27] hover:bg-[#A67C1E] text-black text-xs font-bold rounded-full transition-colors shrink-0"
-              >
-                Claim 10% Code
-              </button>
-            </form>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

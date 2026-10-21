@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle2, Clock } from 'lucide-react';
-import { InstagramIcon, FacebookIcon, YouTubeIcon } from '../../components/SocialIcons';
+import { InstagramIcon, WhatsAppIcon, FacebookIcon, YouTubeIcon } from '../../components/SocialIcons';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -31,7 +31,7 @@ export default function ContactPage() {
         {/* Contact Info Card */}
         <div className="lg:col-span-5 bg-[#163A28] text-white p-6 sm:p-8 rounded-2xl shadow-md space-y-6">
           <div>
-            <h3 className="text-lg font-serif-brand font-bold">Haridwar Wellness Hub</h3>
+            <h3 className="text-lg font-serif-brand font-bold">Kerala Wellness Hub</h3>
             <p className="text-xs text-[#DDE7D9]/80 mt-1">Axmin Prana Ayurveda Corporate & Dispensary Facility</p>
           </div>
 
@@ -41,7 +41,7 @@ export default function ContactPage() {
               <div>
                 <strong className="block text-white">Registered Dispensary:</strong>
                 <span className="text-[#DDE7D9]/80">
-                  Plot 42, Vedic Heritage Enclave, Civil Lines, Haridwar, Uttarakhand 249401, India
+                  Kallara, Trivandrum, Kerala – 695608, India
                 </span>
               </div>
             </div>
@@ -91,6 +91,15 @@ export default function ContactPage() {
                 <span>Instagram</span>
               </a>
               <a
+                href="https://wa.me/917561836584?text=Hello%20Axmin%20Prana%20Ayurveda"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 bg-[#214E34] hover:bg-[#25D366] text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-all shadow-xs"
+              >
+                <WhatsAppIcon className="w-3.5 h-3.5" />
+                <span>WhatsApp (+91 75618 36584)</span>
+              </a>
+              <a
                 href="https://www.facebook.com/profile.php?id=61594779705906"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -112,7 +121,7 @@ export default function ContactPage() {
           </div>
 
           <div className="pt-2 text-[11px] text-[#DDE7D9]/60">
-            Govt. of India AYUSH License: AYU/DL/IND-2024-8841 | GSTIN: 07AAACA1234F1Z8
+            Govt. of India AYUSH License: AYU/DL/IND-2024-8841
           </div>
         </div>
 

@@ -31,7 +31,7 @@ const FAQS = [
   },
   {
     q: 'Can I cancel my order after placing it?',
-    a: 'Yes, you may cancel your order free of charge strictly before it has been dispatched from our Haridwar dispensary hub. Once Delhivery or our logistics partner picks up the consignment and tracking is generated, cancellation is no longer possible.'
+    a: 'Yes, you may cancel your order free of charge strictly before it has been dispatched from our Kerala dispensary hub. Once Delhivery or our logistics partner picks up the consignment and tracking is generated, cancellation is no longer possible.'
   },
   {
     q: 'What is your return and exchange policy?',

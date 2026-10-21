@@ -25,14 +25,16 @@ import {
   User,
   RefreshCw,
   X,
-  ChevronRight
+  ChevronRight,
+  Layers,
+  Image as LucideImage
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { fetchFromAPI } from '../../lib/api';
 
 export default function AdminPage() {
   const router = useRouter();
-  const { user, isAuthenticated, isAdmin } = useAuth();
+  const { user, isAuthenticated, isAdmin, loading: authLoading } = useAuth();
 
   const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'coupons' | 'enquiries' | 'users'>('overview');
   const [stats, setStats] = useState<any>(null);
@@ -49,7 +51,7 @@ export default function AdminPage() {
   const [userActionMessage, setUserActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // New Product Modal
+  // New Product Modal State
   const [showProductModal, setShowProductModal] = useState(false);
   const [newProductName, setNewProductName] = useState('');
   const [newProductCategory, setNewProductCategory] = useState('Immunity & Rasayana');
@@ -64,6 +66,17 @@ export default function AdminPage() {
   const [newProductImage, setNewProductImage] = useState(
     'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80'
   );
+  // Multiple images state for New Product
+  const [newProductImages, setNewProductImages] = useState<string[]>([
+    'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80'
+  ]);
+  const [newProductImageInput, setNewProductImageInput] = useState('');
+  // Multiple variants state for New Product
+  const [newProductVariants, setNewProductVariants] = useState<
+    Array<{ sku: string; packSize: string; price: number; salePrice?: number | string; stock: number }>
+  >([
+    { sku: '', packSize: '60 Veggie Capsules', price: 799, salePrice: 699, stock: 25 }
+  ]);
   const [savingProduct, setSavingProduct] = useState(false);
 
   // Edit Product Modal State
@@ -75,6 +88,12 @@ export default function AdminPage() {
   const [editProductStock, setEditProductStock] = useState(25);
   const [editProductPackSize, setEditProductPackSize] = useState('60 Veggie Capsules');
   const [editProductDescription, setEditProductDescription] = useState('');
+  // Multiple images & variants state for Edit Product
+  const [editProductImages, setEditProductImages] = useState<string[]>([]);
+  const [editProductImageInput, setEditProductImageInput] = useState('');
+  const [editProductVariants, setEditProductVariants] = useState<
+    Array<{ sku: string; packSize: string; price: number; salePrice?: number | string; stock: number }>
+  >([]);
   const [savingEditProduct, setSavingEditProduct] = useState(false);
 
   // Order Status Update Modal
@@ -194,20 +213,38 @@ export default function AdminPage() {
     setLoading(true);
     try {
       const [statsRes, productsRes, ordersRes, couponsRes, enquiriesRes, usersRes] = await Promise.all([
-        fetchFromAPI('/admin/stats'),
-        fetchFromAPI('/admin/products?limit=50'),
-        fetchFromAPI('/admin/orders?limit=50'),
-        fetchFromAPI('/admin/coupons'),
-        fetchFromAPI('/enquiries').catch(() => ({ success: false, data: [] })),
-        fetchFromAPI('/admin/users?limit=100').catch(() => ({ success: false, data: [] }))
+        fetchFromAPI('/admin/stats').catch(e => {
+          console.error('Failed to load stats:', e);
+          return { success: false, data: null };
+        }),
+        fetchFromAPI('/admin/products?limit=100').catch(e => {
+          console.error('Failed to load products:', e);
+          return { success: false, data: [] };
+        }),
+        fetchFromAPI('/admin/orders?limit=100').catch(e => {
+          console.error('Failed to load orders:', e);
+          return { success: false, data: [] };
+        }),
+        fetchFromAPI('/admin/coupons').catch(e => {
+          console.error('Failed to load coupons:', e);
+          return { success: false, data: [] };
+        }),
+        fetchFromAPI('/enquiries').catch(e => {
+          console.error('Failed to load enquiries:', e);
+          return { success: false, data: [] };
+        }),
+        fetchFromAPI('/admin/users?limit=100').catch(e => {
+          console.error('Failed to load users:', e);
+          return { success: false, data: [] };
+        })
       ]);
 
-      if (statsRes.success) setStats(statsRes.data);
-      if (productsRes.success) setProducts(productsRes.data);
-      if (ordersRes.success) setOrders(ordersRes.data);
-      if (couponsRes.success) setCoupons(couponsRes.data);
-      if (enquiriesRes?.success) setEnquiries(enquiriesRes.data);
-      if (usersRes?.success) setUsers(usersRes.data);
+      if (statsRes?.success && statsRes.data) setStats(statsRes.data);
+      if (productsRes?.success && Array.isArray(productsRes.data)) setProducts(productsRes.data);
+      if (ordersRes?.success && Array.isArray(ordersRes.data)) setOrders(ordersRes.data);
+      if (couponsRes?.success && Array.isArray(couponsRes.data)) setCoupons(couponsRes.data);
+      if (enquiriesRes?.success && Array.isArray(enquiriesRes.data)) setEnquiries(enquiriesRes.data);
+      if (usersRes?.success && Array.isArray(usersRes.data)) setUsers(usersRes.data);
     } catch (e) {
       console.error('Error loading admin records', e);
     } finally {
@@ -216,6 +253,8 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
+    if (authLoading) return;
+
     if (!isAuthenticated) {
       router.push('/account/login');
       return;
@@ -226,14 +265,131 @@ export default function AdminPage() {
     }
 
     loadData();
-  }, [isAuthenticated, isAdmin, router]);
+  }, [authLoading, isAuthenticated, isAdmin, router]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center p-8 bg-[#FAF8F1]">
+        <div className="text-center space-y-3">
+          <div className="w-8 h-8 border-2 border-[#214E34] border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-xs font-semibold text-[#687168]">Verifying administrator credentials...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated || !isAdmin) return null;
+
+  // Image and Variant Helpers for Add Product Modal
+  const handleAddNewImage = () => {
+    if (!newProductImageInput.trim()) return;
+    setNewProductImages(prev => [...prev, newProductImageInput.trim()]);
+    setNewProductImageInput('');
+  };
+
+  const handleRemoveNewImage = (idx: number) => {
+    setNewProductImages(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleSetPrimaryNewImage = (idx: number) => {
+    if (idx === 0) return;
+    setNewProductImages(prev => {
+      const copy = [...prev];
+      const [item] = copy.splice(idx, 1);
+      return [item, ...copy];
+    });
+  };
+
+  const handleAddNewVariant = () => {
+    setNewProductVariants(prev => [
+      ...prev,
+      { sku: '', packSize: '', price: newProductPrice, salePrice: newProductSalePrice, stock: 25 }
+    ]);
+  };
+
+  const handleRemoveNewVariant = (idx: number) => {
+    setNewProductVariants(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleUpdateNewVariant = (idx: number, field: string, value: any) => {
+    setNewProductVariants(prev => {
+      const copy = [...prev];
+      copy[idx] = { ...copy[idx], [field]: value };
+      return copy;
+    });
+  };
+
+  // Image and Variant Helpers for Edit Product Modal
+  const handleAddEditImage = () => {
+    if (!editProductImageInput.trim()) return;
+    setEditProductImages(prev => [...prev, editProductImageInput.trim()]);
+    setEditProductImageInput('');
+  };
+
+  const handleRemoveEditImage = (idx: number) => {
+    setEditProductImages(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleSetPrimaryEditImage = (idx: number) => {
+    if (idx === 0) return;
+    setEditProductImages(prev => {
+      const copy = [...prev];
+      const [item] = copy.splice(idx, 1);
+      return [item, ...copy];
+    });
+  };
+
+  const handleAddEditVariant = () => {
+    setEditProductVariants(prev => [
+      ...prev,
+      { sku: '', packSize: '', price: editProductPrice, salePrice: editProductSalePrice, stock: 25 }
+    ]);
+  };
+
+  const handleRemoveEditVariant = (idx: number) => {
+    setEditProductVariants(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleUpdateEditVariant = (idx: number, field: string, value: any) => {
+    setEditProductVariants(prev => {
+      const copy = [...prev];
+      copy[idx] = { ...copy[idx], [field]: value };
+      return copy;
+    });
+  };
 
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     setSavingProduct(true);
     try {
+      const allImages = newProductImages.filter(img => img.trim() !== '');
+      if (allImages.length === 0) allImages.push(newProductImage);
+      const thumbnailImg = allImages[0];
+
+      const baseSku = newProductSku.trim() || `AP-${Date.now().toString().slice(-6)}`;
+      const preparedVariants = newProductVariants
+        .filter(v => v.packSize.trim() !== '')
+        .map((v, i) => ({
+          sku: (v.sku || '').trim() || `${baseSku}-V${i + 1}`,
+          packSize: v.packSize.trim(),
+          price: Number(v.price) || Number(newProductPrice),
+          salePrice: v.salePrice !== undefined && v.salePrice !== '' && Number(v.salePrice) > 0 ? Number(v.salePrice) : undefined,
+          stock: Math.max(0, Number(v.stock !== undefined ? v.stock : newProductStock))
+        }));
+
+      if (preparedVariants.length === 0) {
+        preparedVariants.push({
+          sku: baseSku,
+          packSize: newProductPackSize || 'Standard Pack',
+          price: Number(newProductPrice),
+          salePrice: Number(newProductSalePrice) > 0 ? Number(newProductSalePrice) : undefined,
+          stock: Math.max(0, Number(newProductStock))
+        });
+      }
+
+      const totalStock = preparedVariants.reduce((sum, v) => sum + v.stock, 0);
+      const primaryVariant = preparedVariants[0];
+
       await fetchFromAPI('/admin/products', {
         method: 'POST',
         body: JSON.stringify({
@@ -241,14 +397,15 @@ export default function AdminPage() {
           tagline: newProductTagline,
           description: newProductDescription,
           category: newProductCategory,
-          price: Number(newProductPrice),
-          salePrice: Number(newProductSalePrice),
-          sku: newProductSku || `AP-${Date.now().toString().slice(-6)}`,
-          stock: Number(newProductStock),
-          packSize: newProductPackSize,
+          price: primaryVariant.price,
+          salePrice: primaryVariant.salePrice !== undefined ? primaryVariant.salePrice : Number(newProductSalePrice),
+          sku: baseSku,
+          stock: totalStock,
+          packSize: primaryVariant.packSize,
+          variants: preparedVariants,
           format: newProductFormat,
-          thumbnail: newProductImage,
-          images: [newProductImage],
+          thumbnail: thumbnailImg,
+          images: allImages,
           dosageInstructions: 'Take 1 to 2 units daily with warm water.',
           storageInstructions: 'Store in a cool dry area away from direct sunlight.',
           doshaBalancing: { vata: true, pitta: false, kapha: true, primaryDosha: 'Tridoshic' },
@@ -258,6 +415,18 @@ export default function AdminPage() {
         })
       });
       setShowProductModal(false);
+      // Reset form states
+      setNewProductName('');
+      setNewProductTagline('');
+      setNewProductDescription('');
+      setNewProductSku('');
+      setNewProductImages([
+        'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80'
+      ]);
+      setNewProductImageInput('');
+      setNewProductVariants([
+        { sku: '', packSize: '60 Veggie Capsules', price: 799, salePrice: 699, stock: 25 }
+      ]);
       await loadData();
     } catch (e) {
       alert('Failed to save product');
@@ -285,6 +454,39 @@ export default function AdminPage() {
     setEditProductStock(p.stock !== undefined ? p.stock : 0);
     setEditProductPackSize(p.packSize || '');
     setEditProductDescription(p.description || '');
+
+    // Initialize Images
+    if (p.images && Array.isArray(p.images) && p.images.length > 0) {
+      setEditProductImages([...p.images]);
+    } else if (p.thumbnail) {
+      setEditProductImages([p.thumbnail]);
+    } else {
+      setEditProductImages([]);
+    }
+    setEditProductImageInput('');
+
+    // Initialize Variants
+    if (p.variants && Array.isArray(p.variants) && p.variants.length > 0) {
+      setEditProductVariants(
+        p.variants.map((v: any) => ({
+          sku: v.sku || '',
+          packSize: v.packSize || '',
+          price: v.price || 0,
+          salePrice: v.salePrice !== undefined ? v.salePrice : '',
+          stock: v.stock !== undefined ? v.stock : 0
+        }))
+      );
+    } else {
+      setEditProductVariants([
+        {
+          sku: p.sku || '',
+          packSize: p.packSize || '',
+          price: p.price || 0,
+          salePrice: p.salePrice || '',
+          stock: p.stock !== undefined ? p.stock : 0
+        }
+      ]);
+    }
   };
 
   const handleUpdateProduct = async (e: React.FormEvent) => {
@@ -292,16 +494,49 @@ export default function AdminPage() {
     if (!editingProduct) return;
     setSavingEditProduct(true);
     try {
+      const allImages = editProductImages.filter(img => img.trim() !== '');
+      if (allImages.length === 0) {
+        allImages.push(editingProduct.thumbnail || 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80');
+      }
+      const thumbnailImg = allImages[0];
+
+      const baseSku = editingProduct.sku || `AP-${Date.now().toString().slice(-6)}`;
+      const preparedVariants = editProductVariants
+        .filter(v => (v.packSize || '').trim() !== '')
+        .map((v, i) => ({
+          sku: (v.sku || '').trim() || `${baseSku}-V${i + 1}`,
+          packSize: v.packSize.trim(),
+          price: Number(v.price) || Number(editProductPrice),
+          salePrice: v.salePrice !== undefined && v.salePrice !== '' && Number(v.salePrice) > 0 ? Number(v.salePrice) : undefined,
+          stock: Math.max(0, Number(v.stock !== undefined ? v.stock : 0))
+        }));
+
+      if (preparedVariants.length === 0) {
+        preparedVariants.push({
+          sku: baseSku,
+          packSize: editProductPackSize || 'Standard Pack',
+          price: Number(editProductPrice),
+          salePrice: Number(editProductSalePrice) > 0 ? Number(editProductSalePrice) : undefined,
+          stock: Math.max(0, Number(editProductStock))
+        });
+      }
+
+      const totalStock = preparedVariants.reduce((sum, v) => sum + v.stock, 0);
+      const primaryVariant = preparedVariants[0];
+
       await fetchFromAPI(`/admin/products/${editingProduct._id}`, {
         method: 'PUT',
         body: JSON.stringify({
           name: editProductName,
           category: editProductCategory,
-          price: Number(editProductPrice),
-          salePrice: Number(editProductSalePrice),
-          stock: Math.max(0, Number(editProductStock)),
-          packSize: editProductPackSize,
-          description: editProductDescription
+          price: primaryVariant.price,
+          salePrice: primaryVariant.salePrice !== undefined ? primaryVariant.salePrice : Number(editProductSalePrice),
+          stock: totalStock,
+          packSize: primaryVariant.packSize,
+          description: editProductDescription,
+          images: allImages,
+          thumbnail: thumbnailImg,
+          variants: preparedVariants
         })
       });
       setEditingProduct(null);
@@ -578,7 +813,7 @@ export default function AdminPage() {
                       <div>
                         <span className="font-mono font-bold text-[#214E34]">{o.orderNumber}</span>
                         <p className="text-[11px] text-[#687168]">
-                          {o.shippingAddress.fullName} • {o.shippingAddress.city}, {o.shippingAddress.state}
+                          {o.shippingAddress?.fullName || o.guestEmail || 'Customer'} • {o.shippingAddress?.city || 'India'}{o.shippingAddress?.state ? `, ${o.shippingAddress.state}` : ''}
                         </p>
                       </div>
                       <div className="text-right">
@@ -777,6 +1012,193 @@ export default function AdminPage() {
                       />
                     </div>
 
+                    {/* Section: Multiple Images Gallery */}
+                    <div className="p-4 bg-[#FAF8F1] rounded-xl border border-[#E5E8E0] space-y-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                        <div>
+                          <label className="block text-[#214E34] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+                            <LucideImage className="w-4 h-4 text-[#B86F4B]" /> Product Images Gallery ({newProductImages.length})
+                          </label>
+                          <p className="text-[11px] text-[#687168]">
+                            Add multiple angles, packaging shots, and ingredient views. The first image serves as the primary storefront thumbnail.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Image Thumbnails Strip */}
+                      <div className="flex flex-wrap gap-2.5 items-center">
+                        {newProductImages.map((img, idx) => (
+                          <div
+                            key={idx}
+                            className="relative group w-20 h-20 rounded-lg overflow-hidden border-2 border-[#E5E8E0] bg-white shadow-2xs shrink-0"
+                          >
+                            <img src={img} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                            {idx === 0 ? (
+                              <span className="absolute top-1 left-1 bg-[#214E34] text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-xs">
+                                Primary
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handleSetPrimaryNewImage(idx)}
+                                className="absolute bottom-1 left-1 right-1 bg-black/70 hover:bg-black text-white text-[8px] font-semibold py-0.5 rounded text-center opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                Make Primary
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveNewImage(idx)}
+                              className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full opacity-90 hover:opacity-100 transition-opacity shadow-xs"
+                              title="Remove image"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+
+                        {newProductImages.length === 0 && (
+                          <p className="text-[11px] text-[#888] italic py-2">
+                            No images added yet. Paste an image URL below to add one.
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Add Image URL Input */}
+                      <div className="flex gap-2">
+                        <input
+                          type="url"
+                          value={newProductImageInput}
+                          onChange={e => setNewProductImageInput(e.target.value)}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              handleAddNewImage();
+                            }
+                          }}
+                          placeholder="Paste image URL (e.g. https://images.unsplash.com/... or CDN link)"
+                          className="flex-1 px-3 py-2 border border-[#E5E8E0] rounded-md bg-white text-xs"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleAddNewImage}
+                          className="px-4 py-2 bg-[#214E34] hover:bg-[#163A28] text-white font-semibold rounded-md text-xs flex items-center gap-1 shrink-0"
+                        >
+                          <Plus className="w-3.5 h-3.5" /> Add Image
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Section: Multiple Variants & Pack Sizes */}
+                    <div className="p-4 bg-[#FAF8F1] rounded-xl border border-[#E5E8E0] space-y-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                          <label className="block text-[#214E34] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+                            <Layers className="w-4 h-4 text-[#B86F4B]" /> Product Variants & Pack Sizes ({newProductVariants.length})
+                          </label>
+                          <p className="text-[11px] text-[#687168]">
+                            Configure multiple sizes or volumes (e.g. 60 Caps, 120 Caps, 100ml, 200ml) with individual pricing and stock inventory.
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleAddNewVariant}
+                          className="px-3 py-1.5 bg-[#FAF8F1] hover:bg-[#EDE8E0] border border-[#214E34] text-[#214E34] font-bold rounded-md text-xs flex items-center gap-1 transition-colors self-start sm:self-auto shrink-0"
+                        >
+                          <Plus className="w-3.5 h-3.5" /> Add Variant
+                        </button>
+                      </div>
+
+                      <div className="space-y-2">
+                        {newProductVariants.map((v, idx) => (
+                          <div
+                            key={idx}
+                            className="p-3 bg-white rounded-lg border border-[#E5E8E0] grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end shadow-2xs"
+                          >
+                            <div className="sm:col-span-3">
+                              <label className="block text-[10px] text-[#687168] font-bold uppercase mb-1">
+                                Pack Size / Volume *
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                value={v.packSize}
+                                onChange={e => handleUpdateNewVariant(idx, 'packSize', e.target.value)}
+                                placeholder="e.g. 60 Veggie Capsules"
+                                className="w-full px-2.5 py-1.5 border border-[#E5E8E0] rounded bg-[#FAF8F1] text-xs"
+                              />
+                            </div>
+
+                            <div className="sm:col-span-2">
+                              <label className="block text-[10px] text-[#687168] font-bold uppercase mb-1">
+                                MRP Price (₹) *
+                              </label>
+                              <input
+                                type="number"
+                                required
+                                min={0}
+                                value={v.price}
+                                onChange={e => handleUpdateNewVariant(idx, 'price', Number(e.target.value))}
+                                className="w-full px-2.5 py-1.5 border border-[#E5E8E0] rounded bg-[#FAF8F1] text-xs"
+                              />
+                            </div>
+
+                            <div className="sm:col-span-2">
+                              <label className="block text-[10px] text-[#687168] font-bold uppercase mb-1">
+                                Sale Price (₹)
+                              </label>
+                              <input
+                                type="number"
+                                min={0}
+                                value={v.salePrice !== undefined ? v.salePrice : ''}
+                                onChange={e => handleUpdateNewVariant(idx, 'salePrice', e.target.value === '' ? '' : Number(e.target.value))}
+                                className="w-full px-2.5 py-1.5 border border-[#E5E8E0] rounded bg-[#FAF8F1] text-xs"
+                              />
+                            </div>
+
+                            <div className="sm:col-span-2">
+                              <label className="block text-[10px] text-[#687168] font-bold uppercase mb-1">
+                                Stock (Units) *
+                              </label>
+                              <input
+                                type="number"
+                                required
+                                min={0}
+                                value={v.stock}
+                                onChange={e => handleUpdateNewVariant(idx, 'stock', Math.max(0, Number(e.target.value)))}
+                                className="w-full px-2.5 py-1.5 border border-[#E5E8E0] rounded bg-[#FAF8F1] text-xs"
+                              />
+                            </div>
+
+                            <div className="sm:col-span-2">
+                              <label className="block text-[10px] text-[#687168] font-bold uppercase mb-1">
+                                SKU (Optional)
+                              </label>
+                              <input
+                                type="text"
+                                value={v.sku}
+                                onChange={e => handleUpdateNewVariant(idx, 'sku', e.target.value)}
+                                placeholder="Auto-generated"
+                                className="w-full px-2.5 py-1.5 border border-[#E5E8E0] rounded bg-[#FAF8F1] text-xs"
+                              />
+                            </div>
+
+                            <div className="sm:col-span-1 flex justify-end">
+                              <button
+                                type="button"
+                                disabled={newProductVariants.length === 1}
+                                onClick={() => handleRemoveNewVariant(idx)}
+                                className="p-2 text-red-600 hover:bg-red-50 rounded-md disabled:opacity-30 disabled:cursor-not-allowed"
+                                title={newProductVariants.length === 1 ? 'At least one variant required' : 'Remove variant'}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
                     <div className="flex gap-2">
                       <button
                         type="submit"
@@ -938,6 +1360,193 @@ export default function AdminPage() {
                       />
                     </div>
 
+                    {/* Section: Multiple Images Gallery (Edit) */}
+                    <div className="p-4 bg-[#FAF8F1] rounded-xl border border-[#E5E8E0] space-y-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                        <div>
+                          <label className="block text-[#214E34] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+                            <LucideImage className="w-4 h-4 text-[#B86F4B]" /> Product Images Gallery ({editProductImages.length})
+                          </label>
+                          <p className="text-[11px] text-[#687168]">
+                            Add multiple angles, packaging shots, and ingredient views. The first image serves as the primary storefront thumbnail.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Image Thumbnails Strip */}
+                      <div className="flex flex-wrap gap-2.5 items-center">
+                        {editProductImages.map((img, idx) => (
+                          <div
+                            key={idx}
+                            className="relative group w-20 h-20 rounded-lg overflow-hidden border-2 border-[#E5E8E0] bg-white shadow-2xs shrink-0"
+                          >
+                            <img src={img} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                            {idx === 0 ? (
+                              <span className="absolute top-1 left-1 bg-[#214E34] text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-xs">
+                                Primary
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handleSetPrimaryEditImage(idx)}
+                                className="absolute bottom-1 left-1 right-1 bg-black/70 hover:bg-black text-white text-[8px] font-semibold py-0.5 rounded text-center opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                Make Primary
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveEditImage(idx)}
+                              className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full opacity-90 hover:opacity-100 transition-opacity shadow-xs"
+                              title="Remove image"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+
+                        {editProductImages.length === 0 && (
+                          <p className="text-[11px] text-[#888] italic py-2">
+                            No images added yet. Paste an image URL below to add one.
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Add Image URL Input */}
+                      <div className="flex gap-2">
+                        <input
+                          type="url"
+                          value={editProductImageInput}
+                          onChange={e => setEditProductImageInput(e.target.value)}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              handleAddEditImage();
+                            }
+                          }}
+                          placeholder="Paste image URL (e.g. https://images.unsplash.com/... or CDN link)"
+                          className="flex-1 px-3 py-2 border border-[#E5E8E0] rounded-md bg-white text-xs"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleAddEditImage}
+                          className="px-4 py-2 bg-[#214E34] hover:bg-[#163A28] text-white font-semibold rounded-md text-xs flex items-center gap-1 shrink-0"
+                        >
+                          <Plus className="w-3.5 h-3.5" /> Add Image
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Section: Multiple Variants & Pack Sizes (Edit) */}
+                    <div className="p-4 bg-[#FAF8F1] rounded-xl border border-[#E5E8E0] space-y-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                          <label className="block text-[#214E34] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+                            <Layers className="w-4 h-4 text-[#B86F4B]" /> Product Variants & Pack Sizes ({editProductVariants.length})
+                          </label>
+                          <p className="text-[11px] text-[#687168]">
+                            Configure multiple sizes or volumes (e.g. 60 Caps, 120 Caps, 100ml, 200ml) with individual pricing and stock inventory.
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleAddEditVariant}
+                          className="px-3 py-1.5 bg-[#FAF8F1] hover:bg-[#EDE8E0] border border-[#214E34] text-[#214E34] font-bold rounded-md text-xs flex items-center gap-1 transition-colors self-start sm:self-auto shrink-0"
+                        >
+                          <Plus className="w-3.5 h-3.5" /> Add Variant
+                        </button>
+                      </div>
+
+                      <div className="space-y-2">
+                        {editProductVariants.map((v, idx) => (
+                          <div
+                            key={idx}
+                            className="p-3 bg-white rounded-lg border border-[#E5E8E0] grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end shadow-2xs"
+                          >
+                            <div className="sm:col-span-3">
+                              <label className="block text-[10px] text-[#687168] font-bold uppercase mb-1">
+                                Pack Size / Volume *
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                value={v.packSize}
+                                onChange={e => handleUpdateEditVariant(idx, 'packSize', e.target.value)}
+                                placeholder="e.g. 60 Veggie Capsules"
+                                className="w-full px-2.5 py-1.5 border border-[#E5E8E0] rounded bg-[#FAF8F1] text-xs"
+                              />
+                            </div>
+
+                            <div className="sm:col-span-2">
+                              <label className="block text-[10px] text-[#687168] font-bold uppercase mb-1">
+                                MRP Price (₹) *
+                              </label>
+                              <input
+                                type="number"
+                                required
+                                min={0}
+                                value={v.price}
+                                onChange={e => handleUpdateEditVariant(idx, 'price', Number(e.target.value))}
+                                className="w-full px-2.5 py-1.5 border border-[#E5E8E0] rounded bg-[#FAF8F1] text-xs"
+                              />
+                            </div>
+
+                            <div className="sm:col-span-2">
+                              <label className="block text-[10px] text-[#687168] font-bold uppercase mb-1">
+                                Sale Price (₹)
+                              </label>
+                              <input
+                                type="number"
+                                min={0}
+                                value={v.salePrice !== undefined ? v.salePrice : ''}
+                                onChange={e => handleUpdateEditVariant(idx, 'salePrice', e.target.value === '' ? '' : Number(e.target.value))}
+                                className="w-full px-2.5 py-1.5 border border-[#E5E8E0] rounded bg-[#FAF8F1] text-xs"
+                              />
+                            </div>
+
+                            <div className="sm:col-span-2">
+                              <label className="block text-[10px] text-[#687168] font-bold uppercase mb-1">
+                                Stock (Units) *
+                              </label>
+                              <input
+                                type="number"
+                                required
+                                min={0}
+                                value={v.stock}
+                                onChange={e => handleUpdateEditVariant(idx, 'stock', Math.max(0, Number(e.target.value)))}
+                                className="w-full px-2.5 py-1.5 border border-[#E5E8E0] rounded bg-[#FAF8F1] text-xs"
+                              />
+                            </div>
+
+                            <div className="sm:col-span-2">
+                              <label className="block text-[10px] text-[#687168] font-bold uppercase mb-1">
+                                SKU (Optional)
+                              </label>
+                              <input
+                                type="text"
+                                value={v.sku}
+                                onChange={e => handleUpdateEditVariant(idx, 'sku', e.target.value)}
+                                placeholder="Auto-generated"
+                                className="w-full px-2.5 py-1.5 border border-[#E5E8E0] rounded bg-[#FAF8F1] text-xs"
+                              />
+                            </div>
+
+                            <div className="sm:col-span-1 flex justify-end">
+                              <button
+                                type="button"
+                                disabled={editProductVariants.length === 1}
+                                onClick={() => handleRemoveEditVariant(idx)}
+                                className="p-2 text-red-600 hover:bg-red-50 rounded-md disabled:opacity-30 disabled:cursor-not-allowed"
+                                title={editProductVariants.length === 1 ? 'At least one variant required' : 'Remove variant'}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
                     <div className="flex gap-2">
                       <button
                         type="submit"
@@ -977,7 +1586,7 @@ export default function AdminPage() {
                       <tr key={p._id} className="hover:bg-[#FAF8F1]/50">
                         <td className="p-3 flex items-center gap-3">
                           <div className="relative w-10 h-10 rounded bg-[#FAF8F1] overflow-hidden shrink-0 border border-[#E5E8E0]">
-                            <Image src={p.thumbnail || p.images[0]} alt={p.name} fill className="object-cover" />
+                            <Image src={p.thumbnail || (p.images && p.images[0]) || '/images/logo.png'} alt={p.name} fill className="object-cover" />
                           </div>
                           <div>
                             <p className="font-bold text-[#202820]">{p.name}</p>
@@ -1126,9 +1735,11 @@ export default function AdminPage() {
                           </span>
                         </td>
                         <td className="p-3">
-                          <p className="font-bold text-[#202820]">{o.shippingAddress.fullName}</p>
+                          <p className="font-bold text-[#202820]">
+                            {o.shippingAddress?.fullName || o.guestEmail || 'Customer'}
+                          </p>
                           <p className="text-[10px] text-[#687168]">
-                            {o.shippingAddress.city}, {o.shippingAddress.state} ({o.shippingAddress.pincode})
+                            {o.shippingAddress?.city || 'India'}{o.shippingAddress?.state ? `, ${o.shippingAddress.state}` : ''} {o.shippingAddress?.pincode ? `(${o.shippingAddress.pincode})` : ''}
                           </p>
                         </td>
                         <td className="p-3 font-bold text-[#202820]">₹{o.totalAmount}</td>
