@@ -16,16 +16,24 @@ export const MobileBottomBar: React.FC = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#EDE8E0] flex items-center justify-around py-2 md:hidden shadow-md safe-area-inset-bottom">
-      {/* 1. Home */}
-      <Link
-        href="/"
-        className={`flex flex-col items-center gap-0.5 text-[10px] font-medium transition-colors ${
-          pathname === '/' && !isMobileMenuOpen ? 'text-[#1F4E34] font-bold' : 'text-[#666]'
+      {/* 1. LEFT: Menu Drawer Toggle Button */}
+      <button
+        onClick={toggleMobileMenu}
+        className={`flex flex-col items-center gap-0.5 text-[10px] font-medium transition-colors cursor-pointer ${
+          isMobileMenuOpen ? 'text-[#1F4E34] font-bold' : 'text-[#666] hover:text-[#1F4E34]'
         }`}
+        aria-label="Toggle navigation menu"
+        aria-expanded={isMobileMenuOpen}
       >
-        <Home className="w-5 h-5" />
-        <span>Home</span>
-      </Link>
+        <div className={`p-0.5 rounded-md transition-colors ${isMobileMenuOpen ? 'bg-[#1F4E34]/10 text-[#1F4E34]' : ''}`}>
+          {isMobileMenuOpen ? (
+            <X className="w-5 h-5 text-[#1F4E34]" />
+          ) : (
+            <Menu className="w-5 h-5" />
+          )}
+        </div>
+        <span className={isMobileMenuOpen ? 'text-[#1F4E34] font-bold' : ''}>Menu</span>
+      </button>
 
       {/* 2. Wishlist */}
       <Link
@@ -45,24 +53,18 @@ export const MobileBottomBar: React.FC = () => {
         <span>Wishlist</span>
       </Link>
 
-      {/* 3. CENTER: Menu Toggle Button */}
-      <button
-        onClick={toggleMobileMenu}
-        className={`flex flex-col items-center gap-0.5 text-[10px] font-medium transition-colors cursor-pointer ${
-          isMobileMenuOpen ? 'text-[#1F4E34] font-bold' : 'text-[#666] hover:text-[#1F4E34]'
+      {/* 3. CENTER: Home */}
+      <Link
+        href="/"
+        className={`flex flex-col items-center gap-0.5 text-[10px] font-medium transition-colors ${
+          pathname === '/' && !isMobileMenuOpen ? 'text-[#1F4E34] font-bold' : 'text-[#666]'
         }`}
-        aria-label="Toggle navigation menu"
-        aria-expanded={isMobileMenuOpen}
       >
-        <div className={`p-0.5 rounded-md transition-colors ${isMobileMenuOpen ? 'bg-[#1F4E34]/10 text-[#1F4E34]' : ''}`}>
-          {isMobileMenuOpen ? (
-            <X className="w-5 h-5 text-[#1F4E34]" />
-          ) : (
-            <Menu className="w-5 h-5" />
-          )}
+        <div className={`p-0.5 rounded-md transition-colors ${pathname === '/' && !isMobileMenuOpen ? 'text-[#1F4E34]' : ''}`}>
+          <Home className="w-5 h-5" />
         </div>
-        <span className={isMobileMenuOpen ? 'text-[#1F4E34] font-bold' : ''}>Menu</span>
-      </button>
+        <span className={pathname === '/' && !isMobileMenuOpen ? 'text-[#1F4E34] font-bold' : ''}>Home</span>
+      </Link>
 
       {/* 4. Cart Drawer Trigger */}
       <button
