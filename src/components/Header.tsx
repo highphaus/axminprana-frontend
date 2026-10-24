@@ -112,9 +112,9 @@ export const Header: React.FC = () => {
       {/* MAIN HEADER ROW (Unified MNC Standard: Logo | Embedded Search | Actions) */}
       <div className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
-          <div className="flex items-center justify-between gap-6 lg:gap-10">
+          <div className="flex items-center justify-between gap-4 lg:gap-8">
             
-            {/* LEFT: Mobile Menu Toggle + Clean MNC Brand Logo */}
+            {/* LEFT: Mobile Menu Toggle + MNC Brand Logo + Deliver To Location */}
             <div className="flex items-center gap-3 shrink-0">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -142,6 +142,107 @@ export const Header: React.FC = () => {
                   </span>
                 </div>
               </Link>
+
+              {/* DESKTOP DELIVER TO (Amazon / Tata 1mg Standard Placement beside Logo) */}
+              <div className="hidden lg:flex items-center pl-2">
+                <div className="h-8 w-[1px] bg-[#EDE8E0] mr-3" />
+                <div className="relative" ref={addressRef}>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddressDropdown(!showAddressDropdown)}
+                    className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl hover:bg-[#FAF8F5] border border-transparent hover:border-[#EDE8E0] transition-all text-left group cursor-pointer"
+                    aria-label="View Dispensary and Delivery Address"
+                    aria-expanded={showAddressDropdown}
+                  >
+                    <div className="w-7 h-7 rounded-full bg-[#1F4E34]/10 text-[#1F4E34] flex items-center justify-center shrink-0 group-hover:bg-[#1F4E34] group-hover:text-white transition-colors">
+                      <MapPin className="w-3.5 h-3.5" />
+                    </div>
+                    <div className="flex flex-col justify-center">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-[#777] leading-tight flex items-center gap-1">
+                        Deliver to
+                        <ChevronDown className={`w-3 h-3 text-[#999] transition-transform ${showAddressDropdown ? 'rotate-180' : ''}`} />
+                      </span>
+                      <span className="text-xs font-bold text-[#1A1A1A] leading-tight whitespace-nowrap">
+                        Kallara, Trivandrum 695608
+                      </span>
+                    </div>
+                  </button>
+
+                  {/* Desktop Popover Card */}
+                  {showAddressDropdown && (
+                    <div className="absolute left-0 top-full mt-2 w-84 bg-white border border-[#EDE8E0] rounded-2xl shadow-xl p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                      <div className="flex items-start justify-between pb-3 border-b border-[#EDE8E0]">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-[#1F4E34] text-white flex items-center justify-center shrink-0 shadow-xs">
+                            <MapPin className="w-4 h-4 text-[#C59B27]" />
+                          </div>
+                          <div>
+                            <h4 className="text-xs font-bold text-[#1A1A1A] leading-tight">
+                              Axmin Prana Dispensary Hub
+                            </h4>
+                            <span className="text-[10px] text-[#777]">Classical Ayurvedic Pharmacy & Dispatch</span>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowAddressDropdown(false)}
+                          className="p-1 rounded-md text-[#999] hover:text-[#1A1A1A] hover:bg-[#FAF8F5] transition-colors"
+                          aria-label="Close address details"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      <div className="py-3.5 space-y-3 text-xs">
+                        <div className="flex items-start gap-2.5 text-[#444]">
+                          <MapPin className="w-4 h-4 text-[#1F4E34] shrink-0 mt-0.5" />
+                          <div className="leading-snug">
+                            <p className="font-semibold text-[#1A1A1A]">Registered Dispensary Hub:</p>
+                            <p className="text-[#666]">Kallara, Trivandrum, Kerala – 695608, India</p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-2.5 text-[#444]">
+                          <Truck className="w-4 h-4 text-[#1F4E34] shrink-0 mt-0.5" />
+                          <div className="leading-snug">
+                            <p className="font-semibold text-[#1A1A1A]">Pan-India Express Delivery:</p>
+                            <p className="text-[#666]">Serving all PIN codes across India • Free shipping above ₹499</p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-2.5 text-[#444]">
+                          <Phone className="w-4 h-4 text-[#1F4E34] shrink-0 mt-0.5" />
+                          <div className="leading-snug">
+                            <p className="font-semibold text-[#1A1A1A]">Direct Care Helpline:</p>
+                            <a href="tel:+917561836584" className="text-[#1F4E34] font-bold hover:underline">
+                              +91 75618 36584
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-t border-[#EDE8E0] flex items-center justify-between gap-2.5">
+                        <a
+                          href="https://maps.app.goo.gl/593CoPREJZsqTLRD9"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 py-2 px-3 bg-[#1F4E34] hover:bg-[#163B27] text-white text-xs font-semibold rounded-xl text-center flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+                        >
+                          <span>Get Directions</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                        <Link
+                          href="/contact"
+                          onClick={() => setShowAddressDropdown(false)}
+                          className="py-2 px-3.5 bg-[#FAF8F5] hover:bg-[#EDE8E0] text-[#1A1A1A] text-xs font-semibold rounded-xl transition-colors"
+                        >
+                          Contact Us
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* CENTER: Minimalist Embedded Search Bar */}
@@ -238,109 +339,42 @@ export const Header: React.FC = () => {
               )}
             </div>
 
-            {/* RIGHT: Dispensary & Delivery Address Display (Replaces profile, wishlist & cart) */}
-            <div className="relative shrink-0" ref={addressRef}>
-              <button
-                type="button"
-                onClick={() => setShowAddressDropdown(!showAddressDropdown)}
-                className="flex items-center gap-2 sm:gap-2.5 p-1.5 sm:px-3 sm:py-1.5 rounded-xl border border-[#EDE8E0] hover:border-[#1F4E34]/40 bg-[#FAF8F5] hover:bg-white transition-all text-left group cursor-pointer shadow-2xs select-none"
-                aria-label="View Dispensary and Delivery Address"
-                aria-expanded={showAddressDropdown}
+            {/* RIGHT: Direct Care Helpline & Order Tracking (Balances header symmetrically) */}
+            <div className="hidden lg:flex items-center gap-3 shrink-0">
+              <a
+                href="tel:+917561836584"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#FAF8F5] hover:bg-[#F5F2EC] border border-[#EDE8E0] text-xs font-semibold text-[#1A1A1A] transition-colors group"
+                title="Call Ayurvedic Care Helpline"
               >
-                <div className="w-8 h-8 rounded-full bg-[#1F4E34]/10 text-[#1F4E34] flex items-center justify-center shrink-0 group-hover:bg-[#1F4E34] group-hover:text-white transition-colors">
-                  <MapPin className="w-4 h-4" />
+                <div className="w-6 h-6 rounded-full bg-[#1F4E34] text-white flex items-center justify-center shrink-0">
+                  <Phone className="w-3 h-3 text-[#C59B27]" />
                 </div>
-                <div className="hidden sm:flex flex-col justify-center">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#777] leading-tight flex items-center gap-1">
-                    Dispensary & Hub
-                    <ChevronDown className={`w-3 h-3 text-[#999] transition-transform ${showAddressDropdown ? 'rotate-180' : ''}`} />
-                  </span>
-                  <span className="text-xs font-bold text-[#1A1A1A] leading-tight truncate max-w-[155px] md:max-w-[185px]">
-                    Kallara, Trivandrum 695608
-                  </span>
+                <div className="flex flex-col text-left leading-tight">
+                  <span className="text-[9px] uppercase tracking-wider text-[#777] font-semibold">Direct Care</span>
+                  <span className="text-[11px] font-bold text-[#1F4E34] group-hover:underline">+91 75618 36584</span>
                 </div>
-                {/* Mobile compact badge */}
-                <div className="sm:hidden flex flex-col justify-center">
-                  <span className="text-[9px] font-bold text-[#777] uppercase leading-none">Hub</span>
-                  <span className="text-[11px] font-bold text-[#1A1A1A] leading-tight">695608</span>
-                </div>
-              </button>
+              </a>
 
-              {/* Address Details Popover Card */}
-              {showAddressDropdown && (
-                <div
-                  className="absolute right-0 top-full mt-2 w-80 sm:w-88 bg-white border border-[#EDE8E0] rounded-2xl shadow-xl p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150"
-                >
-                  <div className="flex items-start justify-between pb-3 border-b border-[#EDE8E0]">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-[#1F4E34] text-white flex items-center justify-center shrink-0 shadow-xs">
-                        <MapPin className="w-4 h-4 text-[#C59B27]" />
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-[#1A1A1A] leading-tight">
-                          Axmin Prana Dispensary Hub
-                        </h4>
-                        <span className="text-[10px] text-[#777]">Classical Ayurvedic Pharmacy & Dispatch</span>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowAddressDropdown(false)}
-                      className="p-1 rounded-md text-[#999] hover:text-[#1A1A1A] hover:bg-[#FAF8F5] transition-colors"
-                      aria-label="Close address details"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
+              <Link
+                href="/track-order"
+                className="flex items-center gap-1.5 text-xs font-semibold text-[#444] hover:text-[#1F4E34] transition-colors px-2.5 py-1.5 rounded-lg hover:bg-[#FAF8F5]"
+              >
+                <Truck className="w-4 h-4 text-[#C59B27]" />
+                <span>Track Order</span>
+              </Link>
+            </div>
 
-                  <div className="py-3 space-y-2.5 text-xs">
-                    <div className="flex items-start gap-2.5 text-[#444]">
-                      <MapPin className="w-4 h-4 text-[#1F4E34] shrink-0 mt-0.5" />
-                      <div className="leading-snug">
-                        <p className="font-semibold text-[#1A1A1A]">Registered Dispensary Hub:</p>
-                        <p className="text-[#666]">Kallara, Trivandrum, Kerala – 695608, India</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-2.5 text-[#444]">
-                      <Truck className="w-4 h-4 text-[#1F4E34] shrink-0 mt-0.5" />
-                      <div className="leading-snug">
-                        <p className="font-semibold text-[#1A1A1A]">Pan-India Delivery:</p>
-                        <p className="text-[#666]">Serving all PIN codes across India • Free shipping above ₹499</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-2.5 text-[#444]">
-                      <Phone className="w-4 h-4 text-[#1F4E34] shrink-0 mt-0.5" />
-                      <div className="leading-snug">
-                        <p className="font-semibold text-[#1A1A1A]">Direct Care Helpline:</p>
-                        <a href="tel:+917561836584" className="text-[#1F4E34] font-bold hover:underline">
-                          +91 75618 36584
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-3 border-t border-[#EDE8E0] flex items-center justify-between gap-2">
-                    <a
-                      href="https://maps.app.goo.gl/593CoPREJZsqTLRD9"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 py-2 px-3 bg-[#1F4E34] hover:bg-[#163B27] text-white text-xs font-semibold rounded-xl text-center flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
-                    >
-                      <span>Get Directions</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-                    <Link
-                      href="/contact"
-                      onClick={() => setShowAddressDropdown(false)}
-                      className="py-2 px-3 bg-[#FAF8F5] hover:bg-[#EDE8E0] text-[#1A1A1A] text-xs font-semibold rounded-xl transition-colors"
-                    >
-                      Contact Us
-                    </Link>
-                  </div>
-                </div>
-              )}
+            {/* MOBILE RIGHT: Quick Direct Helpline Link */}
+            <div className="lg:hidden flex items-center gap-2 shrink-0">
+              <a
+                href="tel:+917561836584"
+                className="p-1.5 px-2.5 text-[#1F4E34] hover:bg-[#FAF8F5] rounded-lg transition-colors flex items-center gap-1 border border-[#EDE8E0] bg-[#FAF8F5]"
+                title="Call Helpline"
+                aria-label="Call Helpline"
+              >
+                <Phone className="w-3.5 h-3.5 text-[#1F4E34]" />
+                <span className="text-[11px] font-bold text-[#1F4E34]">Call</span>
+              </a>
             </div>
           </div>
 
@@ -366,6 +400,101 @@ export const Header: React.FC = () => {
               )}
             </form>
           </div>
+
+          {/* MOBILE DEDICATED LOCATION STRIP (Amazon / Tata 1mg Standard) */}
+          <div className="lg:hidden bg-[#FAF8F5] border-t border-b border-[#EDE8E0] -mx-4 sm:-mx-6 px-4 sm:px-6 py-2 mt-2.5">
+            <button
+              type="button"
+              onClick={() => setShowAddressDropdown(true)}
+              className="flex items-center gap-2 w-full text-left cursor-pointer"
+            >
+              <MapPin className="w-3.5 h-3.5 text-[#1F4E34] shrink-0" />
+              <span className="text-[#777] text-[11px]">Deliver to:</span>
+              <span className="font-bold text-[#1A1A1A] text-xs truncate">
+                Kallara, Trivandrum – 695608
+              </span>
+              <ChevronDown className="w-3.5 h-3.5 text-[#888] shrink-0 ml-auto" />
+            </button>
+          </div>
+
+          {/* Mobile Address Modal (Opens when mobile delivery strip is clicked) */}
+          {showAddressDropdown && (
+            <div className="lg:hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
+              <div
+                className="w-full max-w-sm bg-white rounded-2xl border border-[#EDE8E0] shadow-2xl p-5 space-y-4"
+                onClick={e => e.stopPropagation()}
+              >
+                <div className="flex items-start justify-between pb-3 border-b border-[#EDE8E0]">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-[#1F4E34] text-white flex items-center justify-center shrink-0 shadow-xs">
+                      <MapPin className="w-4 h-4 text-[#C59B27]" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-[#1A1A1A] leading-tight">
+                        Axmin Prana Dispensary Hub
+                      </h4>
+                      <span className="text-[10px] text-[#777]">Classical Ayurvedic Pharmacy & Dispatch</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddressDropdown(false)}
+                    className="p-1 rounded-md text-[#999] hover:text-[#1A1A1A] hover:bg-[#FAF8F5] transition-colors"
+                    aria-label="Close address details"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="flex items-start gap-2.5 text-[#444]">
+                    <MapPin className="w-4 h-4 text-[#1F4E34] shrink-0 mt-0.5" />
+                    <div className="leading-snug">
+                      <p className="font-semibold text-[#1A1A1A]">Registered Dispensary Hub:</p>
+                      <p className="text-[#666]">Kallara, Trivandrum, Kerala – 695608, India</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5 text-[#444]">
+                    <Truck className="w-4 h-4 text-[#1F4E34] shrink-0 mt-0.5" />
+                    <div className="leading-snug">
+                      <p className="font-semibold text-[#1A1A1A]">Pan-India Express Delivery:</p>
+                      <p className="text-[#666]">Serving all PIN codes across India • Free shipping above ₹499</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5 text-[#444]">
+                    <Phone className="w-4 h-4 text-[#1F4E34] shrink-0 mt-0.5" />
+                    <div className="leading-snug">
+                      <p className="font-semibold text-[#1A1A1A]">Direct Care Helpline:</p>
+                      <a href="tel:+917561836584" className="text-[#1F4E34] font-bold hover:underline">
+                        +91 75618 36584
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-[#EDE8E0] flex items-center justify-between gap-2.5">
+                  <a
+                    href="https://maps.app.goo.gl/593CoPREJZsqTLRD9"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2.5 px-3 bg-[#1F4E34] hover:bg-[#163B27] text-white text-xs font-semibold rounded-xl text-center flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+                  >
+                    <span>Get Directions</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddressDropdown(false)}
+                    className="py-2.5 px-4 bg-[#FAF8F5] hover:bg-[#EDE8E0] text-[#1A1A1A] text-xs font-semibold rounded-xl transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
