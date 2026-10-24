@@ -17,7 +17,27 @@ interface SearchParams {
 export const metadata: Metadata = {
   title: 'Classical Ayurvedic Formulations & Herbal Medicines | Axmin Prana',
   description:
-    'Explore classical Ayurvedic formulations prepared according to the Charaka Samhita. Standardized Ashwagandha, Triphala, Kumkumadi Tailam, and Bringadi hair oils crafted in Kerala.'
+    'Explore classical Ayurvedic formulations prepared according to the Charaka Samhita. Vadha Ranjaga Thailam Pain Relief Oil, Thalis Powder, AXMIN KESHAVEDA Herbal Hair Oil & classical wellness.',
+  openGraph: {
+    title: 'Ayurvedic Shop & Classical Formulations | Axmin Prana',
+    description: 'Explore pure AYUSH-certified classical Ayurvedic oils, churnas, and herbal formulations.',
+    url: 'https://www.axminprana.com/shop',
+    siteName: 'Axmin Prana Ayurveda',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Axmin Prana Ayurveda Catalog'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Ayurvedic Shop & Classical Formulations | Axmin Prana',
+    description: 'Explore pure AYUSH-certified classical Ayurvedic oils, churnas, and herbal formulations.',
+    images: ['/og-image.jpg']
+  }
 };
 
 async function getCatalog(searchParams: SearchParams) {

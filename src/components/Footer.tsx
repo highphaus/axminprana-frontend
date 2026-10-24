@@ -123,12 +123,18 @@ export const Footer: React.FC = () => {
             <div className="pt-1 space-y-2 text-xs text-[#DDE7D9]/85">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#C59B27] shrink-0 mt-0.5" />
-                <span className="leading-snug">Dispensary Hub: Kallara, Trivandrum, Kerala – 695608, India</span>
+                <a href="https://maps.app.goo.gl/593CoPREJZsqTLRD9" target="_blank" rel="noopener noreferrer" className="leading-snug hover:text-white transition-colors">Dispensary Hub: Kallara, Trivandrum, Kerala – 695608, India</a>
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#C59B27] shrink-0" />
                 <a href="tel:+917561836584" className="hover:text-white transition-colors font-medium">
                   +91 75618 36584 (Direct Care Helpline)
+                </a>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Phone className="w-4 h-4 text-[#C59B27] shrink-0" />
+                <a href="tel:+917306225232" className="hover:text-white transition-colors font-medium">
+                  +91 73062 25232 (Customer Service)
                 </a>
               </div>
               <div className="flex items-center gap-2.5">

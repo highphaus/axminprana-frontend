@@ -28,12 +28,21 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://axminprana.com'),
-  title: 'Axmin Prana | Authentic Ayurvedic Wellness & Classical Formulations',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://www.axminprana.com'),
+  title: {
+    default: 'Axmin Prana | Authentic Ayurvedic Wellness & Classical Formulations',
+    template: '%s | Axmin Prana Ayurveda'
+  },
   description:
-    'Experience classical Ayurveda inspired by the Charaka Samhita. 100% natural, AYUSH-certified Ashwagandha, Triphala, Kumkumadi Tailam & Bringadi oils crafted in Kerala.',
+    'Experience classical Ayurveda inspired by the Charaka Samhita. 100% natural, AYUSH-certified Vadha Ranjaga Thailam Pain Relief Oil, Thalis Powder, AXMIN KESHAVEDA Herbal Hair Oil & classical wellness.',
   keywords: [
+    'Axmin Prana',
     'Ayurveda',
+    'Pain Relief Oil',
+    'Vadha Ranjaga Thailam',
+    'Ulcer Relief Medicine',
+    'Thalis Powder',
+    'AXMIN KESHAVEDA Herbal Hair Oil',
     'Ayurvedic medicine',
     'Ashwagandha KSM-66',
     'Kumkumadi Tailam',
@@ -42,16 +51,40 @@ export const metadata: Metadata = {
     'Dosha balance',
     'AYUSH certified',
     'Vedic wellness India',
-    'Forest Essentials inspired luxury',
-    'Kama Ayurveda discovery'
+    'Kerala Ayurveda'
   ],
   authors: [{ name: 'Axmin Prana Ayurveda' }],
   openGraph: {
-    title: 'Axmin Prana | Pure Ayurvedic Formulations & Wellness',
-    description: 'Certified classical Ayurveda formulations for mind, body, and vitality.',
-    siteName: 'Axmin Prana',
+    title: 'Axmin Prana | Authentic Ayurvedic Wellness & Classical Formulations',
+    description: 'Certified classical Ayurveda formulations for mind, body, and vitality. Pure Ayurvedic Pain Relief Oils, Ulcer Relief Churna & Herbal Hair Oils.',
+    url: 'https://www.axminprana.com',
+    siteName: 'Axmin Prana Ayurveda',
     locale: 'en_IN',
-    type: 'website'
+    type: 'website',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Axmin Prana Ayurveda - Authentic Classical Formulations',
+        type: 'image/jpeg'
+      },
+      {
+        url: '/og-logo.png',
+        width: 600,
+        height: 600,
+        alt: 'Axmin Prana Ayurveda Logo',
+        type: 'image/png'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Axmin Prana | Authentic Ayurvedic Wellness & Classical Formulations',
+    description: 'Certified classical Ayurveda formulations for mind, body, and vitality.',
+    site: '@axminprana',
+    creator: '@axminprana',
+    images: ['/og-image.jpg']
   },
   icons: {
     icon: [

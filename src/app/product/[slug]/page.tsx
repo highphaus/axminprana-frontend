@@ -28,20 +28,38 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: 'Product Not Found | Axmin Prana Ayurveda' };
   }
 
+  const primaryImage = product.thumbnail || (product.images && product.images[0]) || '/og-image.jpg';
+  const pageUrl = `https://www.axminprana.com/product/${product.slug}`;
+
   return {
     title: `${product.name} | Axmin Prana Authentic Ayurveda`,
-    description: product.description.slice(0, 160),
+    description: product.tagline || product.description.slice(0, 160),
     openGraph: {
-      title: product.name,
-      description: product.tagline,
+      title: `${product.name} | Axmin Prana Ayurveda`,
+      description: product.tagline || product.description.slice(0, 160),
+      url: pageUrl,
+      siteName: 'Axmin Prana Ayurveda',
+      type: 'website',
       images: [
         {
-          url: product.thumbnail || product.images[0],
+          url: primaryImage,
           width: 800,
           height: 800,
           alt: product.name
+        },
+        {
+          url: '/og-logo.png',
+          width: 600,
+          height: 600,
+          alt: 'Axmin Prana Logo'
         }
       ]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${product.name} | Axmin Prana Ayurveda`,
+      description: product.tagline || product.description.slice(0, 160),
+      images: [primaryImage]
     }
   };
 }

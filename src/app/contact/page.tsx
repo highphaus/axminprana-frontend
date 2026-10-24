@@ -40,9 +40,9 @@ export default function ContactPage() {
               <MapPin className="w-4 h-4 text-[#B86F4B] shrink-0 mt-0.5" />
               <div>
                 <strong className="block text-white">Registered Dispensary:</strong>
-                <span className="text-[#DDE7D9]/80">
+                <a href="https://maps.app.goo.gl/593CoPREJZsqTLRD9" target="_blank" rel="noopener noreferrer" className="text-[#DDE7D9]/80 hover:text-white transition-colors underline underline-offset-2">
                   Kallara, Trivandrum, Kerala – 695608, India
-                </span>
+                </a>
               </div>
             </div>
 
