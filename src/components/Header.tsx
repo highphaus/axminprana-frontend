@@ -116,7 +116,7 @@ export const Header: React.FC = () => {
             <div className="flex items-center gap-3 shrink-0">
               {/* Luxury Royal Ayurvedic Logo Lockup */}
               <Link href="/" className="flex items-center gap-3 group select-none">
-                <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white border-2 border-[#C59B27]/40 shadow-xs shrink-0 flex items-center justify-center group-hover:border-[#C59B27] group-hover:shadow-md transition-all transform group-hover:scale-105">
+                <div className="relative w-10 h-10 sm:w-12 sm:h-12 shrink-0 flex items-center justify-center">
                   <Image
                     src="/images/Logo/logo.png"
                     alt="Axmin Prana Ayurveda"
@@ -816,7 +816,7 @@ export const Header: React.FC = () => {
               {/* Drawer Header */}
               <div className="flex items-center justify-between pb-3.5 border-b border-[#EDE8E0]">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-full overflow-hidden border border-[#C59B27]/40 bg-white flex items-center justify-center p-0.5 shadow-xs">
+                  <div className="w-10 h-10 shrink-0 flex items-center justify-center">
                     <Image src="/images/Logo/logo.png" alt="Axmin Prana Logo" width={40} height={40} className="w-full h-full object-contain" priority />
                   </div>
                   <div className="flex flex-col justify-center">
