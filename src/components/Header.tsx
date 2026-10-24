@@ -12,7 +12,6 @@ import {
   Menu,
   X,
   ChevronDown,
-  Sparkles,
   ArrowRight,
   Phone,
   Building2,
@@ -23,7 +22,6 @@ import {
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { useQuiz } from '../context/QuizContext';
 import { useMobileMenu } from '../context/MobileMenuContext';
 import { fetchFromAPI, IProduct } from '../lib/api';
 
@@ -31,7 +29,6 @@ export const Header: React.FC = () => {
   const router = useRouter();
   const { itemCount, subtotal, openDrawer } = useCart();
   const { user, isAuthenticated, isAdmin, wishlist, logout } = useAuth();
-  const { openQuiz } = useQuiz();
   const { isMobileMenuOpen, setIsMobileMenuOpen } = useMobileMenu();
 
   const [mobileExpandedSection, setMobileExpandedSection] = useState<string | null>(null);
@@ -801,15 +798,6 @@ export const Header: React.FC = () => {
             >
               Vedic Journal
             </Link>
-
-            {/* Prakriti Dosha Quiz Button (Minimalist, No Tacky Borders) */}
-            <button
-              onClick={openQuiz}
-              className="hover:text-[#1F4E34] transition-colors inline-flex items-center gap-1.5 whitespace-nowrap font-medium"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-[#C59B27]" />
-              <span>Prakriti Quiz</span>
-            </button>
           </div>
         </div>
       </nav>
@@ -965,20 +953,6 @@ export const Header: React.FC = () => {
                 >
                   Vedic Journal
                 </Link>
-
-                <button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    openQuiz();
-                  }}
-                  className="w-full text-left py-2.5 px-3 rounded-lg text-[#1F4E34] font-medium flex items-center justify-between hover:bg-[#FAF8F5] transition-colors"
-                >
-                  <span className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-[#C59B27]" />
-                    Prakriti Dosha Diagnostic
-                  </span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
               </div>
             </div>
 
