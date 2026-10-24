@@ -24,6 +24,7 @@ import {
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useQuiz } from '../context/QuizContext';
+import { useMobileMenu } from '../context/MobileMenuContext';
 import { fetchFromAPI, IProduct } from '../lib/api';
 
 export const Header: React.FC = () => {
@@ -31,8 +32,8 @@ export const Header: React.FC = () => {
   const { itemCount, subtotal, openDrawer } = useCart();
   const { user, isAuthenticated, isAdmin, wishlist, logout } = useAuth();
   const { openQuiz } = useQuiz();
+  const { isMobileMenuOpen, setIsMobileMenuOpen } = useMobileMenu();
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileExpandedSection, setMobileExpandedSection] = useState<string | null>(null);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
 
@@ -114,16 +115,8 @@ export const Header: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
           <div className="flex items-center justify-between gap-4 lg:gap-8">
             
-            {/* LEFT: Mobile Menu Toggle + MNC Brand Logo + Deliver To Location */}
+            {/* LEFT: MNC Brand Logo + Deliver To Location */}
             <div className="flex items-center gap-3 shrink-0">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden p-2 -ml-2 text-[#241A14] hover:bg-[#F5F2EC] rounded-lg transition-colors"
-                aria-label="Toggle navigation menu"
-              >
-                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-
               {/* Luxury Royal Ayurvedic Logo Lockup */}
               <Link href="/" className="flex items-center gap-3 group select-none">
                 <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white border-2 border-[#C59B27]/40 shadow-xs shrink-0 flex items-center justify-center group-hover:border-[#C59B27] group-hover:shadow-md transition-all transform group-hover:scale-105">

@@ -7,6 +7,7 @@ import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { CartDrawer } from '../components/CartDrawer';
 import { QuizProvider } from '../context/QuizContext';
+import { MobileMenuProvider } from '../context/MobileMenuContext';
 import { MobileBottomBar } from '../components/MobileBottomBar';
 
 const manrope = Manrope({
@@ -141,11 +142,13 @@ export default function RootLayout({
         <AuthProvider>
           <CartProvider>
             <QuizProvider>
-              <Header />
-              <CartDrawer />
-              <main className="flex-1 pb-16 md:pb-0">{children}</main>
-              <Footer />
-              <MobileBottomBar />
+              <MobileMenuProvider>
+                <Header />
+                <CartDrawer />
+                <main className="flex-1 pb-16 md:pb-0">{children}</main>
+                <Footer />
+                <MobileBottomBar />
+              </MobileMenuProvider>
             </QuizProvider>
           </CartProvider>
         </AuthProvider>
