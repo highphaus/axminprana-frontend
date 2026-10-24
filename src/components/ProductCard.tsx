@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Star, Heart, Plus, Check } from 'lucide-react';
+import { Star, Heart, Plus, Check, ShoppingCart } from 'lucide-react';
 import { IProduct } from '../lib/api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -52,25 +52,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <div className="group bg-white rounded-2xl border border-[#EAE5DC] hover:border-[#214E34]/40 hover:shadow-md transition-all flex flex-col h-full overflow-hidden relative">
       <Link href={`/product/${product.slug}`} className="flex flex-col flex-1 justify-between h-full p-3 sm:p-4">
         <div>
-          {/* Top Row: Save ₹ Badge / Out of Stock & Wishlist Heart */}
+          {/* Top Row: Out of Stock / Pure Herbal & Wishlist Heart (Removed "Save ₹..." badge) */}
           <div className="flex items-center justify-between mb-1 min-h-[24px]">
             {product.stock <= 0 ? (
               <span className="text-[10px] uppercase font-bold text-red-700 bg-red-100 px-2 py-0.5 rounded tracking-wide">
                 Out of Stock
               </span>
-            ) : savings > 0 ? (
-              <span className="text-[11px] sm:text-xs font-semibold text-[#3A3A3A] tracking-tight">
-                Save ₹{savings}
-              </span>
             ) : (
-              <span className="text-[10px] uppercase font-bold text-[#214E34] bg-emerald-50 px-2 py-0.5 rounded">
-                Pure Herbal
+              <span className="text-[10px] uppercase font-bold text-[#214E34] bg-emerald-50 px-2.5 py-0.5 rounded-full">
+                {product.format || 'Classical'}
               </span>
             )}
 
             <button
               onClick={handleWishlistClick}
-              className="p-1 rounded-full text-[#888] hover:text-[#B86F4B] transition-colors"
+              className="p-1 rounded-full text-[#888] hover:text-[#B86F4B] transition-colors ml-auto"
               aria-label="Save to wishlist"
             >
               <Heart
@@ -81,19 +77,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </button>
           </div>
 
-          {/* Product Image Container */}
-          <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#FAF7F2] my-2 flex items-center justify-center">
+          {/* Product Image Container (Curved rounded-2xl corners) */}
+          <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[#FAF7F2] my-2 flex items-center justify-center border border-[#EDE8E0] shadow-2xs">
             <Image
               src={imageUrl}
               alt={product.name}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className={`object-cover transition-transform duration-500 ${
+              className={`object-cover rounded-2xl transition-transform duration-500 ${
                 product.stock <= 0 ? 'opacity-60' : 'group-hover:scale-105'
               }`}
             />
             {product.stock <= 0 && (
-              <div className="absolute inset-0 bg-white/40 flex items-center justify-center z-10">
+              <div className="absolute inset-0 bg-white/40 flex items-center justify-center z-10 rounded-2xl">
                 <span className="bg-red-700 text-white text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
                   Out of Stock
                 </span>
@@ -106,7 +102,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {product.name}
           </h3>
 
-          {/* Star Rating & Review Count (VedaOils exact yellow star layout) */}
+          {/* Star Rating & Review Count */}
           <div className="flex items-center gap-1.5 mt-1.5 text-xs">
             <div className="flex items-center text-[#E5A823]">
               {[...Array(5)].map((_, i) => (
@@ -128,9 +124,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <p className="text-[10px] sm:text-[11px] text-[#777] mt-0.5">{product.packSize}</p>
         </div>
 
-        {/* Bottom Price & Add to Cart / Out of Stock Button */}
-        <div className="pt-3 mt-2 border-t border-[#F0ECE4] flex items-center justify-between">
-          <div className="flex items-baseline gap-1.5 sm:gap-2">
+        {/* Bottom Price & Add to Cart Button (Replaces round plus button) */}
+        <div className="pt-3 mt-2 border-t border-[#F0ECE4] flex flex-wrap sm:flex-nowrap items-center justify-between gap-2">
+          <div className="flex items-baseline gap-1.5">
             <span className="text-sm sm:text-base md:text-lg font-extrabold text-[#111]">
               ₹{activePrice}
             </span>
@@ -142,25 +138,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
 
           {product.stock <= 0 ? (
-            <span className="text-[10px] sm:text-[11px] font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-1 rounded-lg">
+            <span className="text-[10px] sm:text-[11px] font-bold text-red-700 bg-red-50 border border-red-200 px-2.5 py-1 rounded-lg">
               Sold Out
             </span>
           ) : (
             <button
               onClick={handleAddToCart}
               disabled={isAdding}
-              className={`w-10 h-10 rounded-full border-2 border-[#1F4E34] flex items-center justify-center transition-all ${
+              className={`w-full sm:w-auto px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer ${
                 justAdded
                   ? 'bg-[#1F4E34] text-white scale-95'
-                  : 'text-[#1F4E34] hover:bg-[#1F4E34] hover:text-white bg-transparent'
-              } disabled:opacity-50 shrink-0 shadow-2xs touch-manipulation`}
+                  : 'bg-[#1F4E34] hover:bg-[#163B27] text-white'
+              } disabled:opacity-50`}
               aria-label={`Add ${product.name} to cart`}
-              title="Add to Cart"
             >
               {justAdded ? (
-                <Check className="w-5 h-5 stroke-[2.5]" />
+                <>
+                  <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>Added</span>
+                </>
               ) : (
-                <Plus className="w-5 h-5 stroke-[2.5]" />
+                <>
+                  <ShoppingCart className="w-3.5 h-3.5" />
+                  <span>Add to Cart</span>
+                </>
               )}
             </button>
           )}

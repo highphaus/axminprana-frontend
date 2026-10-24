@@ -73,9 +73,10 @@ export default async function HomePage() {
           </div>
           <Link
             href="/shop?format=Oil"
-            className="text-xs sm:text-sm font-medium text-[#1A1A1A] hover:text-[#1F4E34] hover:underline transition-colors shrink-0"
+            className="hidden sm:inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-[#1F4E34] hover:underline transition-colors shrink-0"
           >
-            View all &rarr;
+            <span>View all</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
@@ -84,6 +85,17 @@ export default async function HomePage() {
           {(oilProducts.length > 0 ? oilProducts : bestsellers.slice(0, 4)).map(product => (
             <ProductCard key={product._id} product={product} />
           ))}
+        </div>
+
+        {/* Mobile View All Button (Down below section on smaller devices) */}
+        <div className="sm:hidden pt-4">
+          <Link
+            href="/shop?format=Oil"
+            className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-white hover:bg-[#FAF8F5] border border-[#EDE8E0] text-xs font-bold text-[#1F4E34] rounded-xl shadow-2xs transition-colors"
+          >
+            <span>View All Classical Oils</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </section>
 
@@ -100,9 +112,10 @@ export default async function HomePage() {
           </div>
           <Link
             href="/shop"
-            className="text-xs sm:text-sm font-medium text-[#1A1A1A] hover:text-[#1F4E34] hover:underline transition-colors shrink-0"
+            className="hidden sm:inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-[#1F4E34] hover:underline transition-colors shrink-0"
           >
-            View all &rarr;
+            <span>View all</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
@@ -111,6 +124,17 @@ export default async function HomePage() {
           {(herbalFormulations.length > 0 ? herbalFormulations : bestsellers).map(product => (
             <ProductCard key={product._id} product={product} />
           ))}
+        </div>
+
+        {/* Mobile View All Button (Down below section on smaller devices) */}
+        <div className="sm:hidden pt-4">
+          <Link
+            href="/shop"
+            className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-white hover:bg-[#FAF8F5] border border-[#EDE8E0] text-xs font-bold text-[#1F4E34] rounded-xl shadow-2xs transition-colors"
+          >
+            <span>View All Herbal Churnas</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </section>
 
