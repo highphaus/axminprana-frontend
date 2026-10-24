@@ -114,6 +114,29 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${manrope.variable} ${inter.variable} ${cinzel.variable} scroll-smooth`}>
+      <head>
+        <meta property="og:title" content="Axmin Prana | Authentic Ayurvedic Wellness & Classical Formulations" />
+        <meta property="og:description" content="Certified classical Ayurveda formulations for mind, body, and vitality. Pure Ayurvedic Pain Relief Oils, Ulcer Relief Churna & Herbal Hair Oils." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.axminprana.com" />
+        <meta property="og:site_name" content="Axmin Prana Ayurveda" />
+        <meta property="og:image" content="https://www.axminprana.com/og-image.jpg" />
+        <meta property="og:image:secure_url" content="https://www.axminprana.com/og-image.jpg" />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="Axmin Prana Ayurveda" />
+        <meta property="og:image" content="https://www.axminprana.com/og-logo.png" />
+        <meta property="og:image:secure_url" content="https://www.axminprana.com/og-logo.png" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+        <link rel="image_src" href="https://www.axminprana.com/og-image.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Axmin Prana | Authentic Ayurvedic Wellness & Classical Formulations" />
+        <meta name="twitter:description" content="Certified classical Ayurveda formulations for mind, body, and vitality." />
+        <meta name="twitter:image" content="https://www.axminprana.com/og-image.jpg" />
+      </head>
       <body className="min-h-screen flex flex-col bg-[#FAF8F1] text-[#202820] font-sans antialiased overflow-x-hidden w-full max-w-full selection:bg-[#214E34] selection:text-white">
         <AuthProvider>
           <CartProvider>
