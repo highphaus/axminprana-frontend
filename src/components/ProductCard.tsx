@@ -102,7 +102,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
 
           {/* Title */}
-          <h3 className="text-sm sm:text-base font-bold text-[#1A1A1A] group-hover:text-[#214E34] transition-colors line-clamp-1 leading-snug mt-1">
+          <h3 className="text-xs sm:text-sm md:text-base font-bold text-[#1A1A1A] group-hover:text-[#214E34] transition-colors line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem] leading-snug mt-1">
             {product.name}
           </h3>
 
@@ -120,41 +120,41 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 />
               ))}
             </div>
-            <span className="text-[11px] text-[#666] font-medium">
+            <span className="text-[10px] sm:text-[11px] text-[#666] font-medium">
               {product.reviewCount || 120} Reviews
             </span>
           </div>
 
-          <p className="text-[11px] text-[#777] mt-0.5">{product.packSize}</p>
+          <p className="text-[10px] sm:text-[11px] text-[#777] mt-0.5">{product.packSize}</p>
         </div>
 
         {/* Bottom Price & Add to Cart / Out of Stock Button */}
         <div className="pt-3 mt-2 border-t border-[#F0ECE4] flex items-center justify-between">
-          <div className="flex items-baseline gap-2">
-            <span className="text-base sm:text-lg font-extrabold text-[#111]">
+          <div className="flex items-baseline gap-1.5 sm:gap-2">
+            <span className="text-sm sm:text-base md:text-lg font-extrabold text-[#111]">
               ₹{activePrice}
             </span>
             {savings > 0 && (
-              <span className="text-xs text-[#888] line-through font-normal">
+              <span className="text-[10px] sm:text-xs text-[#888] line-through font-normal">
                 ₹{originalPrice}
               </span>
             )}
           </div>
 
           {product.stock <= 0 ? (
-            <span className="text-[11px] font-bold text-red-700 bg-red-50 border border-red-200 px-2.5 py-1.5 rounded-lg">
+            <span className="text-[10px] sm:text-[11px] font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-1 rounded-lg">
               Sold Out
             </span>
           ) : (
             <button
               onClick={handleAddToCart}
               disabled={isAdding}
-              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#1F4E34] flex items-center justify-center transition-all ${
+              className={`w-10 h-10 rounded-full border-2 border-[#1F4E34] flex items-center justify-center transition-all ${
                 justAdded
                   ? 'bg-[#1F4E34] text-white scale-95'
                   : 'text-[#1F4E34] hover:bg-[#1F4E34] hover:text-white bg-transparent'
-              } disabled:opacity-50 shrink-0 shadow-2xs`}
-              aria-label="Add to cart"
+              } disabled:opacity-50 shrink-0 shadow-2xs touch-manipulation`}
+              aria-label={`Add ${product.name} to cart`}
               title="Add to Cart"
             >
               {justAdded ? (

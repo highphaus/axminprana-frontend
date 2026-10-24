@@ -294,35 +294,65 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
 
           {/* Quantity & CTA Buttons */}
           <div className="space-y-3 pt-1">
-            <div className="flex items-center gap-2 sm:gap-3">
-              {/* Quantity */}
-              <div className={`flex items-center border border-[#E5E8E0] rounded-lg bg-white overflow-hidden shrink-0 ${
-                isOutOfStock ? 'opacity-50 pointer-events-none' : ''
-              }`}>
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  disabled={isOutOfStock}
-                  className="px-2.5 sm:px-3 py-2.5 hover:bg-[#FAF8F1] transition-colors text-[#202820]"
-                  aria-label="Decrease quantity"
-                >
-                  <Minus className="w-3.5 h-3.5" />
-                </button>
-                <span className="px-2.5 sm:px-4 text-xs font-bold text-[#202820]">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  disabled={isOutOfStock}
-                  className="px-2.5 sm:px-3 py-2.5 hover:bg-[#FAF8F1] transition-colors text-[#202820]"
-                  aria-label="Increase quantity"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                </button>
+            {/* Mobile Controls: Quantity + Wishlist + Share on top row for mobile; unified row on desktop */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3">
+              <div className="flex items-center justify-between gap-2.5 sm:justify-start">
+                {/* Quantity */}
+                <div className={`flex items-center border border-[#E5E8E0] rounded-lg bg-white overflow-hidden shrink-0 ${
+                  isOutOfStock ? 'opacity-50 pointer-events-none' : ''
+                }`}>
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={isOutOfStock}
+                    className="px-3 py-2.5 hover:bg-[#FAF8F1] transition-colors text-[#202820] touch-manipulation min-w-[36px] min-h-[36px] flex items-center justify-center"
+                    aria-label="Decrease quantity"
+                  >
+                    <Minus className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="px-3 sm:px-4 text-xs font-bold text-[#202820]">{quantity}</span>
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    disabled={isOutOfStock}
+                    className="px-3 py-2.5 hover:bg-[#FAF8F1] transition-colors text-[#202820] touch-manipulation min-w-[36px] min-h-[36px] flex items-center justify-center"
+                    aria-label="Increase quantity"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div className="flex sm:hidden items-center gap-2">
+                  {/* Mobile Wishlist */}
+                  <button
+                    onClick={() => toggleWishlist(product._id)}
+                    className="p-2.5 border border-[#E5E8E0] bg-white rounded-lg hover:border-[#214E34] transition-colors shrink-0 touch-manipulation"
+                    aria-label="Save to Wishlist"
+                    title={isWishlisted ? "In Wishlist" : "Save to Wishlist"}
+                  >
+                    <Heart
+                      className={`w-5 h-5 ${
+                        isWishlisted ? 'fill-[#B86F4B] text-[#B86F4B]' : 'text-[#687168]'
+                      }`}
+                    />
+                  </button>
+
+                  {/* Mobile Share */}
+                  <button
+                    type="button"
+                    onClick={handleShare}
+                    className="p-2.5 border border-[#E5E8E0] bg-white rounded-lg hover:border-[#214E34] text-[#687168] transition-colors shrink-0 touch-manipulation"
+                    aria-label="Share formulation"
+                    title="Share this formulation"
+                  >
+                    <Share2 className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
 
               {/* Add to Basket */}
               <button
                 onClick={handleAddToCart}
                 disabled={isOutOfStock}
-                className={`flex-1 min-w-0 py-3 px-3 sm:px-6 text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-1.5 sm:gap-2 truncate ${
+                className={`w-full sm:flex-1 py-3 px-4 sm:px-6 min-h-[46px] text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 touch-manipulation ${
                   isOutOfStock
                     ? 'bg-gray-200 text-gray-500 cursor-not-allowed border border-gray-300'
                     : 'bg-[#214E34] hover:bg-[#163A28] text-white'
@@ -331,10 +361,10 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
                 <span>{isOutOfStock ? 'Sold Out / Out of Stock' : 'Add to Ayurvedic Basket'}</span>
               </button>
 
-              {/* Wishlist */}
+              {/* Desktop Wishlist */}
               <button
                 onClick={() => toggleWishlist(product._id)}
-                className="p-3 border border-[#E5E8E0] bg-white rounded-lg hover:border-[#214E34] transition-colors shrink-0"
+                className="hidden sm:block p-3 border border-[#E5E8E0] bg-white rounded-lg hover:border-[#214E34] transition-colors shrink-0 touch-manipulation"
                 aria-label="Save to Wishlist"
                 title={isWishlisted ? "In Wishlist" : "Save to Wishlist"}
               >
@@ -345,12 +375,12 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
                 />
               </button>
 
-              {/* Share Button with Dropdown */}
-              <div className="relative shrink-0">
+              {/* Desktop Share Button with Dropdown */}
+              <div className="relative hidden sm:block shrink-0">
                 <button
                   type="button"
                   onClick={handleShare}
-                  className="p-3 border border-[#E5E8E0] bg-white rounded-lg hover:border-[#214E34] hover:text-[#214E34] text-[#687168] transition-colors flex items-center justify-center cursor-pointer"
+                  className="p-3 border border-[#E5E8E0] bg-white rounded-lg hover:border-[#214E34] hover:text-[#214E34] text-[#687168] transition-colors flex items-center justify-center cursor-pointer touch-manipulation"
                   aria-label="Share formulation"
                   title="Share this formulation"
                 >
@@ -404,7 +434,7 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
             <button
               onClick={handleBuyNow}
               disabled={isOutOfStock}
-              className={`w-full py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold rounded-lg shadow-sm transition-colors text-center ${
+              className={`w-full py-3 px-4 sm:px-6 min-h-[46px] text-xs sm:text-sm font-bold rounded-lg shadow-sm transition-colors text-center touch-manipulation ${
                 isOutOfStock
                   ? 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed'
                   : 'bg-[#B86F4B] hover:bg-[#a05e3d] text-white'
@@ -414,16 +444,15 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
             </button>
           </div>
 
-
           {/* Quick Specifications list */}
           <div className="grid grid-cols-2 gap-3 text-xs text-[#202820]">
             <div className="p-3 bg-[#FAF8F1] rounded-lg border border-[#E5E8E0]/70">
               <span className="text-[#687168] block text-[10px] uppercase font-semibold">AYUSH License</span>
-              <span className="font-bold text-[#214E34]">{product.ayushLicenseNumber}</span>
+              <span className="font-bold text-[#214E34] truncate block">{product.ayushLicenseNumber}</span>
             </div>
             <div className="p-3 bg-[#FAF8F1] rounded-lg border border-[#E5E8E0]/70">
               <span className="text-[#687168] block text-[10px] uppercase font-semibold">Batch & Expiry</span>
-              <span className="font-bold text-[#214E34]">{product.batchNumber} • {product.expiryMonths} Mos</span>
+              <span className="font-bold text-[#214E34] truncate block">{product.batchNumber} • {product.expiryMonths} Mos</span>
             </div>
           </div>
 
@@ -447,9 +476,9 @@ export const ProductDetailsClient: React.FC<Props> = ({ product }) => {
       </div>
 
       {/* Tabs Section: Ingredients, Directions, Full Specs, Reviews */}
-      <div className="bg-white rounded-2xl border border-[#E5E8E0] p-6 sm:p-8 space-y-6">
+      <div className="bg-white rounded-2xl border border-[#E5E8E0] p-4 sm:p-6 md:p-8 space-y-6">
         {/* Tab Headers */}
-        <div className="flex border-b border-[#E5E8E0] gap-4 sm:gap-8 overflow-x-auto text-xs sm:text-sm font-bold">
+        <div className="flex border-b border-[#E5E8E0] gap-4 sm:gap-8 overflow-x-auto no-scrollbar text-xs sm:text-sm font-bold">
           <button
             onClick={() => setActiveTab('ingredients')}
             className={`pb-3 border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap ${

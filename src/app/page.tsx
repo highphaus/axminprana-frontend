@@ -217,80 +217,111 @@ export default async function HomePage() {
 
       {/* 9. Verified Customer Experiences */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-10">
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
           <span className="text-[11px] font-bold tracking-widest uppercase text-[#C59B27]">
             Verified Customer Reviews
           </span>
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#2C1D11] mt-1">
+          <h2 className="section-title font-serif font-bold text-[#2C1D11] mt-1">
             Words of Trust from Our Customers
           </h2>
+          <p className="body-text text-[#666] mt-2 max-w-lg mx-auto">
+            Honest experiences from seekers of classical healing across India
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-2xl border border-[#EAE5DC] shadow-2xs flex flex-col justify-between">
+        {/* Responsive Review Cards: Swipe Carousel on Mobile, Balanced 3-Col Grid on Desktop */}
+        <div className="flex md:grid md:grid-cols-3 overflow-x-auto md:overflow-visible snap-x snap-mandatory gap-4 sm:gap-6 pb-4 md:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 no-scrollbar">
+          {/* Card 1: Kumkumadi */}
+          <div className="w-[85vw] max-w-[340px] md:w-auto snap-center shrink-0 bg-white p-5 sm:p-6 rounded-2xl border border-[#EAE5DC] shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-1 text-[#E5A823] mb-3">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#E5A823]" />
-                ))}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-1 text-[#E5A823]">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-[#E5A823]" />
+                  ))}
+                </div>
+                <span className="text-[10px] text-[#888] font-medium">3 weeks ago</span>
               </div>
-              <Quote className="w-6 h-6 text-[#EAE5DC] mb-2" />
-              <p className="text-xs text-[#333] leading-relaxed italic">
+              <Quote className="w-6 h-6 text-[#C59B27]/40 mb-2" />
+              <p className="review-text text-[#333] italic leading-relaxed">
                 &quot;The Kumkumadi Tailam is sublime. Within three weeks of nighttime use, my stubborn pigmentation faded significantly, and my skin has a genuine inner radiance that chemical serums never gave me.&quot;
               </p>
             </div>
-            <div className="mt-5 pt-4 border-t border-[#F0ECE4] flex items-center justify-between">
-              <div>
-                <h4 className="text-xs font-bold text-[#1A1A1A]">Meera Nambiar</h4>
-                <p className="text-[10px] text-[#777]">Verified Buyer • Kochi, Kerala</p>
+            <div className="mt-5 pt-4 border-t border-[#F0ECE4] flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-full bg-[#1F4E34]/10 text-[#1F4E34] font-bold text-xs flex items-center justify-center shrink-0 border border-[#1F4E34]/20">
+                  MN
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-[#1A1A1A] truncate">Meera Nambiar</h4>
+                  <p className="text-[10px] text-[#777] truncate">Verified Buyer • Kochi, Kerala</p>
+                </div>
               </div>
-              <span className="text-[10px] bg-[#FAF7F2] text-[#1F4E34] font-bold px-2 py-0.5 rounded border border-[#EAE5DC]">
+              <span className="text-[9px] sm:text-[10px] bg-[#FAF7F2] text-[#1F4E34] font-bold px-2 py-0.5 rounded border border-[#EAE5DC] shrink-0">
                 Kumkumadi Tailam
               </span>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-[#EAE5DC] shadow-2xs flex flex-col justify-between">
+          {/* Card 2: Ashwagandha */}
+          <div className="w-[85vw] max-w-[340px] md:w-auto snap-center shrink-0 bg-white p-5 sm:p-6 rounded-2xl border border-[#EAE5DC] shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-1 text-[#E5A823] mb-3">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#E5A823]" />
-                ))}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-1 text-[#E5A823]">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-[#E5A823]" />
+                  ))}
+                </div>
+                <span className="text-[10px] text-[#888] font-medium">1 month ago</span>
               </div>
-              <Quote className="w-6 h-6 text-[#EAE5DC] mb-2" />
-              <p className="text-xs text-[#333] leading-relaxed italic">
+              <Quote className="w-6 h-6 text-[#C59B27]/40 mb-2" />
+              <p className="review-text text-[#333] italic leading-relaxed">
                 &quot;As a corporate consultant dealing with high cortisol, the Ashwagandha KSM-66 capsules have revolutionized my evening unwinding. Deep, restorative sleep without any morning grogginess.&quot;
               </p>
             </div>
-            <div className="mt-5 pt-4 border-t border-[#F0ECE4] flex items-center justify-between">
-              <div>
-                <h4 className="text-xs font-bold text-[#1A1A1A]">Vikram Singhania</h4>
-                <p className="text-[10px] text-[#777]">Verified Buyer • Gurgaon, Haryana</p>
+            <div className="mt-5 pt-4 border-t border-[#F0ECE4] flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-full bg-[#1F4E34]/10 text-[#1F4E34] font-bold text-xs flex items-center justify-center shrink-0 border border-[#1F4E34]/20">
+                  VS
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-[#1A1A1A] truncate">Vikram Singhania</h4>
+                  <p className="text-[10px] text-[#777] truncate">Verified Buyer • Gurgaon, Haryana</p>
+                </div>
               </div>
-              <span className="text-[10px] bg-[#FAF7F2] text-[#1F4E34] font-bold px-2 py-0.5 rounded border border-[#EAE5DC]">
+              <span className="text-[9px] sm:text-[10px] bg-[#FAF7F2] text-[#1F4E34] font-bold px-2 py-0.5 rounded border border-[#EAE5DC] shrink-0">
                 Ashwagandha KSM-66
               </span>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-[#EAE5DC] shadow-2xs flex flex-col justify-between">
+          {/* Card 3: Triphala */}
+          <div className="w-[85vw] max-w-[340px] md:w-auto snap-center shrink-0 bg-white p-5 sm:p-6 rounded-2xl border border-[#EAE5DC] shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-1 text-[#E5A823] mb-3">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#E5A823]" />
-                ))}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-1 text-[#E5A823]">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-[#E5A823]" />
+                  ))}
+                </div>
+                <span className="text-[10px] text-[#888] font-medium">2 weeks ago</span>
               </div>
-              <Quote className="w-6 h-6 text-[#EAE5DC] mb-2" />
-              <p className="text-xs text-[#333] leading-relaxed italic">
+              <Quote className="w-6 h-6 text-[#C59B27]/40 mb-2" />
+              <p className="review-text text-[#333] italic leading-relaxed">
                 &quot;The Triphala churna is pure stone-ground quality. The taste is authentic and it gently normalized my digestion after years of chronic gut distress. Unmatched authenticity.&quot;
               </p>
             </div>
-            <div className="mt-5 pt-4 border-t border-[#F0ECE4] flex items-center justify-between">
-              <div>
-                <h4 className="text-xs font-bold text-[#1A1A1A]">Dr. Ananya Roy</h4>
-                <p className="text-[10px] text-[#777]">Verified Buyer • Kolkata, West Bengal</p>
+            <div className="mt-5 pt-4 border-t border-[#F0ECE4] flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-full bg-[#1F4E34]/10 text-[#1F4E34] font-bold text-xs flex items-center justify-center shrink-0 border border-[#1F4E34]/20">
+                  AR
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-[#1A1A1A] truncate">Dr. Ananya Roy</h4>
+                  <p className="text-[10px] text-[#777] truncate">Verified Buyer • Kolkata, West Bengal</p>
+                </div>
               </div>
-              <span className="text-[10px] bg-[#FAF7F2] text-[#1F4E34] font-bold px-2 py-0.5 rounded border border-[#EAE5DC]">
+              <span className="text-[9px] sm:text-[10px] bg-[#FAF7F2] text-[#1F4E34] font-bold px-2 py-0.5 rounded border border-[#EAE5DC] shrink-0">
                 Triphala Churna
               </span>
             </div>

@@ -92,3 +92,50 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Fluid Responsive Typography Classes */
+.hero-title {
+  font-size: clamp(1.85rem, 5vw, 4rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  word-break: break-word;
+}
+
+.section-title {
+  font-size: clamp(1.4rem, 3.2vw, 2.5rem);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  word-break: break-word;
+}
+
+.body-text {
+  font-size: clamp(0.85rem, 1.2vw, 1.05rem);
+  line-height: 1.65;
+}
+
+.review-text {
+  font-size: clamp(0.8125rem, 1.1vw, 0.95rem);
+  line-height: 1.6;
+}
+
+/* Mobile Touch-Friendly Snap Carousel Utilities */
+.snap-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.snap-card {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Mobile Safe Area Inset Support */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+

@@ -16,7 +16,10 @@ import {
   ArrowRight,
   Phone,
   Building2,
-  ChevronRight
+  ChevronRight,
+  MapPin,
+  Truck,
+  ExternalLink
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -40,6 +43,10 @@ export const Header: React.FC = () => {
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const megaMenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Address popover state
+  const [showAddressDropdown, setShowAddressDropdown] = useState(false);
+  const addressRef = useRef<HTMLDivElement>(null);
 
   // Debounced search
   useEffect(() => {
@@ -67,11 +74,14 @@ export const Header: React.FC = () => {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Click outside search dismiss
+  // Click outside search & address dismiss
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setShowSearchDropdown(false);
+      }
+      if (addressRef.current && !addressRef.current.contains(event.target as Node)) {
+        setShowAddressDropdown(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -228,79 +238,109 @@ export const Header: React.FC = () => {
               )}
             </div>
 
-            {/* RIGHT: Currency, Wholesale, Account, Wishlist & Cart */}
-            <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-              {/* User Account */}
-              {isAuthenticated ? (
-                <div className="relative group">
-                  <Link
-                    href={isAdmin ? "/admin" : "/account"}
-                    className="flex items-center gap-1.5 p-1.5 text-xs font-medium text-[#1A1A1A] hover:text-[#1F4E34] transition-colors"
-                  >
-                    <UserIcon className="w-5 h-5 text-[#241A14]" />
-                    <span className="hidden md:inline">{user?.name?.split(' ')[0]}</span>
-                    {isAdmin && (
-                      <span className="hidden lg:inline text-[9px] bg-[#1F4E34] text-white px-1.5 py-0.5 rounded font-bold">
-                        Admin
-                      </span>
-                    )}
-                  </Link>
-                  <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[#EDE8E0] rounded-xl shadow-xl py-1 hidden group-hover:block z-50">
-                    {isAdmin && (
-                      <Link href="/admin" className="block px-4 py-2 text-xs text-[#1F4E34] font-bold bg-[#FAF8F1] border-b border-[#EDE8E0] hover:bg-[#EDE8E0]">
-                        🛡️ Admin Console
-                      </Link>
-                    )}
-                    <Link href="/account" className="block px-4 py-2 text-xs text-[#1A1A1A] hover:bg-[#FAF8F5]">
-                      My Orders & Profile
-                    </Link>
+            {/* RIGHT: Dispensary & Delivery Address Display (Replaces profile, wishlist & cart) */}
+            <div className="relative shrink-0" ref={addressRef}>
+              <button
+                type="button"
+                onClick={() => setShowAddressDropdown(!showAddressDropdown)}
+                className="flex items-center gap-2 sm:gap-2.5 p-1.5 sm:px-3 sm:py-1.5 rounded-xl border border-[#EDE8E0] hover:border-[#1F4E34]/40 bg-[#FAF8F5] hover:bg-white transition-all text-left group cursor-pointer shadow-2xs select-none"
+                aria-label="View Dispensary and Delivery Address"
+                aria-expanded={showAddressDropdown}
+              >
+                <div className="w-8 h-8 rounded-full bg-[#1F4E34]/10 text-[#1F4E34] flex items-center justify-center shrink-0 group-hover:bg-[#1F4E34] group-hover:text-white transition-colors">
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <div className="hidden sm:flex flex-col justify-center">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#777] leading-tight flex items-center gap-1">
+                    Dispensary & Hub
+                    <ChevronDown className={`w-3 h-3 text-[#999] transition-transform ${showAddressDropdown ? 'rotate-180' : ''}`} />
+                  </span>
+                  <span className="text-xs font-bold text-[#1A1A1A] leading-tight truncate max-w-[155px] md:max-w-[185px]">
+                    Kallara, Trivandrum 695608
+                  </span>
+                </div>
+                {/* Mobile compact badge */}
+                <div className="sm:hidden flex flex-col justify-center">
+                  <span className="text-[9px] font-bold text-[#777] uppercase leading-none">Hub</span>
+                  <span className="text-[11px] font-bold text-[#1A1A1A] leading-tight">695608</span>
+                </div>
+              </button>
+
+              {/* Address Details Popover Card */}
+              {showAddressDropdown && (
+                <div
+                  className="absolute right-0 top-full mt-2 w-80 sm:w-88 bg-white border border-[#EDE8E0] rounded-2xl shadow-xl p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150"
+                >
+                  <div className="flex items-start justify-between pb-3 border-b border-[#EDE8E0]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-[#1F4E34] text-white flex items-center justify-center shrink-0 shadow-xs">
+                        <MapPin className="w-4 h-4 text-[#C59B27]" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-[#1A1A1A] leading-tight">
+                          Axmin Prana Dispensary Hub
+                        </h4>
+                        <span className="text-[10px] text-[#777]">Classical Ayurvedic Pharmacy & Dispatch</span>
+                      </div>
+                    </div>
                     <button
-                      onClick={logout}
-                      className="w-full text-left px-4 py-2 text-xs text-red-600 hover:bg-[#FAF8F5]"
+                      type="button"
+                      onClick={() => setShowAddressDropdown(false)}
+                      className="p-1 rounded-md text-[#999] hover:text-[#1A1A1A] hover:bg-[#FAF8F5] transition-colors"
+                      aria-label="Close address details"
                     >
-                      Sign Out
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
+
+                  <div className="py-3 space-y-2.5 text-xs">
+                    <div className="flex items-start gap-2.5 text-[#444]">
+                      <MapPin className="w-4 h-4 text-[#1F4E34] shrink-0 mt-0.5" />
+                      <div className="leading-snug">
+                        <p className="font-semibold text-[#1A1A1A]">Registered Dispensary Hub:</p>
+                        <p className="text-[#666]">Kallara, Trivandrum, Kerala – 695608, India</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2.5 text-[#444]">
+                      <Truck className="w-4 h-4 text-[#1F4E34] shrink-0 mt-0.5" />
+                      <div className="leading-snug">
+                        <p className="font-semibold text-[#1A1A1A]">Pan-India Delivery:</p>
+                        <p className="text-[#666]">Serving all PIN codes across India • Free shipping above ₹499</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2.5 text-[#444]">
+                      <Phone className="w-4 h-4 text-[#1F4E34] shrink-0 mt-0.5" />
+                      <div className="leading-snug">
+                        <p className="font-semibold text-[#1A1A1A]">Direct Care Helpline:</p>
+                        <a href="tel:+917561836584" className="text-[#1F4E34] font-bold hover:underline">
+                          +91 75618 36584
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-[#EDE8E0] flex items-center justify-between gap-2">
+                    <a
+                      href="https://maps.app.goo.gl/593CoPREJZsqTLRD9"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 py-2 px-3 bg-[#1F4E34] hover:bg-[#163B27] text-white text-xs font-semibold rounded-xl text-center flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+                    >
+                      <span>Get Directions</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                    <Link
+                      href="/contact"
+                      onClick={() => setShowAddressDropdown(false)}
+                      className="py-2 px-3 bg-[#FAF8F5] hover:bg-[#EDE8E0] text-[#1A1A1A] text-xs font-semibold rounded-xl transition-colors"
+                    >
+                      Contact Us
+                    </Link>
+                  </div>
                 </div>
-              ) : (
-                <Link
-                  href="/login"
-                  className="flex items-center gap-1.5 p-1.5 text-xs font-medium text-[#1A1A1A] hover:text-[#1F4E34] transition-colors"
-                  title="Sign In"
-                >
-                  <UserIcon className="w-5 h-5 text-[#241A14]" />
-                  <span className="hidden md:inline">Sign In</span>
-                </Link>
               )}
-
-              {/* Wishlist Heart */}
-              <Link
-                href="/wishlist"
-                className="p-1.5 text-[#241A14] hover:text-[#1F4E34] transition-colors relative"
-                title="Wishlist"
-              >
-                <Heart className="w-5 h-5" />
-                {wishlist.length > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#B03A6A] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                    {wishlist.length}
-                  </span>
-                )}
-              </Link>
-
-              {/* Shopping Cart (Matching other icons' color and minimalist style) */}
-              <button
-                onClick={openDrawer}
-                className="p-1.5 text-[#241A14] hover:text-[#1F4E34] transition-colors relative"
-                aria-label="Open Cart Drawer"
-                title="Shopping Cart"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                {itemCount > 0 && (
-                  <span className="absolute -top-0.5 -right-1 min-w-[17px] h-[17px] bg-[#1F4E34] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-0.5">
-                    {itemCount}
-                  </span>
-                )}
-              </button>
             </div>
           </div>
 

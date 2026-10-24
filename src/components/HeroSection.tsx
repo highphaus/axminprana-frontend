@@ -103,11 +103,11 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
                 </span>
               </div>
 
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight tracking-tight">
+              <h1 className="hero-title font-serif font-bold text-white leading-tight tracking-tight">
                 {slide.headingHighlight}
               </h1>
 
-              <p className="text-xs sm:text-sm md:text-base text-[#E0DDD5] max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">
+              <p className="body-text text-[#E0DDD5] max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">
                 {slide.subheading}
               </p>
 
@@ -115,7 +115,7 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
               <div className="pt-2 sm:pt-4 flex flex-col items-center lg:items-start gap-2">
                 <Link
                   href={slide.ctaLink}
-                  className="w-full sm:w-auto px-10 py-3.5 sm:py-4 bg-[#B83E75] hover:bg-[#9E2E61] text-white font-serif font-bold text-base sm:text-lg rounded-full shadow-xl transition-all transform hover:scale-105 text-center tracking-wide inline-flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 min-h-[48px] bg-[#B83E75] hover:bg-[#9E2E61] text-white font-serif font-bold text-sm sm:text-base md:text-lg rounded-full shadow-xl transition-all transform hover:scale-105 text-center tracking-wide inline-flex items-center justify-center gap-2 touch-manipulation"
                 >
                   <span>{slide.ctaText}</span>
                   <ArrowRight className="w-5 h-5" />
@@ -127,8 +127,8 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
             </div>
 
             {/* Right Product Image Showcase with radiant warm backlighting */}
-            <div className="lg:col-span-5 flex justify-center">
-              <div className="relative w-72 h-64 sm:w-88 sm:h-80 md:w-96 md:h-96 flex items-center justify-center group">
+            <div className="lg:col-span-5 flex justify-center w-full">
+              <div className="relative w-full max-w-[270px] xs:max-w-xs sm:max-w-sm md:max-w-md aspect-square flex items-center justify-center group mx-auto">
                 {/* Golden ambient backlight glow */}
                 <div className="absolute inset-0 bg-radial from-amber-500/40 via-amber-600/10 to-transparent blur-2xl transform scale-110 pointer-events-none" />
                 

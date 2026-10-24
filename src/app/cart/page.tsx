@@ -136,12 +136,12 @@ export default function CartPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between sm:justify-end gap-6 shrink-0">
+                  <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-6 shrink-0 w-full sm:w-auto">
                     {/* Quantity Selector */}
                     <div className="flex items-center border border-[#DCD5C9] rounded-lg bg-white overflow-hidden">
                       <button
                         onClick={() => updateQuantity(item.product._id, item.packSize, -1)}
-                        className="p-1.5 sm:p-2 hover:bg-[#FAF8F5] transition-colors text-[#1A1A1A]"
+                        className="p-2 sm:p-2 hover:bg-[#FAF8F5] transition-colors text-[#1A1A1A] min-w-[36px] min-h-[36px] flex items-center justify-center"
                         aria-label="Decrease quantity"
                       >
                         <Minus className="w-3.5 h-3.5" />
@@ -151,7 +151,7 @@ export default function CartPage() {
                       </span>
                       <button
                         onClick={() => updateQuantity(item.product._id, item.packSize, 1)}
-                        className="p-1.5 sm:p-2 hover:bg-[#FAF8F5] transition-colors text-[#1A1A1A]"
+                        className="p-2 sm:p-2 hover:bg-[#FAF8F5] transition-colors text-[#1A1A1A] min-w-[36px] min-h-[36px] flex items-center justify-center"
                         aria-label="Increase quantity"
                       >
                         <Plus className="w-3.5 h-3.5" />
@@ -164,7 +164,7 @@ export default function CartPage() {
 
                     <button
                       onClick={() => removeFromCart(item.product._id, item.packSize)}
-                      className="p-1.5 text-[#888] hover:text-red-600 transition-colors"
+                      className="p-2 text-[#888] hover:text-red-600 transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg"
                       aria-label="Remove item"
                       title="Remove from cart"
                     >

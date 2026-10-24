@@ -347,7 +347,7 @@ export default function CheckoutPage() {
                       value={phone}
                       onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
                       placeholder="10-digit number (e.g. 9876543210)"
-                      className="flex-1 px-3 py-2 border border-[#E5E8E0] rounded-r-md bg-[#FAF8F1] focus:bg-white text-xs"
+                      className="flex-1 px-3 py-2 border border-[#E5E8E0] rounded-r-md bg-[#FAF8F1] focus:bg-white text-base sm:text-xs"
                     />
                   </div>
                   <span className="text-[10px] text-[#687168]">Used for Delhivery shipping updates and courier dispatch.</span>

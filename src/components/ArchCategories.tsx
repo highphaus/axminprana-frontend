@@ -65,8 +65,8 @@ export const ArchCategories: React.FC = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-                <div className="absolute bottom-4 left-3 right-3 text-center">
-                  <span className="font-serif font-bold text-xs sm:text-sm text-white tracking-wide block truncate">
+                <div className="absolute bottom-3 sm:bottom-4 left-2 sm:left-3 right-2 sm:right-3 text-center">
+                  <span className="font-serif font-bold text-xs sm:text-sm text-white tracking-wide block leading-tight line-clamp-2">
                     {cat.title}
                   </span>
                 </div>
