@@ -87,11 +87,11 @@ export default async function HomePage() {
           ))}
         </div>
 
-        {/* Mobile View All Button (Down below section on smaller devices) */}
-        <div className="sm:hidden pt-4">
+        {/* Mobile View All Link (Without white box background) */}
+        <div className="sm:hidden pt-3 text-center">
           <Link
             href="/shop?format=Oil"
-            className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-white hover:bg-[#FAF8F5] border border-[#EDE8E0] text-xs font-bold text-[#1F4E34] rounded-xl shadow-2xs transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-bold text-[#1F4E34] hover:underline"
           >
             <span>View All Classical Oils</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -126,11 +126,11 @@ export default async function HomePage() {
           ))}
         </div>
 
-        {/* Mobile View All Button (Down below section on smaller devices) */}
-        <div className="sm:hidden pt-4">
+        {/* Mobile View All Link (Without white box background) */}
+        <div className="sm:hidden pt-3 text-center">
           <Link
             href="/shop"
-            className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-white hover:bg-[#FAF8F5] border border-[#EDE8E0] text-xs font-bold text-[#1F4E34] rounded-xl shadow-2xs transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-bold text-[#1F4E34] hover:underline"
           >
             <span>View All Herbal Churnas</span>
             <ArrowRight className="w-3.5 h-3.5" />

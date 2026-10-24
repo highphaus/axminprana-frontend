@@ -339,29 +339,79 @@ export const Header: React.FC = () => {
               )}
             </div>
 
-            {/* RIGHT: Direct Care Helpline & Order Tracking (Balances header symmetrically) */}
-            <div className="hidden lg:flex items-center gap-3 shrink-0">
-              <a
-                href="tel:+917561836584"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#FAF8F5] hover:bg-[#F5F2EC] border border-[#EDE8E0] text-xs font-semibold text-[#1A1A1A] transition-colors group"
-                title="Call Ayurvedic Care Helpline"
-              >
-                <div className="w-6 h-6 rounded-full bg-[#1F4E34] text-white flex items-center justify-center shrink-0">
-                  <Phone className="w-3 h-3 text-[#C59B27]" />
+            {/* RIGHT: Profile, Wishlist & Cart on Bigger Devices */}
+            <div className="hidden lg:flex items-center gap-3 sm:gap-4 shrink-0">
+              {/* User Account / Profile */}
+              {isAuthenticated ? (
+                <div className="relative group">
+                  <Link
+                    href={isAdmin ? "/admin" : "/account"}
+                    className="flex items-center gap-1.5 p-1.5 text-xs font-semibold text-[#1A1A1A] hover:text-[#1F4E34] transition-colors"
+                  >
+                    <UserIcon className="w-5 h-5 text-[#241A14]" />
+                    <span className="hidden xl:inline">{user?.name?.split(' ')[0]}</span>
+                    {isAdmin && (
+                      <span className="text-[9px] bg-[#1F4E34] text-white px-1.5 py-0.5 rounded font-bold">
+                        Admin
+                      </span>
+                    )}
+                  </Link>
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[#EDE8E0] rounded-xl shadow-xl py-1 hidden group-hover:block z-50">
+                    {isAdmin && (
+                      <Link href="/admin" className="block px-4 py-2 text-xs text-[#1F4E34] font-bold bg-[#FAF8F1] border-b border-[#EDE8E0] hover:bg-[#EDE8E0]">
+                        🛡️ Admin Console
+                      </Link>
+                    )}
+                    <Link href="/account" className="block px-4 py-2 text-xs text-[#1A1A1A] hover:bg-[#FAF8F5]">
+                      My Orders & Profile
+                    </Link>
+                    <button
+                      onClick={logout}
+                      className="w-full text-left px-4 py-2 text-xs text-red-600 hover:bg-[#FAF8F5] cursor-pointer"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
                 </div>
-                <div className="flex flex-col text-left leading-tight">
-                  <span className="text-[9px] uppercase tracking-wider text-[#777] font-semibold">Direct Care</span>
-                  <span className="text-[11px] font-bold text-[#1F4E34] group-hover:underline">+91 75618 36584</span>
-                </div>
-              </a>
+              ) : (
+                <Link
+                  href="/login"
+                  className="flex items-center gap-1.5 p-1.5 text-xs font-semibold text-[#1A1A1A] hover:text-[#1F4E34] transition-colors"
+                  title="Sign In / Profile"
+                >
+                  <UserIcon className="w-5 h-5 text-[#241A14]" />
+                  <span className="hidden xl:inline">Sign In</span>
+                </Link>
+              )}
 
+              {/* Wishlist Heart */}
               <Link
-                href="/track-order"
-                className="flex items-center gap-1.5 text-xs font-semibold text-[#444] hover:text-[#1F4E34] transition-colors px-2.5 py-1.5 rounded-lg hover:bg-[#FAF8F5]"
+                href="/wishlist"
+                className="p-1.5 text-[#241A14] hover:text-[#1F4E34] transition-colors relative"
+                title="Wishlist"
               >
-                <Truck className="w-4 h-4 text-[#C59B27]" />
-                <span>Track Order</span>
+                <Heart className="w-5 h-5" />
+                {wishlist.length > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#B03A6A] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {wishlist.length}
+                  </span>
+                )}
               </Link>
+
+              {/* Shopping Cart Button */}
+              <button
+                onClick={openDrawer}
+                className="p-1.5 text-[#241A14] hover:text-[#1F4E34] transition-colors relative cursor-pointer"
+                aria-label="Open Cart Drawer"
+                title="Shopping Cart"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {itemCount > 0 && (
+                  <span className="absolute -top-0.5 -right-1 min-w-[17px] h-[17px] bg-[#1F4E34] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-0.5">
+                    {itemCount}
+                  </span>
+                )}
+              </button>
             </div>
 
             {/* MOBILE RIGHT: Quick Direct Helpline Link */}

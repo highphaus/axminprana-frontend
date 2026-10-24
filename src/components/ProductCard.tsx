@@ -50,35 +50,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <div className="group bg-white rounded-2xl border border-[#EAE5DC] hover:border-[#214E34]/40 hover:shadow-md transition-all flex flex-col h-full overflow-hidden relative">
-      <Link href={`/product/${product.slug}`} className="flex flex-col flex-1 justify-between h-full p-3 sm:p-4">
+      <Link href={`/product/${product.slug}`} className="flex flex-col flex-1 justify-between h-full p-2.5 sm:p-3.5">
         <div>
-          {/* Top Row: Out of Stock / Pure Herbal & Wishlist Heart (Removed "Save ₹..." badge) */}
-          <div className="flex items-center justify-between mb-1 min-h-[24px]">
-            {product.stock <= 0 ? (
-              <span className="text-[10px] uppercase font-bold text-red-700 bg-red-100 px-2 py-0.5 rounded tracking-wide">
-                Out of Stock
-              </span>
-            ) : (
-              <span className="text-[10px] uppercase font-bold text-[#214E34] bg-emerald-50 px-2.5 py-0.5 rounded-full">
-                {product.format || 'Classical'}
-              </span>
-            )}
-
-            <button
-              onClick={handleWishlistClick}
-              className="p-1 rounded-full text-[#888] hover:text-[#B86F4B] transition-colors ml-auto"
-              aria-label="Save to wishlist"
-            >
-              <Heart
-                className={`w-4 h-4 transition-colors ${
-                  isWishlisted ? 'fill-[#B86F4B] text-[#B86F4B]' : 'text-[#888]'
-                }`}
-              />
-            </button>
-          </div>
-
-          {/* Product Image Container (Curved rounded-2xl corners) */}
-          <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[#FAF7F2] my-2 flex items-center justify-center border border-[#EDE8E0] shadow-2xs">
+          {/* Product Image Container (Curved rounded-2xl corners, covering top space with floating wishlist) */}
+          <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[#FAF7F2] mb-2 flex items-center justify-center border border-[#EDE8E0] shadow-2xs group-hover:border-[#1F4E34]/30 transition-colors">
             <Image
               src={imageUrl}
               alt={product.name}
@@ -88,9 +63,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 product.stock <= 0 ? 'opacity-60' : 'group-hover:scale-105'
               }`}
             />
+
+            {/* Floating Wishlist Heart */}
+            <button
+              onClick={handleWishlistClick}
+              className="absolute top-2 right-2 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white backdrop-blur-xs flex items-center justify-center text-[#888] hover:text-[#B86F4B] shadow-xs transition-all cursor-pointer"
+              aria-label="Save to wishlist"
+            >
+              <Heart
+                className={`w-4 h-4 transition-colors ${
+                  isWishlisted ? 'fill-[#B86F4B] text-[#B86F4B]' : 'text-[#888]'
+                }`}
+              />
+            </button>
+
             {product.stock <= 0 && (
-              <div className="absolute inset-0 bg-white/40 flex items-center justify-center z-10 rounded-2xl">
-                <span className="bg-red-700 text-white text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+              <div className="absolute top-2 left-2 z-20">
+                <span className="bg-red-700 text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
                   Out of Stock
                 </span>
               </div>
